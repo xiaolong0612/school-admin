@@ -12,11 +12,7 @@
 
 <script>
     import { Navbar, Sidebar, AppMain } from 'views/layout';
-    import store from 'store';
-    import router from 'router';
-    import permission from 'store/permission';
-    // import { Loading } from 'element-ui';
-    // let loadingInstance;
+
     export default {
       name: 'layout',
       components: {
@@ -28,26 +24,6 @@
         sidebar() {
           return this.$store.state.app.sidebar;
         }
-      },
-      beforeRouteEnter: (to, from, next) => {
-        const roles = store.getters.roles;
-        if (roles.length !== 0) {
-          next();
-          return
-        }
-
-        // loadingInstance = Loading.service({ fullscreen: true, text: '玩命加载中' });
-        store.dispatch('GetInfo').then(() => {
-          permission.init({
-            roles: store.getters.roles,
-            router: router.options.routes
-          });
-        //   loadingInstance.close();
-          next();
-        }).catch(err => {
-        //   loadingInstance.close();
-          console.log(err);
-        });
       }
     }
 </script>
@@ -59,9 +35,7 @@
         position: relative;
         height: 100%;
         width: 100%;
-        padding-left: 180px;
         &.hideSidebar {
-            padding-left: 40px;
             .sidebar-wrapper {
                 transform: translate(-140px, 0);
                 .sidebar-container {
@@ -74,6 +48,9 @@
                     }
                 }
             }
+            .main-container{
+                margin-left: 40px;
+            }
         }
         .sidebar-wrapper {
             width: 180px;
@@ -81,7 +58,7 @@
             top: 0;
             bottom: 0;
             left: 0;
-            z-index: 2;
+            z-index: 1001;
             overflow-x: hidden;
             transition: all .28s ease-out;
             @include scrollBar;
@@ -90,9 +67,9 @@
             transition: all .28s ease-out;
         }
         .main-container {
-            width: 100%;
             min-height: 100%;
             transition: all .28s ease-out;
+            margin-left: 180px;
         }
     }
 </style>

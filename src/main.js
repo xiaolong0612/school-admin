@@ -6,69 +6,80 @@ import router from './router';
 import store from './store';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
-import 'assets/custom-theme/index.css'; // https://github.com/PanJiaChen/custom-element-theme
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
-import 'normalize.css/normalize.css';
-import 'styles/index.scss';
-import 'components/Icon-svg/index';
-import 'assets/iconfont/iconfont';
-import * as filters from './filters';
-import Multiselect from 'vue-multiselect';
-import Sticky from 'components/Sticky';
-import 'vue-multiselect/dist/vue-multiselect.min.css';
-import vueWaves from './directive/waves';
-import vueSticky from './directive/sticky';
-import errLog from 'store/errLog';
-import './mock/index.js';
-// import './styles/mixin.scss';
+import 'assets/custom-theme/index.css'; // 换肤版本element-ui css https://github.com/PanJiaChen/custom-element-theme
+import NProgress from 'nprogress'; // Progress 进度条
+import 'nprogress/nprogress.css';// Progress 进度条 样式
+import 'normalize.css/normalize.css';// normalize.css 样式格式化
+import 'styles/index.scss'; // 全局自定义的css样式
+import 'components/Icon-svg/index'; // 封装的svg组件
+import 'assets/iconfont/iconfont'; // iconfont 具体图标见https://github.com/PanJiaChen/vue-element-admin/wiki
+import * as filters from './filters'; // 全局vue filter
+import Multiselect from 'vue-multiselect';// 使用的一个多选框组件，element-ui的select不能满足所有需求
+import 'vue-multiselect/dist/vue-multiselect.min.css';// 多选框组件css
+import Sticky from 'components/Sticky'; // 粘性header组件
+import vueWaves from './directive/waves';// 水波纹指令
+import errLog from 'store/errLog';// error log组件
+import './mock/index.js';  // 该项目所有请求使用mockjs模拟
 
 // register globally
 Vue.component('multiselect', Multiselect);
 Vue.component('Sticky', Sticky);
 Vue.use(ElementUI);
 Vue.use(vueWaves);
-Vue.use(vueSticky);
-
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 });
 
+// permissiom judge
 function hasPermission(roles, permissionRoles) {
-  if (roles.indexOf('admin') >= 0) return true;
+  if (roles.indexOf('admin') >= 0) return true; // admin权限 直接通过
+  if (!permissionRoles) return true;
   return roles.some(role => permissionRoles.indexOf(role) >= 0)
 }
+
 // register global progress.
 const whiteList = ['/login', '/authredirect', '/reset', '/sendpwd'];// 不重定向白名单
 router.beforeEach((to, from, next) => {
-  NProgress.start();
-  if (store.getters.token) {
+  NProgress.start(); // 开启Progress
+  if (store.getters.token) { // 判断是否有token
     if (to.path === '/login') {
       next({ path: '/' });
     } else {
-      if (to.meta && to.meta.role) {
-        if (hasPermission(store.getters.roles, to.meta.role)) {
-          next();
-        } else {
-          next('/401');
-        }
+      if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
+        store.dispatch('GetInfo').then(res => { // 拉取user_info
+          const roles = res.data.role;
+          store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
+            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+            next(to); // hack方法 确保addRoutes已完成
+          })
+        }).catch(err => {
+          console.log(err);
+        });
       } else {
-        next();
+        // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
+        if (hasPermission(store.getters.roles, to.meta.role)) {
+          next();//
+        } else {
+          next({ path: '/401', query: { noGoBack: true } });
+        }
+        // 可删 ↑
       }
     }
   } else {
-    if (whiteList.indexOf(to.path) !== -1) {
+    if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
       next()
     } else {
-      next('/login')
+      next('/login'); // 否则全部重定向到登录页
+      NProgress.done(); // 在hash模式下 改变手动改变hash 重定向回来 不会触发afterEach 暂时hack方案 ps：history模式下无问题，可删除该行！
     }
   }
 });
 
+
 router.afterEach(() => {
-  NProgress.done();
+  NProgress.done(); // 结束Progress
 });
 
 // window.onunhandledrejection = e => {
