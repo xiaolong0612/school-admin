@@ -1,4 +1,4 @@
-import { loginByEmail, logout, getInfo } from 'api/login';
+import { loginByAccount, logout, getInfo } from 'api/login';
 import Cookies from 'js-cookie';
 
 const user = {
@@ -63,15 +63,14 @@ const user = {
 
   actions: {
     // 邮箱登录
-    LoginByEmail({ commit }, userInfo) {
-      const email = userInfo.email.trim();
+    LoginByAccount({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        loginByEmail(email, userInfo.password).then(response => {
+        const account = userInfo.account;
+        loginByAccount(account, userInfo.password, userInfo.code, userInfo.type).then(response => {
           const data = response.data;
           Cookies.set('Admin-Token', response.data.token);
           commit('SET_TOKEN', data.token);
-          commit('SET_EMAIL', email);
-          resolve();
+          resolve(data);
         }).catch(error => {
           reject(error);
         });

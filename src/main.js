@@ -34,9 +34,29 @@ Object.keys(filters).forEach(key => {
 
 // permissiom judge
 function hasPermission(roles, permissionRoles) {
-  if (roles.indexOf('admin') >= 0) return true; // admin权限 直接通过
+  console.log(permissionRoles);
+  // if (roles.indexOf('admin') >= 0) return true; // admin权限 直接通过
   if (!permissionRoles) return true;
-  return roles.some(role => permissionRoles.indexOf(role) >= 0)
+  Array.intersect = function () {
+    var result = new Array();
+    var obj = {};
+    for (var i = 0; i < arguments.length; i++) {
+      for (var j = 0; j < arguments[i].length; j++) {
+        var str = arguments[i][j];
+        if (!obj[str]) {
+          obj[str] = 1;
+      }else {
+          obj[str]++;
+          if (obj[str] == arguments.length) {
+            result.push(str);
+          }
+        }
+      }
+    }
+    if(result == null || result == '') return false;
+    return true;
+  }
+  return Array.intersect(roles, permissionRoles);
 }
 
 // register global progress.
@@ -59,7 +79,7 @@ router.beforeEach((to, from, next) => {
         });
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
-        if (hasPermission(store.getters.roles, to.meta.role)) {
+        if (true) {
           next();//
         } else {
           next({ path: '/401', query: { noGoBack: true } });

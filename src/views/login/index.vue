@@ -4,9 +4,9 @@
                  label-width="0px"
                  class="card-box login-form">
             <h3 class="title">系统登录</h3>
-            <el-form-item prop="email">
+            <el-form-item prop="account">
                 <span class="svg-container"><wscn-icon-svg icon-class="jiedianyoujian"/></span>
-                <el-input name="email" type="text" v-model="loginForm.email" autoComplete="on"
+                <el-input name="account" type="text" v-model="loginForm.account" autoComplete="on"
                           placeholder="邮箱"></el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -34,7 +34,7 @@
 
 <script>
     import { mapGetters } from 'vuex';
-    import { isWscnEmail } from 'utils/validate';
+    // import { isWscnEmail } from 'utils/validate';
     // import { getQueryObject } from 'utils';
     import socialSign from './socialsignin';
 
@@ -42,9 +42,9 @@
       components: { socialSign },
       name: 'login',
       data() {
-        const validateEmail = (rule, value, callback) => {
-          if (!isWscnEmail(value)) {
-            callback(new Error('请输入正确的合法邮箱'));
+        const validateAccount = (rule, value, callback) => {
+          if (!value) {
+            callback(new Error('请输入正确的账户'));
           } else {
             callback();
           }
@@ -58,12 +58,14 @@
         };
         return {
           loginForm: {
-            email: 'admin@wallstreetcn.com',
-            password: ''
+            account: '教研员',
+            password: '123456',
+            code: '215217',
+            type: '7'
           },
           loginRules: {
-            email: [
-                { required: true, trigger: 'blur', validator: validateEmail }
+            account: [
+                { required: true, trigger: 'blur', validator: validateAccount }
             ],
             password: [
                 { required: true, trigger: 'blur', validator: validatePass }
@@ -83,7 +85,7 @@
           this.$refs.loginForm.validate(valid => {
             if (valid) {
               this.loading = true;
-              this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
+              this.$store.dispatch('LoginByAccount', this.loginForm).then((res) => {
                 this.loading = false;
                 this.$router.push({ path: '/' });
                 // this.showDialog = true;
