@@ -82,23 +82,17 @@
 	            return data;
 	          }());
 	          this.chart.setOption({
-	            backgroundColor: '#344b58',
 	            title: {
 	              text: '所有考试市、区专题得分率监控图',
 	              x: 'center',
 	              textStyle: {
-	                color: '#fff',
+	                color: '#333',
 	                fontSize: '20',
 	              },
 	              padding: [20, 0, 0, 0]
 	            },
 	            tooltip: {
 	              trigger: 'axis',
-	              axisPointer: {
-	                textStyle: {
-	                  color: '#fff'
-	                }
-	              }
 	            },
 	            grid: {
 	              borderWidth: 0,
@@ -120,22 +114,16 @@
 	            xAxis: [{
 	              type: '',
 	              triggerEvent: true,
+	              nameTextStyle: {
+	              	color: '#333333'
+	              },
 	              axisLine: {
 	                lineStyle: {
-	                  color: '#fff'
+	                  color: '#ccc'
 	                }
 	              },
 	              splitLine: {
 	                show: false
-	              },
-	              axisTick: {
-	                show: true
-	              },
-	              splitArea: {
-	                show: false
-	              },
-	              axisLabel: {
-	                interval: 0
 	              },
 	              data: xData
 	            }],
@@ -146,18 +134,12 @@
 	              },
 	              axisLine: {
 	                lineStyle: {
-	                  color: '#fff'
+	                  color: '#ccc'
 	                }
 	              },
 	              axisTick: {
 	                show: false
 	              },
-	              axisLabel: {
-	                interval: 2
-	              },
-	              splitArea: {
-	                show: false
-	              }
 	            }],
 	            series: [
 	            {
@@ -198,7 +180,7 @@
 	              symbol: 'circle',
 	              itemStyle: {
 	                normal: {
-	                  color: 'rgba(252,230,48,1)',
+	                  color: '#97a8be',
 	                  barBorderRadius: 0,
 	                  label: {
 	                    show: true,
