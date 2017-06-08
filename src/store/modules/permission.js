@@ -1,7 +1,7 @@
 import { asyncRouterMap, constantRouterMap } from 'src/router';
 
 function hasPermission(roles, route) {
-  if (roles.indexOf('admin') >= 0) return true;
+  // if (roles.indexOf('admin') >= 0) return true;
   Array.intersect = function () {
     var result = new Array();
     var obj = {};
@@ -24,7 +24,7 @@ function hasPermission(roles, route) {
     return true;
   }
   if (route.meta && route.meta.role) {
-    return Array.intersect(roles,route.meta.role)
+    return Array.intersect(['7'],route.meta.role)
   } else {
     return true
   }

@@ -1,9 +1,6 @@
 <template>
     <el-menu class="navbar" mode="horizontal">
-        <Hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></Hamburger>
-        <levelbar></levelbar>
-        <ErrLog v-if="log.length>0" class="errLog-container" :logsList="log"></ErrLog>
-        <el-dropdown class="avatar-container" trigger="click">
+        <el-dropdown class="avatar-container fr" trigger="click">
             <div class="avatar-wrapper">
                 <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
                 <i class="el-icon-caret-bottom"/>
@@ -22,6 +19,13 @@
                 <el-dropdown-item divided><span @click="logout" style="display:block;">退出登录</span></el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
+        <Hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></Hamburger>
+        <levelbar></levelbar>
+        <div class='fl'>
+            <img src="../../assets/logo.jpg" style="margin-top: 5px;" height="40">
+        </div>
+        <ErrLog v-if="log.length>0" class="errLog-container" :logsList="log"></ErrLog>
+        
     </el-menu>
 </template>
 
@@ -72,6 +76,8 @@
             height: 50px;
             float: left;
             padding: 0 10px;
+            margin-right: 10px;
+            border-right: 1px solid #fff;
         }
         .errLog-container {
             display: inline-block;

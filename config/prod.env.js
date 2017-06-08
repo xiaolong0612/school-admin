@@ -1,5 +1,5 @@
 module.exports = {
     NODE_ENV: '"production"',
-    BASE_API: '"https://api-prod"',
-    APP_ORIGIN: '"https://wallstreetcn.com"'
+    BASE_API: '"http://118.178.93.124"',
+    APP_ORIGIN: '"'
 };

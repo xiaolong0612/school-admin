@@ -1,6 +1,10 @@
 @import './btn.scss';
 @import './element-ui.scss';
 @import "./mixin.scss";
+*{
+  margin: 0;
+  padding: 0;
+}
 body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -43,6 +47,40 @@ a:hover {
   text-decoration: none;
 }
 
+li{list-style: none; }
+
+.font-0{font-size:0px}
+.font-12{font-size:12px}
+.font-13{font-size:13px}
+.font-14{font-size:14px}
+.font-16{font-size:16px}
+.font-17{font-size:17px}
+.font-18{font-size:18px}
+.font-20{font-size:20px}
+.font-22{font-size:22px}
+.font-24{font-size:24px}
+.font-33{font-size:33px}
+.font-34{font-size:34px}
+.color-main{color: #c429af}
+.cGray{color:#6c6c6c}
+.cRed{color:#ff0000}
+.cWhite{color:#fff}
+.cBlack{color:#333}
+.text-right{text-align:right}
+.text-left{text-align:left}
+.text-center{text-align:center}
+.relative{position: relative;}
+.absolute{position: absolute;}
+.cover{background-position:center;background-repeat:no-repeat;background-size:cover}
+.flex-wrap{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;}
+.flex-items{-webkit-box-flex:1; -webkit-flex:1; flex:1;}
+.padding-t{padding-top: 15px}
+.padding-b{padding-bottom: 15px}
+.padding-tb{padding: 15px 0}
+.padding-l{padding-left: 15px}
+.padding-r{padding-right: 15px}
+.padding-lr{padding: 0 15px}
+.padding-a{padding: 15px}
 .fr {
   float: right;
 }
@@ -68,7 +106,7 @@ a:hover {
 }
 
 .inlineBlock {
-  display: block;
+  display: inline-block;
 }
 
 code {

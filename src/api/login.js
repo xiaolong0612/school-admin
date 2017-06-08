@@ -1,31 +1,25 @@
 import fetch from 'utils/fetch';
 
 export function loginByAccount(account, password, code, type) {
-  const data = {
-    account,
-    password,
-    code,
-    type
-  };
+  const data = { account, password, code, type };
   return fetch({
-    url: '/login/loginbyaccount',
+    url: '/admin/login',
     method: 'post',
-    data
+    params: data
   });
 }
 
 export function logout() {
   return fetch({
-    url: '/login/logout',
+    url: '/admin/login-out',
     method: 'post'
   });
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return fetch({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+    url: '/admin/get-login-info',
+    method: 'post'
   });
 }
 

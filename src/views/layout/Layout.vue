@@ -11,6 +11,7 @@
 </template>
 
 <script>
+    import Sticky from '../../components/Sticky';
     import { Navbar, Sidebar, AppMain } from 'views/layout';
 
     export default {
@@ -18,7 +19,8 @@
       components: {
         Navbar,
         Sidebar,
-        AppMain
+        AppMain,
+        Sticky
       },
       computed: {
         sidebar() {
@@ -70,6 +72,7 @@
             min-height: 100%;
             transition: all .28s ease-out;
             margin-left: 180px;
+            position: relative;
         }
     }
 </style>

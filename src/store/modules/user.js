@@ -62,16 +62,17 @@ const user = {
   },
 
   actions: {
-    // 邮箱登录
+    // 登录
     LoginByAccount({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         const account = userInfo.account;
         loginByAccount(account, userInfo.password, userInfo.code, userInfo.type).then(response => {
           const data = response.data;
-          Cookies.set('Admin-Token', response.data.token);
-          commit('SET_TOKEN', data.token);
+          Cookies.set('Admin-Token', data.teacher);
+          commit('SET_TOKEN', data.teacher);
           resolve(data);
         }).catch(error => {
+          console.log(error);
           reject(error);
         });
       });
@@ -81,13 +82,17 @@ const user = {
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo(state.token).then(response => {
-          const data = response.data;
-          commit('SET_ROLES', data.role);
-          commit('SET_NAME', data.name);
-          commit('SET_AVATAR', data.avatar);
-          commit('SET_UID', data.uid);
-          commit('SET_INTRODUCTION', data.introduction);
+        getInfo().then(response => {
+          // const data = response.data;
+          // commit('SET_ROLES', data.role);
+          // commit('SET_NAME', data.name);
+          // commit('SET_AVATAR', data.avatar);
+          // commit('SET_UID', data.uid);
+          // commit('SET_INTRODUCTION', data.introduction);
+          commit('SET_ROLES', ['7']);
+          commit('SET_NAME', 'xiaolong');
+          commit('SET_AVATAR', 'xiaolong');
+          commit('SET_UID', '7');
           resolve(response);
         }).catch(error => {
           reject(error);
@@ -113,7 +118,7 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout().then(() => {
           commit('SET_TOKEN', '');
           commit('SET_ROLES', []);
           Cookies.remove('Admin-Token');

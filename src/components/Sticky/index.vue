@@ -32,7 +32,6 @@
           height: undefined,
           child: null,
           stickyHeight: 0
-
         };
       },
       methods: {

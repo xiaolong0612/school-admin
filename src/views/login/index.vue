@@ -1,40 +1,70 @@
 <template>
+  <div style="height: 100vh;width:100%;display: table">
     <div class="login-container">
-        <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
-                 label-width="0px"
-                 class="card-box login-form">
-            <h3 class="title">系统登录</h3>
-            <el-form-item prop="account">
-                <span class="svg-container"><wscn-icon-svg icon-class="jiedianyoujian"/></span>
-                <el-input name="account" type="text" v-model="loginForm.account" autoComplete="on"
-                          placeholder="邮箱"></el-input>
-            </el-form-item>
-            <el-form-item prop="password">
-                <span class="svg-container"><wscn-icon-svg icon-class="mima"/></span>
-                <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password"
-                          autoComplete="on" placeholder="密码"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
-                    登录
-                </el-button>
-            </el-form-item>
-            <div class='tips'>admin账号为:admin@wallstreetcn.com 密码随便填</div>
-            <div class='tips'>editor账号:editor@wallstreetcn.com 密码随便填</div>
-            <router-link to="/sendpwd" class="forget-pwd">
-                忘记密码?(或首次登录)
-            </router-link>
-        </el-form>
-        <el-dialog title="第三方验证" :visible.sync="showDialog">
-            邮箱登录成功,请选择第三方验证
-            <socialSign></socialSign>
-        </el-dialog>
+      <el-row type="flex" class="" justify="center" :gutter="20">
+        <el-col :span="4" v-for="(item, index) in cardList" :key="index">
+          <el-card :body-style="{ padding: '0px' }">
+            <img :src="'/static/img/'+item.img" width="100%">
+            <div style="padding: 14px;">
+              <span>{{item.name}}</span>
+              <div class="bottom clearfix">
+                <el-tooltip class="item" effect="dark" placement="top-start" :disabled="item.disabled">
+                  <div slot="content">{{item.tooltip}}</div>
+                  <span>{{item.label}}</span>
+                </el-tooltip>
+                <el-button type="text" class="button fr" @click='loginDialog(index)'>选择该身份</el-button>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
+    <el-dialog title="登陆" :visible.sync="showDialog" size="tiny">
+      <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="70px" class="login-form" >
+          <el-form-item prop="account" label="帐号">
+              <el-input name="account" type="text" v-model="loginForm.account" autoComplete="on" placeholder="帐号"></el-input>
+          </el-form-item>
+          <el-form-item prop="password" label="密码">
+              <el-input name="password" type="password" v-model="loginForm.password"
+                        autoComplete="on" placeholder="密码"></el-input>
+          </el-form-item>
+          <el-form-item prop="code" label="验证码">
+              <el-input name="code" type="text" @keyup.enter.native="handleLogin" v-model="loginForm.code"
+                        autoComplete="on" placeholder="验证码" style="width:55%"></el-input>
+              <img :src="codeImg" class="fr" @click="setCodeImg" style="vertical-align: top;height: 36px;width: 43%">
+          </el-form-item>
+          <el-form-item prop="type" label="角色">
+            <el-radio-group v-show="cardList[0].type" v-model="loginForm.type" style="vertical-align: top;padding-top: 7px;line-height: 20px;">
+              <el-radio label="9">教育局</el-radio>
+              <el-radio label="8">进修校领导</el-radio>
+              <el-radio label="6">校领导</el-radio>
+              <br/>
+              <el-radio label="7">教研员</el-radio>
+              <el-radio label="5">教务处</el-radio>
+            </el-radio-group>
+            <el-radio-group v-show="cardList[1].type" v-model="loginForm.type" style="vertical-align: top;padding-top: 7px;line-height: 20px;">
+              <el-radio label="3">年段长</el-radio>
+              <el-radio label="1">班主任</el-radio>
+              <br/>
+              <el-radio label="0">学科教师</el-radio>
+            </el-radio-group>
+            <el-radio-group v-show="cardList[2].type" v-model="loginForm.type" style="vertical-align: top;padding-top: 7px;line-height: 20px;">
+              <el-radio label="10">学生</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item>
+              <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
+                  登录
+              </el-button>
+          </el-form-item>
+      </el-form>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex';
-    // import { isWscnEmail } from 'utils/validate';
+    import { validataPhone } from 'utils/validate';
     // import { getQueryObject } from 'utils';
     import socialSign from './socialsignin';
 
@@ -43,8 +73,8 @@
       name: 'login',
       data() {
         const validateAccount = (rule, value, callback) => {
-          if (!value) {
-            callback(new Error('请输入正确的账户'));
+          if (!validataPhone(value)) {
+            callback(new Error('请输入正确的手机号'));
           } else {
             callback();
           }
@@ -56,12 +86,43 @@
             callback();
           }
         };
+        const validataCode = (rule, value, callback) => {
+          if (value.length == 0) {
+            callback(new Error('验证码长度错误'));
+          } else {
+            callback();
+          }
+        };
         return {
+          cardList: [
+            {
+              name: '高层人员',
+              img: 'login-leader.png',
+              label: '教育局、进修学校...',
+              tooltip: '教育局、进修校领导、教研员、学校领导、教务处',
+              disabled: false,
+              type: false
+            },{
+              name: '学校人员',
+              img: 'login-teacher.png',
+              label: '年段长、班主任...',
+              tooltip: '年段长、班主任、学科教师',
+              disabled: false,
+              type: false
+            },{
+              name: '学生',
+              img: 'login-student.png',
+              label: '学生、家长',
+              tooltip: '',
+              disabled: true,
+              type: false
+            }
+          ],
           loginForm: {
-            account: '教研员',
+            account: '18805070157',
             password: '123456',
             code: '215217',
-            type: '7'
+            type: ''
           },
           loginRules: {
             account: [
@@ -69,10 +130,18 @@
             ],
             password: [
                 { required: true, trigger: 'blur', validator: validatePass }
-            ]
+            ],
+            code: [
+                { required: true, trigger: 'blur', validator: validataCode }
+            ],
+            type: [
+                { required: true, trigger: 'change', message: '请至少选择一个' }
+            ],
           },
+          codeImg: '',
           loading: false,
-          showDialog: false
+          showDialog: false,
+          disabled: false
         }
       },
       computed: {
@@ -80,18 +149,23 @@
           'auth_type'
         ])
       },
+      mounted() {
+        this.setCodeImg();
+      },
       methods: {
+        setCodeImg() {
+          this.codeImg = 'http://118.178.93.124/admin/code/?' + new Date;
+        },
         handleLogin() {
           this.$refs.loginForm.validate(valid => {
             if (valid) {
               this.loading = true;
               this.$store.dispatch('LoginByAccount', this.loginForm).then((res) => {
                 this.loading = false;
-                this.$router.push({ path: '/' });
-                // this.showDialog = true;
+                this.$router.push({ path: '/instructor/index' });
               }).catch(err => {
-                this.$message.error(err);
                 this.loading = false;
+                this.$message.error(err);
               });
             } else {
               console.log('error submit!!');
@@ -99,36 +173,35 @@
             }
           });
         },
-        afterQRScan() {
-          // const hash = window.location.hash.slice(1);
-          // const hashObj = getQueryObject(hash);
-          // const originUrl = window.location.origin;
-          // history.replaceState({}, '', originUrl);
-          // const codeMap = {
-          //   wechat: 'code',
-          //   tencent: 'code'
-          // };
-          // const codeName = hashObj[codeMap[this.auth_type]];
-          // if (!codeName) {
-          //   alert('第三方登录失败');
-          // } else {
-          //   this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-          //     this.$router.push({ path: '/' });
-          //   });
-          // }
+        loginDialog(index) {
+          this.resetType();
+          if(index == 2) {
+            this.loginForm.type='10'
+          }
+          this.cardList[index].type=true;
+          this.showDialog = true;
+        },
+        resetType() {
+          for(let i = 0; i < this.cardList.length; i++) {
+            this.cardList[i].type=false
+          }
         }
-      },
-      created() {
-        // window.addEventListener('hashchange', this.afterQRScan);
-      },
-      destroyed() {
-        // window.removeEventListener('hashchange', this.afterQRScan);
-      }
+      }  
     }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
     @import "src/styles/mixin.scss";
+    .el-row {
+      margin-bottom: 20px;
+    }
+    .bottom{
+      line-height: 32px;
+      >span{
+        font-size: 13px;
+        color: #999;
+      }
+    }
     .tips{
       font-size: 14px;
       color: #fff;
@@ -136,9 +209,12 @@
     }
     .login-container {
         @include relative;
-        height: 100vh;
+        width: 100%;
+        display: table-cell;
+        vertical-align: middle;
         background-color: #2d3a4b;
-
+        background: url(/static/img/login-bg.png) center no-repeat;
+        background-size: cover;
         input:-webkit-autofill {
             -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;
             -webkit-text-fill-color: #fff !important;
@@ -157,39 +233,14 @@
             height: 47px;
             width: 85%;
         }
-        .svg-container {
-            padding: 6px 5px 6px 15px;
-            color: #889aa4;
-        }
-
-        .title {
-            font-size: 26px;
-            font-weight: 400;
-            color: #eeeeee;
-            margin: 0px auto 40px auto;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .login-form {
-            position: absolute;
-            left: 0;
-            right: 0;
-            width: 400px;
-            padding: 35px 35px 15px 35px;
-            margin: 120px auto;
-        }
-
-        .el-form-item {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            color: #454545;
-        }
-
-        .forget-pwd {
-            color: #fff;
-        }
     }
-
+    .login-form {
+        padding: 20px 20px 0 20px;
+        margin: 0 auto;
+    }
+    .el-form-item {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        color: #454545;
+    }
 </style>

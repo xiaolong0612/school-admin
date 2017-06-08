@@ -21,7 +21,7 @@
           'name',
           'avatar',
           'email',
-          'introduction',
+          'introduction', 
           'roles'
         ])
       },

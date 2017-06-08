@@ -1,5 +1,3 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
 import router from './router';
@@ -108,16 +106,16 @@ router.afterEach(() => {
 // };
 
 // 生产环境错误日志
-if (process.env === 'production') {
-  Vue.config.errorHandler = function(err, vm) {
-    console.log(err, window.location.href);
-    errLog.pushLog({
-      err,
-      url: window.location.href,
-      vm
-    })
-  };
-}
+// if (process.env === 'production') {
+//   Vue.config.errorHandler = function(err, vm) {
+//     // console.log(err, window.location.href);
+//     errLog.pushLog({
+//       err,
+//       url: window.location.href,
+//       vm
+//     })
+//   };
+// }
 
 // window.onerror = function (msg, url, lineNo, columnNo, error) {
 //     console.log('window')

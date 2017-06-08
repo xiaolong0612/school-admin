@@ -1,5 +1,5 @@
 <template>
-    <section class="app-main" style="min-height: 100%">
+    <section class="app-main">
         <transition name="fade" mode="out-in">
             <router-view :key="key"></router-view>
         </transition>
@@ -9,6 +9,9 @@
 <script>
     export default {
       name: 'AppMain',
+      data() {
+        return {}
+      },
       computed: {
         key() {
           return this.$route.name !== undefined
