@@ -65,13 +65,13 @@ const user = {
     // 登录
     LoginByAccount({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        const account = userInfo.account;
-        loginByAccount(account, userInfo.password, userInfo.code, userInfo.type).then(response => {
-          const data = response.data;
-          console.log(response);
-          Cookies.set('UID', data.teacher.id);
+        loginByAccount(userInfo.account, userInfo.password, userInfo.code, userInfo.type).then(response => {
+          console.log(response)
+          /*const data = response.data;
+          console.log(response);*/
+          /*Cookies.set('UID', data.teacher.id);
           Cookies.set('Admin-Token', data.teacher);
-          commit('SET_TOKEN', data.teacher);
+          commit('SET_TOKEN', data.teacher);*/
           resolve(data);
         }).catch(error => {
           console.log(error);

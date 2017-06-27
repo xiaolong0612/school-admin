@@ -42,6 +42,10 @@ const AllStudent = resolve => require(['../views/achievement/all-student'], reso
 const TeachingDisciplineHierarchy = resolve => require(['../views/achievement/teaching-discipline-hierarchy'], resolve);
 const DisciplineAverage = resolve => require(['../views/achievement/discipline-average'], resolve);
 const AdministrationAverage = resolve => require(['../views/achievement/administration-average'], resolve);
+const SectionClassDisciplineHierarchy = () => import('../views/achievement/section-class-discipline-hierarchy');
+const SubjectScore = () => import('../views/achievement/subject-score');
+const AnnualSplit = () => import('../views/achievement/annual-split');
+const StudentScore = () => import('../views/achievement/student-score');
 const TeachingAverage = () => import('../views/achievement/teaching-average');
 const SectionClass = () => import('../views/achievement/section-class');
 // 考点管理
@@ -272,13 +276,13 @@ export const asyncRouterMap = [
     component: Layout,
     name: '成绩管理',
     icon: 'chengjiguanli',
-    meta: { role: ['0', '7', '9'] },
+    meta: { role: ['0', '1', '3', '7', '9'] },
     children: [
       {
         path: 'total-score',
         component: TotalScore,
         name: '总分',
-        meta: { role: ['0', '7', '9'] }
+        meta: { role: ['0', '1', '3', '7', '9'] }
       }, {
         path: 'section-class',
         component: SectionClass,
@@ -290,6 +294,16 @@ export const asyncRouterMap = [
         name: '学科分层',
         meta: { role: ['7'] }
       }, {
+        path: 'section-class-discipline-hierarchy',
+        component: SectionClassDisciplineHierarchy,
+        name: '年段学科分层',
+        meta: { role: ['0'] }
+      }, {
+        path: 'subject-score',
+        component: SubjectScore,
+        name: '年段学科分层',
+        meta: { role: ['0'] }
+      }, {
         path: 'all-class',
         name: '班级单次考试',
         component: AllClass,
@@ -298,12 +312,12 @@ export const asyncRouterMap = [
         path: 'all-student',
         name: '学生单次考试',
         component: AllStudent,
-        meta: { role: ['9'] }
+        meta: { role: [ '1', '3', '9'] }
       }, {
         path: 'administration-discipline-hierarchy',
         name: '行政班学科分层',
         component: AdministrationDisciplineHierarchy,
-        meta: { role: ['7'] }
+        meta: { role: [ '1', '3', '7'] }
       }, {
         path: 'teaching-discipline-hierarchy',
         component: TeachingDisciplineHierarchy,
@@ -314,6 +328,16 @@ export const asyncRouterMap = [
         component: DisciplineAverage,
         name: '学科均分',
         meta: { role: ['7'] }
+      }, {
+        path: 'annual-split',
+        component: AnnualSplit,
+        name: '年段学科均分',
+        meta: { role: ['0'] }
+      }, {
+        path: 'student-score',
+        component: StudentScore,
+        name: '学生得分',
+        meta: { role: ['0'] }
       }, {
         path: 'administration-average',
         component: AdministrationAverage,
@@ -390,7 +414,7 @@ export const asyncRouterMap = [
     component: Layout,
     name: '优良率',
     icon: 'kaoshi',
-    meta: { role: ['7','9'] },
+    meta: { role: [ '1', '3', '7', '9'] },
     children: [
       {
         path: 'region',
@@ -401,7 +425,7 @@ export const asyncRouterMap = [
         path: 'region-school',
         component: ExcellentRegionSchool,
         name: ' 区优良率表',
-        meta: { role: ['7'] },
+        meta: { role: ['1', '3', '7'] },
         hidden: true
       }, {
         path: 'region-table',
@@ -429,7 +453,7 @@ export const asyncRouterMap = [
         path: 'class-subject',
         component: ExcellentClassSubject,
         name: '所有班级单科',
-        meta: { role: ['9'] }
+        meta: { role: ['1', '3', '9'] }
       }, {
         path: 'region-all-subject',
         name: '全区各科',
@@ -439,12 +463,12 @@ export const asyncRouterMap = [
         path: 'school',
         component: ExcellentSchool,
         name: '学校历次各科优良率',
-        meta: { role: ['9'] }
+        meta: { role: ['1', '3', '9'] }
       }, {
         path: 'class',
         component: ExcellentClass,
         name: '班级历次各科优良率',
-        meta: {role: [ '9' ] }
+        meta: {role: [ '1', '3', '9' ] }
       }
     ]
   }, 
@@ -487,10 +511,10 @@ export const asyncRouterMap = [
     name: '总分',
     component: Layout,
     icon: 'zongfen',
-    meta: { role: ['9'] },
+    meta: { role: [ '1', '3', '9'] },
     children: [
-      { path: 'regoin', name: '全区总分', component: FractionRegion, meta: { role: ['9'] } },
-      { path: 'administration', name: '全区行政班', component: FractionAdministration, meta: { role: ['9'] } }
+      { path: 'regoin', name: '全区总分', component: FractionRegion, meta: { role: [ '1', '3', '9'] } },
+      { path: 'administration', name: '全区行政班', component: FractionAdministration, meta: { role: [ '1', '3', '9'] } }
     ]
   },
   {
@@ -498,25 +522,25 @@ export const asyncRouterMap = [
     name: '学科管理',
     component: Layout,
     icon: 'xueke',
-    meta: { role: ['9'] },
+    meta: { role: [ '1', '3', '9'] },
     children: [
       {
         path: 'shcool',
         name: '学校',
         component: SubjectSchool,
-        meta: { role: ['9'] }
+        meta: { role: [ '1', '3', '9'] }
       },
       {
         path: 'administration',
         name: '行政班',
         component: SubjectAdministration,
-        meta: { role: ['9'] }
+        meta: { role: [ '1', '3', '9'] }
       },
       {
         path: 'teaching',
         name: '教学班',
         component: SubjectTeaching,
-        meta: { role: ['9'] }
+        meta: { role: [ '1', '3', '9'] }
       }
     ]
   },
@@ -525,31 +549,31 @@ export const asyncRouterMap = [
     name: 'P值管理',
     component: Layout,
     icon: 'p',
-    meta: { role: ['9'] },
+    meta: { role: ['1', '3', '9'] },
     children: [
       {
         path: 'single-region',
         name: '单次全区',
         component: PSingleRegion,
-        meta: { role: ['9'] }
+        meta: { role: ['1', '3', '9'] }
       },
       {
         path: 'single-class',
         name: '单次班级',
         component: PSingleClass,
-        meta: { role: ['9'] }
+        meta: { role: ['1', '3', '9'] }
       },
       {
         path: 'all-region',
         name: '所有全区',
         component: PAllRegion,
-        meta: { role: ['9'] }
+        meta: { role: ['1', '3', '9'] }
       },
       {
         path: 'all-class',
         name: '所有班级',
         component: PAllClass,
-        meta: { role: ['9'] }
+        meta: { role: ['1', '3', '9'] }
       }
     ]
   },
