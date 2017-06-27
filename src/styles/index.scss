@@ -81,6 +81,14 @@ li{list-style: none; }
 .padding-r{padding-right: 15px}
 .padding-lr{padding: 0 15px}
 .padding-a{padding: 15px}
+
+.title-name{
+  font-size: 18px;
+  font-weight: 300;
+  color: #07111b;
+  margin-bottom: 15px;
+  line-height: 20px;
+  }
 .fr {
   float: right;
 }
@@ -301,4 +309,103 @@ code {
   .github-corner .octo-arm {
     animation: octocat-wave 560ms ease-in-out
   }
+}
+//  首页侧边列表
+.ui-sidebar {
+  overflow: hidden;
+  .el-col {
+    line-height: 36px;
+    height: 36px;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
+    .ui-label{
+      padding: 0 10px;
+      position: relative;
+      color: #808080;
+      &:before{
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #20a0ff;
+        transition: width .3s linear;
+      }
+      &:hover:before{
+        width: 400%;
+      }
+    }
+    .ui-number{
+      float: right;
+      padding: 0 10px;
+      text-align: right;
+      height: 36px;
+      position: relative;
+      &:before{
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0px;
+        right: 0;
+        width: 0;
+        height: 2px;
+        background-color: #20a0ff;
+        transition: width .3s linear;
+      }
+      &:hover:before{
+        width: 500%;
+      }
+    }
+  }
+}
+
+// search
+.ui-search-wrap{
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  background-color: #fff;
+  border: 1px solid #dfe6ec;
+  margin-bottom: 15px;
+  padding: 15px 15px 0;
+  border-radius: 5px;
+  .el-form-item{
+    margin-bottom: 15px;
+  }
+}
+// table
+.ui-table-wrap{
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  background-color: #fff;
+  border-radius: 5px;
+  .ui-table-title{
+    line-height: 35px;
+    color: #fff;
+    background-color: rgb(131,175,155);
+    font-size: 16px;
+    font-weight: 400;
+    border: 1px solid #dfe6ec;
+    border-bottom: 0;
+    padding-left: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    .wscn-icon{
+      font-size: 16px;
+      color: rgb(158,125,80);
+      margin-right: -5px;
+    }
+  }
+  .ui-table-main{
+    padding: 15px 15px 0;
+  }
+  .page-wrap{
+    padding: 15px;
+  } 
+}
+// echart
+.ui-echart-wrap, .wrap{
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  background-color: #fff;
+  border-radius: 5px;
+  box-sizing: border-box;
 }

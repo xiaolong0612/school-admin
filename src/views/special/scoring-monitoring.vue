@@ -39,12 +39,11 @@
             return data;
           }());
           this.chart.setOption({
-            backgroundColor: '#344b58',
             title: {
               text: '所有考试市、区专题得分率监控图',
               x: 'center',
               textStyle: {
-                color: '#fff',
+                color: '#333',
                 fontSize: '20',
               },
               padding: [20, 0, 0, 0]
@@ -62,15 +61,17 @@
               top: 110,
               bottom: 95,
               textStyle: {
-                color: '#fff'
+                color: '#333'
               }
             },
             legend: {
-              x: '15%',
-              top: '10%',
+              bottom: '25%',
+              orient: 'vertical',
+              right: 'right',
               textStyle: {
-                color: '#90979c'
+                color: '#333'
               },
+              itemGap: 20,
               data: ['语言积累', '语言运用', '非连文本阅读', '名著阅读', '诗歌阅读', '文言文阅读', '议论文阅读', '文学作品阅读', '作文', '全卷'],
               selected: {
               	'语言积累': true,
@@ -91,7 +92,7 @@
               triggerEvent: true,
               axisLine: {
                 lineStyle: {
-                  color: '#fff'
+                  color: '#ccc'
                 }
               },
               splitLine: {
@@ -104,7 +105,10 @@
                 show: false
               },
               axisLabel: {
-                interval: 0
+                interval: 0,
+                textStyle: {
+                  color: '#333'
+                }
               },
               data: xData
             }],
@@ -115,14 +119,17 @@
               },
               axisLine: {
                 lineStyle: {
-                  color: '#fff'
+                  color: '#ccc'
                 }
               },
               axisTick: {
                 show: false
               },
               axisLabel: {
-                interval: 2
+                interval: 2,
+                textStyle: {
+                  color: '#333'
+                }
               },
               splitArea: {
                 show: false

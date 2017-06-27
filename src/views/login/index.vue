@@ -4,7 +4,7 @@
       <el-row type="flex" class="" justify="center" :gutter="20">
         <el-col :span="4" v-for="(item, index) in cardList" :key="index">
           <el-card :body-style="{ padding: '0px' }">
-            <img :src="'/static/img/'+item.img" width="100%">
+            <img :src="item.img" width="100%">
             <div style="padding: 14px;">
               <span>{{item.name}}</span>
               <div class="bottom clearfix">
@@ -96,22 +96,22 @@
         return {
           cardList: [
             {
-              name: '高层人员',
-              img: 'login-leader.png',
+              name: '',
+              img: require('static/img/login-leader.png'),
               label: '教育局、进修学校...',
               tooltip: '教育局、进修校领导、教研员、学校领导、教务处',
               disabled: false,
               type: false
             },{
-              name: '学校人员',
-              img: 'login-teacher.png',
+              name: '',
+              img: require('static/img/login-teacher.png'),
               label: '年段长、班主任...',
               tooltip: '年段长、班主任、学科教师',
               disabled: false,
               type: false
             },{
-              name: '学生',
-              img: 'login-student.png',
+              name: '',
+              img: require('static/img/login-student.png'),
               label: '学生、家长',
               tooltip: '',
               disabled: true,
@@ -122,7 +122,7 @@
             account: '18805070157',
             password: '123456',
             code: '215217',
-            type: ''
+            type: 'admin'
           },
           loginRules: {
             account: [
@@ -154,7 +154,7 @@
       },
       methods: {
         setCodeImg() {
-          this.codeImg = 'http://118.178.93.124/admin/code/?' + new Date;
+          this.codeImg = this.path.code +'?'+ new Date;
         },
         handleLogin() {
           this.$refs.loginForm.validate(valid => {
@@ -162,7 +162,12 @@
               this.loading = true;
               this.$store.dispatch('LoginByAccount', this.loginForm).then((res) => {
                 this.loading = false;
-                this.$router.push({ path: '/instructor/index' });
+                // if(this.loginForm.type == 7){
+                //   this.$router.push({ path: '/instructor/index' });
+                // }else {
+                //   this.$router.push({ path: '/bureau/index' });
+                // }
+                this.$router.push({ path: '/director/index' });
               }).catch(err => {
                 this.loading = false;
                 this.$message.error(err);

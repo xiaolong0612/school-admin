@@ -29,6 +29,10 @@
         transform: rotate(0deg);
         transition: .38s;
         transform-origin: 50% 50%;
+        color: #607d8b;
+    }
+    .hamburger:hover{
+      color: #03a9f4;
     }
     .hamburger.is-active {
         transform: rotate(90deg);

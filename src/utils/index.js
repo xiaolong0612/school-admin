@@ -1,7 +1,6 @@
 /**
- * Created by jiachenpan on 16/11/18.
+ * Created by xiaolongjun on 16/11/18.
  */
-
  export function parseTime(time, cFormat) {
    if (arguments.length === 0) {
      return null;
@@ -204,7 +203,7 @@
      }
    }]
 
- export function getTime(type) {
+export function getTime(type) {
    if (type === 'start') {
      return new Date().getTime() - 3600 * 1000 * 24 * 90
    } else {
@@ -212,3 +211,23 @@
    }
  }
 
+ // 生成随机颜色
+export function colorArray(start, end){
+  let arr = ['rgb(254, 67, 101)', 'rgb(252, 157, 154)', 'rgb(249, 205, 173)', 'rgb(200, 200, 169)', 'rgb(131, 175, 155)', 'rgb(137, 190, 178)', 'rgb(222, 156, 83)', 'rgb(101, 147, 74)', 'rgba(64, 116, 52)', 'rgb(38, 118, 213)', 'rgb(54, 66, 74)', 'rgb(118, 77, 57)', 'rgb(166, 137, 124)'];
+  return arr.slice(start, end);
+}
+
+export function getPlace(dataPlace, placeNumber){
+  let data = {
+    province: parseInt(placeNumber.substr(0, 2))-11,
+    city: parseInt(placeNumber.substr(2, 2))-1,
+    area: parseInt(placeNumber.substr(4, 2))-1,
+  }
+  let location = dataPlace.districts[data.province].name + '/' + dataPlace.districts[data.province].districts[data.city].name + '/' + dataPlace.districts[data.province].districts[data.city].districts[data.area].name;
+  return location;
+}
+
+export const path = {
+  code: 'http://118.178.93.124/admin/code/',
+  img: 'http://xueqingkuaidi.oss-cn-shenzhen.aliyuncs.com/xueqingkuaidi/images'
+}

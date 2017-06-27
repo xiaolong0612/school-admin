@@ -1,37 +1,84 @@
 <template>
-	<div class="instructor-wrap">
-		<div class="text-center" style="padding: 20px 0;">
-			<el-button v-for='item in classList' type="info" :key="item">{{item}}</el-button>
+	<div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+			 <el-button v-for='item in classList' @click="getList()" :type="item" :key="item" style="margin-bottom: 15px;width:90px;">{{item}}</el-button>
 		</div>
 		<div>
-			<div class="fr ui-right-wrap text-center">
-				<ul style="margin-bottom: 20px">
-					<li v-for="item in qualityList">
-						<el-button size="small">{{item}}</el-button>
-					</li>
-				</ul>
-				<ul>
-					<li v-for="item in testList">
-						<el-button size="small">{{item}}</el-button>
-					</li>
-				</ul>
-			</div>
-			<div class="fl ui-left-wrap text-center">
-				<ul>
-					<li v-for="item in specialList">
-						<el-button size="small">{{item}}</el-button>
-					</li>
-				</ul>
-			</div>
-			<div class="echarts-wrap">
+		<el-row :gutter="15">
+		  <el-col :span="16">
+		  	<div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
+					<div class="chart" id="chart" style="height:600px;width:100%"></div>
+				</div>
+		  </el-col>
+		  <el-col :span="4">
+		  	<div class="wrap">
+					<ul>
+						<li v-for="item in specialList">
+							<el-row class="ui-sidebar">
+							  <el-col :span="12">
+							  	<div class="ui-label">
+							  		<router-link to="/">{{item.name}}</router-link>
+							  	</div>
+							  </el-col>
+							  <el-col :span="12">
+							  	<div class="ui-number">
+							  		<router-link to="/">{{item.number}}</router-link>
+							  	</div>
+							  </el-col>
+							</el-row>
+						</li>
+					</ul>
+		  	</div>
+		  </el-col>
+		  <el-col :span="4">
+		  	<div class="wrap" style="margin-bottom: 15px">
+		  		<ul>
+						<li v-for="item in qualityList">
+							<el-row class="ui-sidebar">
+							  <el-col :span="12">
+							  	<div class="ui-label">
+							  		<router-link to="/">{{item.name}}</router-link>
+							  	</div>
+							  </el-col>
+							  <el-col :span="12">
+							  	<div class="ui-number">
+							  		<router-link to="/">{{item.number}}</router-link>
+							  	</div>
+							  </el-col>
+							</el-row>
+						</li>
+					</ul>
+				</div>
+				<div class="wrap">
+					<ul>
+						<li v-for="item in testList">
+							<el-row class="ui-sidebar">
+							  <el-col :span="12">
+							  	<div class="ui-label">
+							  		<router-link to="/">{{item.name}}</router-link>
+							  	</div>
+							  </el-col>
+							  <el-col :span="12">
+							  	<div class="ui-number">
+							  		<router-link to="/">{{item.number}}</router-link>
+							  	</div>
+							  </el-col>
+							</el-row>
+						</li>
+					</ul>
+		  	</div>
+		  </el-col>
+		</el-row>
+			<!-- <div class="echarts-wrap">
 				<div class="chart" id="chart" style="height:600px;width:70%"></div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex';
+    import { fetchList, fetchPv } from 'api/data';
      // 引入 ECharts 主模块
     const echarts = require('echarts/lib/echarts');
     require('echarts/lib/chart/bar');
@@ -45,18 +92,51 @@
     		return {
     			name: '',
     			classList: ['七年级', '八年级', '九年级', '高一', '高二', '高三'],
-    			specialList: ['语言积累20%', '语言运用30%', '非连阅读35%', '名著阅读70%', '诗歌阅读50', '文言文阅读60%', '议论文阅读55%', '说明文阅读58%', '文学阅读50%', '写作60%'],
-    			qualityList: ['得分率60%', '超均率1%', '优良率', '及格率70%', '低分率1%'],
-    			testList: ['识记80%', '理解75%', '表达运用76%', '分析综合55%', '鉴赏评价50%', '探究创新50%'],
+    			specialList: [
+	    			{name: '语言积累', number: '0%'},
+	    			{name: '语言运用', number: '0%'},
+	    			{name: '非连阅读', number: '5%'},
+	    			{name: '名著阅读', number: '0%'},
+	    			{name: '诗歌阅读', number: '50%'},
+	    			{name: '文言文阅读', number: '0%'},
+	    			{name: '议论文阅读', number: '5%'},
+	    			{name: '说明文阅读', number: '8%'},
+	    			{name: '文学阅读', number: '50%'},
+	    			{name: '写作', number: '60%'}
+    			],
+    			qualityList: [
+    				{name: '得分率', number: '60%'},
+    				{name: '超均率', number: '1%'},
+    				{name: '优良率', number: '20%'},
+    				{name: '及格率', number: '36%'},
+    				{name: '低分率', number: '77%'}],
+    			testList: [
+    				{name: '识记', number: '80%'},
+    				{name: '理解', number: '75%'},
+    				{name: '表达运用', number: '76%'},
+    				{name: '分析综合', number: '55%'},
+    				{name: '鉴赏评价', number: '50%'},
+    				{name: '探究创新', number: '50%'}
+    			],
     			examinationList: [
     				{ name: '考试1' },
     				{ name: '考试2' },
     				{ name: '考试3' }
-    			]
+    			],
+    			data1: null,
+    			data2: null,
+    			listQuery: {
+            page: 1,
+            limit: 20,
+            importance: undefined,
+            title: undefined,
+            type: undefined,
+            sort: '+id'
+          }
     		}
     	},
     	mounted() {
-    		this.initChart();
+    		this.getList();
     	},
     	methods: {
     		// 最近一次打开
@@ -68,19 +148,27 @@
     			}
     		},
     		examinationOpen(item) {
-    			console.log(item)
     			if(typeof item.finish == 'undefined'){
     				this.$set(item, "finish", true);
     			} else{
     				item.finish = !item.finish;	
     			}
     		},
+    		getList() {
+          fetchList(this.listQuery).then(response => {
+            this.data1 = response.data.list[0].array1;
+            this.data2 = response.data.list[1].array1;
+          	this.initChart();
+          });
+        },
     		initChart() {
 	          this.chart = echarts.init(document.getElementById('chart'));
 	          const xData = (function() {
 	            const data = ['得分率', '超均率', '名次', '进步值', '优良率', '名次', '进步值', '及格率', '名次', '进步值', '低分率', '进步值'];
 	            return data;
 	          }());
+	          const data1 = this.data1;
+            const data2 = this.data2;
 	          this.chart.setOption({
 	            title: {
 	              text: '所有考试市、区专题得分率监控图',
@@ -103,8 +191,9 @@
 	              }
 	            },
 	            legend: {
-	              x: '15%',
-	              top: '10%',
+	            	bottom: '25%',
+	              orient: 'vertical',
+	              right: 'right',
 	              textStyle: {
 	                color: '#90979c'
 	              },
@@ -125,6 +214,12 @@
 	              splitLine: {
 	                show: false
 	              },
+	              axisLabel: {
+	                interval: 0,
+	                textStyle: {
+	                	color: '#333'
+	                }
+	              },
 	              data: xData
 	            }],
 	            yAxis: [{
@@ -135,6 +230,12 @@
 	              axisLine: {
 	                lineStyle: {
 	                  color: '#ccc'
+	                }
+	              },
+	              axisLabel: {
+	                interval: 2,
+	                textStyle: {
+	                	color: '#333'
 	                }
 	              },
 	              axisTick: {
@@ -159,27 +260,14 @@
 	                  }
 	                }
 	              },
-	              data: [
-	                0.2,
-	                0.4,
-	                0.2,
-	                0.5,
-	                0.4,
-	                0.2,
-	                0.5,
-	                0.4,
-	                0.2,
-	                0.5,
-	                0.2,
-	                0.5
-	              ]
+	              data: data2
 	            }, {
 	              name: '厦门市',
 	              type: 'bar',
 	              stack: '非连文本阅读',
 	              symbol: 'circle',
 	              itemStyle: {
-	                normal: {
+	                nor2al: {
 	                  color: '#97a8be',
 	                  barBorderRadius: 0,
 	                  label: {
@@ -191,20 +279,7 @@
 	                  }
 	                }
 	              },
-	              data: [
-	                0.6,
-	                0.8,
-	                0.4,
-	                0.2,
-	                0.8,
-	                0.4,
-	                0.2,
-	                0.8,
-	                0.4,
-	                0.2,
-	                0.4,
-	                0.2
-	              ]
+	              data: data1
 	            }
 	            ]
 	          })
@@ -213,14 +288,3 @@
 
     }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
-	.ui-left-wrap,.ui-right-wrap{
-		width: 140px;
-		li{
-			margin-bottom: 6px;
-		}
-	}
-	.chart{
-		margin: 0 auto;
-	}
-</style>

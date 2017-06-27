@@ -83,15 +83,14 @@
             return data;
           }());
           this.chart.setOption({
-            backgroundColor: '#344b58',
             title: {
               text: '所有考试和最近考试单项能力各校发展监控图',
               x: 'center',
               textStyle: {
-                color: '#fff',
+                color: '#333',
                 fontSize: '20',
               },
-              padding: [20, 0, 0, 0]
+              padding: [0, 0, 0, 0]
             },
             tooltip: {
               trigger: 'axis',
@@ -110,8 +109,9 @@
               }
             },
             legend: {
-              x: '15%',
-              top: '10%',
+              bottom: '25%',
+              orient: 'vertical',
+              right: 'right',
               textStyle: {
                 color: '#90979c'
               },
@@ -123,7 +123,7 @@
               triggerEvent: true,
               axisLine: {
                 lineStyle: {
-                  color: '#fff'
+                  color: '#ccc'
                 }
               },
               splitLine: {
@@ -136,7 +136,10 @@
                 show: false
               },
               axisLabel: {
-                interval: 0
+                interval: 0,
+                textStyle: {
+                  color: '#333'
+                }
               },
               data: xData
             }],
@@ -147,14 +150,17 @@
               },
               axisLine: {
                 lineStyle: {
-                  color: '#fff'
+                  color: '#ccc'
                 }
               },
               axisTick: {
                 show: false
               },
               axisLabel: {
-                interval: 2
+                interval: 2,
+                textStyle: {
+                  color: '#333'
+                }
               },
               splitArea: {
                 show: false

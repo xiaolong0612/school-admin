@@ -1,24 +1,11 @@
 <template>
     <el-menu class="navbar" mode="horizontal">
-        <el-dropdown class="avatar-container fr" trigger="click">
+        <div class="avatar-container">
             <div class="avatar-wrapper">
-                <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
-                <i class="el-icon-caret-bottom"/>
+                <img class="user-avatar" src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80">
+                <el-button type="text" @click="logout">退出</el-button>
             </div>
-            <el-dropdown-menu class="user-dropdown" slot="dropdown">
-                <router-link  class='inlineBlock' to="/">
-                    <el-dropdown-item>
-                        首页
-                    </el-dropdown-item>
-                </router-link>
-                <router-link  class='inlineBlock' to="/admin/profile">
-                    <el-dropdown-item>
-                        设置
-                    </el-dropdown-item>
-                </router-link>
-                <el-dropdown-item divided><span @click="logout" style="display:block;">退出登录</span></el-dropdown-item>
-            </el-dropdown-menu>
-        </el-dropdown>
+        </div>
         <Hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></Hamburger>
         <levelbar></levelbar>
         <div class='fl'>
@@ -71,6 +58,12 @@
         height: 50px;
         line-height: 50px;
         border-radius: 0px !important;
+        background-color: #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,.12);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
         .hamburger-container {
             line-height: 58px;
             height: 50px;
@@ -91,12 +84,13 @@
             right: 35px;
             .avatar-wrapper {
                 cursor: pointer;
-                margin-top:5px;
                 position: relative;
+                line-height: 46px;
                 .user-avatar {
                     width: 40px;
                     height: 40px;
                     border-radius: 10px;
+                    vertical-align: middle;
                 }
                 .el-icon-caret-bottom {
                     position: absolute;

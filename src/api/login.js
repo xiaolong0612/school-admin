@@ -16,10 +16,12 @@ export function logout() {
   });
 }
 
-export function getInfo() {
+export function getInfo(id) {
+  const data = { id };
   return fetch({
     url: '/admin/get-login-info',
-    method: 'post'
+    method: 'post',
+    params: data
   });
 }
 

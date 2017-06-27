@@ -4,6 +4,7 @@ import articleAPI from './article';
 import article_tableAPI from './article_table';
 import remoteSearchAPI from './remoteSearch';
 
+import dataApi from './data'
 
 // 登录相关
 Mock.mock(/\/login\/loginbyaccount/, 'post', loginAPI.loginByAccount);
@@ -17,6 +18,9 @@ Mock.mock(/\/article\/detail/, 'get', articleAPI.getArticle);
 // // table example相关
 Mock.mock(/\/article_table\/list/, 'get', article_tableAPI.getList);
 Mock.mock(/\/article_table\/p/, 'get', article_tableAPI.getPv);
+
+Mock.mock(/\/data\/list/, 'get', dataApi.getList);
+Mock.mock(/\/data\/p/, 'get', dataApi.getPv);
 
 // // 搜索相关
 Mock.mock(/\/search\/user/, 'get', remoteSearchAPI.searchUser);

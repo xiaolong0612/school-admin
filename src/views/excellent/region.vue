@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="formData" class="demo-form-inline">
+    <!-- <el-form :inline="true" :model="formData" class="form-inline fr">
       <el-form-item label="全区">
         <el-select v-model="formData.selectedRange" filterable placeholder="请选择" :change="rangeChange(formData.selectedRange)">
           <el-option v-for="item in rangeList" :value="item.value" :key="item.value">
@@ -16,7 +16,7 @@
       <el-form-item>
         <el-button type="primary" @click="onSearch">查询</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
     <div class="chart" id="chart" style="height:600px;width:100%"></div>
   </div>
 </template>
@@ -74,12 +74,11 @@
             return data;
           }());
           this.chart.setOption({
-            backgroundColor: '#344b58',
             title: {
-              text: '优良率',
+              text: '单次考试全区各校优良率',
               x: 'center',
               textStyle: {
-                color: '#fff',
+                color: '#333',
                 fontSize: '20',
               },
               padding: [20, 0, 0, 0]
@@ -107,7 +106,12 @@
               data: xData,
               axisLine: {
                 lineStyle: {
-                  color: '#fff'
+                  color: '#ccc'
+                }
+              },
+              axisLabel: {
+                textStyle: {
+                  color: '#333'
                 }
               }
             }],
@@ -119,14 +123,17 @@
               },
               axisLine: {
                 lineStyle: {
-                  color: '#fff'
+                  color: '#ccc'
                 }
               },
               axisTick: {
                 show: false
               },
               axisLabel: {
-                interval: 2
+                interval: 2,
+                textStyle: {
+                  color: '#333'
+                }
               },
               splitArea: {
                 show: false
@@ -148,7 +155,7 @@
 
               },
               textStyle: {
-                color: '#fff' },
+                color: '#333' },
               borderColor: '#90979c'
             }, {
               type: 'inside',
@@ -189,7 +196,7 @@
           console.log('我点击 的x轴');
         }
 				// console.log(this.link[params.seriesName])
-				this.$router.push({ path: '/special/scoring-item'});
+				this.$router.push({ path: '/excellent/region-school'});
 			})
         },
         rangeChange(value) {

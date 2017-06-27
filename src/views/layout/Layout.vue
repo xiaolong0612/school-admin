@@ -5,7 +5,9 @@
         </div>
         <div class="main-container">
             <Navbar/>
-            <App-main/>
+            <div style="overflow: auto">
+                <App-main/>
+            </div>
         </div>
     </div>
 </template>
@@ -16,6 +18,11 @@
 
     export default {
       name: 'layout',
+      data() {
+        return{
+          screenHeight: window.innerHeight
+        }
+      },
       components: {
         Navbar,
         Sidebar,
@@ -26,6 +33,8 @@
         sidebar() {
           return this.$store.state.app.sidebar;
         }
+      },
+      methods: {
       }
     }
 </script>
@@ -69,10 +78,13 @@
             transition: all .28s ease-out;
         }
         .main-container {
-            min-height: 100%;
-            transition: all .28s ease-out;
+            height: 100%;
+            transition: marginLeft .28s ease-out;
             margin-left: 180px;
             position: relative;
+            padding-top: 50px;
+            box-sizing: border-box;
+            background-color: #fafafa;
         }
     }
 </style>

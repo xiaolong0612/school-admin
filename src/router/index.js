@@ -5,11 +5,11 @@ import Router from 'vue-router';
 import Layout from '../views/layout/Layout';
 
 // dashboard
-const dashboard = resolve => require(['../views/dashboard/index'], resolve);
+const dashboard = () => import('../views/dashboard/index');
 
 /* error page*/
-const Err404 = resolve => require(['../views/error/404'], resolve);
-const Err401 = resolve => require(['../views/error/401'], resolve);
+const Err404 = () => import('../views/error/404');
+const Err401 = () => import('../views/error/401');
 
 /* login*/
 import Login from '../views/login/';
@@ -18,37 +18,52 @@ import sendPWD from '../views/login/sendpwd';
 import reset from '../views/login/reset';
 
 /* error log*/
-const ErrorLog = resolve => require(['../views/errlog/index'], resolve);
+const ErrorLog = () => import('../views/errlog/index');
 
 /* permission */
-const Permission = resolve => require(['../views/permission/index'], resolve);
+const Permission = () => import('../views/permission/index');
 
 /* demo */
-const Upload = resolve => require(['../views/demo/Upload'], resolve);
+const Upload = () => import('../views/demo/Upload');
+const Data = () => import('../views/demo/Data');
 /* 首页 */
-const InstructorIndex = resolve => require(['../views/instructor/index'], resolve); // 教研员7
-const BureauIndex = resolve => require(['../views/bureau/index'], resolve);         // 教育局9
+const TeacherIndex = () => import('../views/teacher/index');        //学科教师0 
+const DirectorIndex = () => import('../views/director/index');     // 年段长、班主任1、3
+const InstructorIndex = () => import('../views/instructor/index'); // 教研员7
+const BureauIndex = () => import('../views/bureau/index');         // 教育局8、9
+const StudentIndex = () => import('../views/student/index');       // 学生10
 
 // 成绩管理
-const TotalScore = resolve => require(['../views/achievement/total-score'], resolve);
-const DisciplineHierarchy = resolve => require(['../views/achievement/discipline-hierarchy'], resolve);
+const TotalScore = () => import('../views/achievement/total-score');
+const DisciplineHierarchy = () => import('../views/achievement/discipline-hierarchy');
 const AdministrationDisciplineHierarchy = resolve => require(['../views/achievement/administration-discipline-hierarchy'], resolve);
 const AllClass = resolve => require(['../views/achievement/all-class'], resolve);
 const AllStudent = resolve => require(['../views/achievement/all-student'], resolve);
 const TeachingDisciplineHierarchy = resolve => require(['../views/achievement/teaching-discipline-hierarchy'], resolve);
 const DisciplineAverage = resolve => require(['../views/achievement/discipline-average'], resolve);
 const AdministrationAverage = resolve => require(['../views/achievement/administration-average'], resolve);
-const TeachingAverage = resolve => require(['../views/achievement/teaching-average'], resolve);
+const TeachingAverage = () => import('../views/achievement/teaching-average');
+const SectionClass = () => import('../views/achievement/section-class');
 // 考点管理
 const AddTest = resolve => require(['../views/test-site/add-test'], resolve);
 // 专题管理
 const ScoringMonitoring = resolve => require(['../views/special/scoring-monitoring'], resolve);
 const ScoringItem = resolve => require(['../views/special/scoring-item.vue'], resolve);
+const ScoringTestItem = resolve => require(['../views/special/test-item'], resolve);
 const Quality = resolve => require(['../views/special/quality'], resolve);
+const SpecialQualitySchool = resolve => require(['../views/special/quality-school'], resolve);
 const Analysis = resolve => require(['../views/special/analysis'], resolve);
 // 优良率
 const ExcellentRegion = resolve => require(['../views/excellent/region'], resolve);
+const ExcellentRegionSchool = resolve => require(['../views/excellent/region-scholl'], resolve);
+const ExcellentRegionTable = resolve => require(['../views/excellent/region-table'], resolve);
+const ExcellentRegionSchoolTable = resolve => require(['../views/excellent/region-school-table'], resolve);
 const ExcellentSubject = resolve => require(['../views/excellent/subject'], resolve);
+const ExcellentRegionSubject = resolve => require(['../views/excellent/region-subject'] ,resolve);
+const ExcellentClassSubject = resolve => require(['../views/excellent/class-subject'] ,resolve);
+const ExcellentSchool = resolve => require(['../views/excellent/school'], resolve);
+const ExcellentClass = resolve => require(['../views/excellent/class'], resolve);
+const ExcellentRegionAllSubject = resolve => require(['../views/excellent/region-all-subject'], resolve);
 // 能力
 const AbilityIndex = resolve => require(['../views/ability/index'], resolve);
 const AbilitySchool = resolve => require(['../views/ability/school'], resolve);
@@ -65,10 +80,30 @@ const SubjectTeaching = resolve => require(['../views/subject/teaching'], resolv
 const PSingleSchool = resolve => require(['../views/P/single-school'], resolve);
 const PSingleClass = resolve => require(['../views/P/single-class'], resolve);
 const PAllSchool = resolve => require(['../views/P/all-school'], resolve);
+const PAllRegion = resolve => require(['../views/P/all-region'], resolve);
 const PAllClass = resolve => require(['../views/P/all-class'], resolve);
+const PSingleRegion = resolve => require(['../views/P/single-region'], resolve);
+const PSingleRegionClass = resolve => require(['../views/P/single-region-class'], resolve);
+// 学生页
+const StudentSubject = () => import('../views/student/subject/subject');
+const StudentSpecial = () => import('../views/student/subject/special');
+const StudentTest = () => import('../views/student/subject/test');
+const StudentQuestions = () => import('../views/student/subject/questions');
+const StudentSummary = () => import('../views/student/subject/summary');
+const StudentMark = () => import('../views/student/mark');
+// const StudentChinese = () => import('../views/student/subject/Chinese');
+// const StudentEnglish = () => import('../views/student/subject/English');
+// const StudentMathematics = () => import('../views/student/subject/Mathematics');
+// const StudentHistory = () => import('../views/student/subject/History');
+// const StudentMoral = () => import('../views/student/subject/Moral'); // 思品
+// const StudentGeography = () => import('../views/student/subject/Geography'); // 地理
+// const StudentChemistry = () => import('../views/student/subject/Chemistry'); // 化学
+// const StudentPhysics = () => import('../views/student/subject/Physics'); // 物理
+// const StudentBiology = () => import('../views/student/subject/Biology'); // 生物
 
 const getSchoolList = resolve =>require(['../views/info-administration/school/get-school-list'], resolve);
 const addSchool = resolve => require(['../views/info-administration/school/add-school'], resolve);
+
 Vue.use(Router);
 
  /**
@@ -146,6 +181,26 @@ export const asyncRouterMap = [
       {path: 'upload', component: Upload, name: '图片上传'}
     ]
   },
+  {
+    path: '/data',
+    component: Layout,
+    name: 'data',
+    icon: 'zonghe',
+    hidden: true,
+    children: [
+      {path: 'data', component: Data, name: 'data'}
+    ]
+  },
+  { // 学科教师
+    path: '/teacher',
+    component: Layout,
+    redirect: '/teacher/index',
+    name: '首页',
+    icon: 'shouye-shouye',
+    meta: { role: ['0'] },
+    noDropdown: true,
+    children: [{ path: 'index', name: '学科教师', component: TeacherIndex, meta: { role: ['0'] } }]
+  }, 
   { // 教研员
     path: '/instructor',
     component: Layout,
@@ -154,7 +209,7 @@ export const asyncRouterMap = [
     icon: 'shouye-shouye',
     meta: { role: ['7'] },
     noDropdown: true,
-    children: [{ path: 'index', component: InstructorIndex, name: '首页' }]
+    children: [{ path: 'index', name: '教研员', component: InstructorIndex, meta: { role: ['7'] } }]
   }, 
   { // 教育局领导
     path: '/bureau',
@@ -163,15 +218,40 @@ export const asyncRouterMap = [
     redirect: '/bureau/index',
     icon: 'shouye-shouye',
     noDropdown: true,
-    meta: { role: ['9']},
+    meta: { role: ['8', '9']},
     children: [
-      {path: 'index', component: BureauIndex, name: '首页', meta: { role: ['9'] } }
+      {path: 'index', name: '教育局', component: BureauIndex, meta: { role: ['8', '9'] } }
+    ]
+  },
+  { // 年段长
+    path: '/director',
+    name: '',
+    component: Layout,
+    redirect: '/director/index',
+    icon: 'shouye-shouye',
+    meta: { role: ['1', '3'] },
+    noDropdown: true,
+    children: [
+      {path: 'index', name: '年段长', component: DirectorIndex, meta: { role: ['1' ,'3'] } }
+    ]
+  },
+  { // 学生
+    path: '/student',
+    name: '首页',
+    component: Layout,
+    redirect: '/student/index',
+    icon: 'shouye-shouye',
+    meta: { role: ['10'] },
+    noDropdown: true,
+    children: [
+      {path: 'index', name: '学生', component: StudentIndex, meta: { role: ['10'] } }
     ]
   },
   {
     path: '/info',
     component: Layout,
     name: '增删改查',
+    hidden: true,
     meta: { role: ['7'] },
     children: [
       {
@@ -192,13 +272,18 @@ export const asyncRouterMap = [
     component: Layout,
     name: '成绩管理',
     icon: 'chengjiguanli',
-    meta: { role: ['7', '9'] },
+    meta: { role: ['0', '7', '9'] },
     children: [
       {
         path: 'total-score',
         component: TotalScore,
         name: '总分',
-        meta: { role: ['7', '9'] }
+        meta: { role: ['0', '7', '9'] }
+      }, {
+        path: 'section-class',
+        component: SectionClass,
+        name: '年段各班总分',
+        meta: { role: ['0'] }
       }, {
         path: 'discipline-hierarchy',
         component: DisciplineHierarchy,
@@ -276,10 +361,22 @@ export const asyncRouterMap = [
         meta: { role: ['7'] },
         hidden: true
       }, {
+        path: 'scoring-test-item',
+        component: ScoringTestItem,
+        name: '考点管理',
+        hidden: true,
+        meta: { role: ['7'] }
+      }, {
         path: 'quality',
         component: Quality,
         name: '质量管理',
         meta: { role: ['7'] }
+      }, {
+        path: 'quality-school',
+        component: SpecialQualitySchool,
+        name: '质量管理',
+        meta: { role: ['7'] },
+        hidden: true
       }, {
         path: 'analysis',
         component: Analysis,
@@ -293,18 +390,61 @@ export const asyncRouterMap = [
     component: Layout,
     name: '优良率',
     icon: 'kaoshi',
-    meta: { role: ['7'] },
+    meta: { role: ['7','9'] },
     children: [
       {
         path: 'region',
         component: ExcellentRegion,
-        name: ' 区优良率',
+        name: ' 区优良率图',
         meta: { role: ['7'] }
+      }, {
+        path: 'region-school',
+        component: ExcellentRegionSchool,
+        name: ' 区优良率表',
+        meta: { role: ['7'] },
+        hidden: true
+      }, {
+        path: 'region-table',
+        component: ExcellentRegionTable,
+        name: ' 区优良率表',
+        meta: { role: ['7'] },
+      }, {
+        path: 'region-school-table',
+        component: ExcellentRegionSchoolTable,
+        name: ' 学校优良率表',
+        meta: { role: ['7'] },
+        hidden: true
       }, {
         path: 'subject',
         component: ExcellentSubject,
         name: '学科优良率',
-        meta: { role: ['7'] }
+        meta: { role: ['7'] },
+        hidden: true
+      }, {
+        path: 'region-subject',
+        component: ExcellentRegionSubject,
+        name: '全区单科',
+        meta: { role: ['9'] }
+      }, {
+        path: 'class-subject',
+        component: ExcellentClassSubject,
+        name: '所有班级单科',
+        meta: { role: ['9'] }
+      }, {
+        path: 'region-all-subject',
+        name: '全区各科',
+        component: ExcellentRegionAllSubject,
+        meta: { role: ['9'] }
+      }, {
+        path: 'school',
+        component: ExcellentSchool,
+        name: '学校历次各科优良率',
+        meta: { role: ['9'] }
+      }, {
+        path: 'class',
+        component: ExcellentClass,
+        name: '班级历次各科优良率',
+        meta: {role: [ '9' ] }
       }
     ]
   }, 
@@ -346,7 +486,7 @@ export const asyncRouterMap = [
     path: '/fraction',
     name: '总分',
     component: Layout,
-    icon: '',
+    icon: 'zongfen',
     meta: { role: ['9'] },
     children: [
       { path: 'regoin', name: '全区总分', component: FractionRegion, meta: { role: ['9'] } },
@@ -357,7 +497,7 @@ export const asyncRouterMap = [
     path: '/subject',
     name: '学科管理',
     component: Layout,
-    icon: '',
+    icon: 'xueke',
     meta: { role: ['9'] },
     children: [
       {
@@ -384,34 +524,118 @@ export const asyncRouterMap = [
     path: '/p',
     name: 'P值管理',
     component: Layout,
-    icon: '',
+    icon: 'p',
     meta: { role: ['9'] },
     children: [
       {
-        path: 'single-school',
+        path: 'single-region',
         name: '单次全区',
-        component: PSingleSchool,
+        component: PSingleRegion,
         meta: { role: ['9'] }
       },
       {
         path: 'single-class',
-        name: '单次全区班级',
+        name: '单次班级',
         component: PSingleClass,
         meta: { role: ['9'] }
       },
       {
-        path: 'all-school',
+        path: 'all-region',
         name: '所有全区',
-        component: PAllSchool,
+        component: PAllRegion,
         meta: { role: ['9'] }
       },
       {
         path: 'all-class',
-        name: '所有全区班级',
+        name: '所有班级',
         component: PAllClass,
         meta: { role: ['9'] }
       }
     ]
   },
+  {
+    path: '/student-mark',
+    name: '历次质检表',
+    component: Layout,
+    icon: 'kaoshi',
+    meta: { role: ['10'] },
+    noDropdown: true,
+    children: [
+      { path: 'index', name: '成绩总表', component: StudentMark, meta: { role: ['10'] } }
+    ]
+  },
+  {
+    path: '/student-subject',
+    name: '学科管理',
+    component: Layout,
+    icon: 'kaoshi',
+    meta: { role: ['10'] },
+    noDropdown: true,
+    children: [
+      { path: 'index', name: '学科管理', component: StudentSubject, meta: { role: ['10'] } }
+    ]
+  },
+  {
+    path: '/student-special',
+    name: '专题',
+    component: Layout,
+    meta: { role: ['10'] },
+    hidden: true,
+    children: [
+      { path: 'index', name: '专题', component: StudentSpecial, meta: { role: ['10'] } }
+    ]
+  },
+  {
+    path: '/student-test',
+    name: '考点',
+    component:  Layout,
+    meta: { role: ['10'] },
+    hidden: true,
+    children: [
+      { path: 'index', name: '考点', component: StudentTest, meta: { role: ['10'] } }
+    ]
+  },
+  {
+    path: '/student-questions',
+    name: '考题',
+    component:  Layout,
+    meta: { role: ['10'] },
+    noDropdown: true,
+    children: [
+      { path: 'index', name: '考题管理', component: StudentQuestions, meta: { role: ['10'] } }
+    ]
+  },
+  {
+    path: '/student-summary',
+    name: '总结',
+    component:  Layout,
+    meta: { role: ['10'] },
+    noDropdown: true,
+    children: [
+      { path: 'index', name: '考后总结', component: StudentSummary, meta: { role: ['10'] } }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

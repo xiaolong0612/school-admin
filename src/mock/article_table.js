@@ -15,6 +15,8 @@ for (let i = 0; i < count; i++) {
     importance: '@integer(1, 3)',
     'type|1': ['FD', 'FE', 'BI', 'VN'],
     'status|1': ['published', 'draft', 'deleted'],
+    "number1|1-100": 100,
+    float1: '@float(0, 1, 1, 1)',
     pageviews: '@integer(300, 5000)'
   }));
 }

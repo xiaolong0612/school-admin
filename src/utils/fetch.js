@@ -8,17 +8,17 @@ const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
   timeout: 5000                  // 请求超时时间
 });
-
+service.defaults.withCredentials=true;
 // request拦截器
 service.interceptors.request.use(config => {
   // Do something before request is sent
   // if (store.getters.token) {
-  //   config.headers['X-Token'] = store.getters.token; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+  //   config.headers['A-Token'] = '123'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
   // }
   return config;
 }, error => {
   // Do something with request error
-  console.log(error); // for debug
+  // console.log(error); // for debug
   Promise.reject(error);
 })
 
@@ -33,7 +33,6 @@ service.interceptors.response.use(
     const code = response.data.code;
     // 50014:Token 过期了 50012:其他客户端登录了 50008:非法的token
     if (code === -1) {
-      console.log(response);
       Message({
         message: response.data.msg,
         type: 'error',
@@ -48,7 +47,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error);// for debug
+    // console.log('err' + error);// for debug
     Message({
       message: error.message,
       type: 'error',

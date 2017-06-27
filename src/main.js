@@ -18,13 +18,19 @@ import Sticky from 'components/Sticky'; // 粘性header组件
 import vueWaves from './directive/waves';// 水波纹指令
 import errLog from 'store/errLog';// error log组件
 import './mock/index.js';  // 该项目所有请求使用mockjs模拟
+import RegionPicker from 'region-picker'; // 省市区三级联动
+import { path } from 'utils/index'; // 全局的path
+Vue.prototype.path = path;
+
+import { setTableHeight } from 'utils/tableHeight'; // 全局设置table高度的函数
+Vue.prototype.setTableHeight = setTableHeight;
 
 // register globally
 Vue.component('multiselect', Multiselect);
 Vue.component('Sticky', Sticky);
 Vue.use(ElementUI);
 Vue.use(vueWaves);
-
+Vue.use(RegionPicker);
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
@@ -32,29 +38,9 @@ Object.keys(filters).forEach(key => {
 
 // permissiom judge
 function hasPermission(roles, permissionRoles) {
-  console.log(permissionRoles);
-  // if (roles.indexOf('admin') >= 0) return true; // admin权限 直接通过
+  if (roles.indexOf('admin') >= 0) return true; // admin权限 直接通过
   if (!permissionRoles) return true;
-  Array.intersect = function () {
-    var result = new Array();
-    var obj = {};
-    for (var i = 0; i < arguments.length; i++) {
-      for (var j = 0; j < arguments[i].length; j++) {
-        var str = arguments[i][j];
-        if (!obj[str]) {
-          obj[str] = 1;
-      }else {
-          obj[str]++;
-          if (obj[str] == arguments.length) {
-            result.push(str);
-          }
-        }
-      }
-    }
-    if(result == null || result == '') return false;
-    return true;
-  }
-  return Array.intersect(roles, permissionRoles);
+  return roles.some(role => permissionRoles.indexOf(role) >= 0)
 }
 
 // register global progress.
@@ -66,9 +52,9 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' });
     } else {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
-        store.dispatch('GetInfo').then(res => { // 拉取user_info
-          const roles = res.data.role;
-          store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
+        store.dispatch('GetInfo', store.getters.uid).then(res => { // 拉取user_info
+          const roles = res.data.teacher.type;
+          store.dispatch('GenerateRoutes', roles ).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next(to); // hack方法 确保addRoutes已完成
           })

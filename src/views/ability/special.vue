@@ -1,26 +1,27 @@
 <template>
   <div>
-    <el-form :inline="true" :model="fromData" class="demo-form-inline">
-      <el-form-item label="考点">
-        <el-select v-model="fromData.selectedTest" filterable placeholder="请选择" :change="testChange(fromData.selectedTest)">
-          <el-option v-for="item in testList" :label="item.label" :value="item.value" :key="item.value">
+    <!-- <el-form :inline="true" :model="formData" class="demo-form-inline">
+      <el-form-item label="全区">
+        <el-select v-model="formData.selectedRange" filterable placeholder="请选择" :change="rangeChange(formData.selectedRange)">
+          <el-option v-for="item in rangeList" :value="item.value" :key="item.value">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="学校">
-        <el-select v-model="fromData.selectedSchool" filterable placeholder="请选择" :change="schoolChange(fromData.selectedSchool)">
-          <el-option v-for="item in schoolList" :label="item.label" :value="item.value" :key="item.value">
+      <el-form-item v-show="showSchool" label="学校">
+        <el-select v-model="formData.selectedSchool" clearable placeholder="请选择" :change="schoolChange(formData.selectedSchool)">
+          <el-option v-for="item in schoolList" filterable  :value="item.value" :key="item.value">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-            <el-button type="primary" @click="onSearch">查询</el-button>
-          </el-form-item>
-    </el-form>
+        <el-button type="primary" @click="onSearch">查询</el-button>
+      </el-form-item>
+    </el-form> -->
     <div class="chart" id="chart" style="height:600px;width:100%"></div>
   </div>
 </template>
 <script>
+    import { colorArray } from 'utils/index'
     // 引入 ECharts 主模块
     const echarts = require('echarts/lib/echarts');
     require('echarts/lib/chart/bar');
@@ -29,76 +30,58 @@
     require('echarts/lib/component/title');
     require('echarts/lib/component/legend');
     require('echarts/lib/component/dataZoom');
-    const testList = [
-      {value: '0', label: 'all'},
-      {value: '1', label: '表示'},
-      {value: '2', label: '理解'},
-      {value: '3', label: '表达运用'},
-      {value: '4', label: '综合分析'},
-      {value: '5', label: '奖赏评价'},
-      {value: '6', label: '探究创新'},
-      {value: '7', label: '写作'}
-    ]
+    const rangeList = [
+      {value: '学校'},
+      {value: '行政班'},
+      {value: '教学班'}
+    ];
     const schoolList = [
-      {value: '0', label: 'all'},
-      {value: '1', label: '启悟中学'},
-      {value: '2', label: '育才学校'},
-      {value: '3', label: '外国语学校'}
+      {value: '启悟中学'},
+      {value: '育才学校'}
     ]
     export default {
       data() {
         return {
+          color: colorArray(5, 9),
           chart: '',
           link: {
-          	语言积累: 'http://www.baidu.com',
-          	语言运用: 'http://www.yuyan.com',
-          	非连文本阅读: 'http://www.lal.com',
-          	名著阅读: 'http://www.baidu.com',
-          	诗歌阅读: 'http://www.baidu.com',
-          	文言文阅读: 'http://www.baidu.com',
-          	议论文阅读: 'http://www.baidu.com',
-          	文学作品阅读: 'http://www.baidu.com',
-          	作文: 'http://www.baidu.com',
-          	全卷: 'http://www.baidu.com'
+            语言积累: 'http://www.baidu.com',
+            语言运用: 'http://www.yuyan.com',
+            非连文本阅读: 'http://www.lal.com',
+            名著阅读: 'http://www.baidu.com',
+            诗歌阅读: 'http://www.baidu.com',
+            文言文阅读: 'http://www.baidu.com',
+            议论文阅读: 'http://www.baidu.com',
+            文学作品阅读: 'http://www.baidu.com',
+            作文: 'http://www.baidu.com',
+            全卷: 'http://www.baidu.com'
           },
-          fromData: {
-            selectedSubject: 'all',
-            selectedTest: 'all',
-            selectedSchool: 'all'
+          formData: {
+            selectedRange: '学校',
+            selectedSchool: ''
           },
-          testList,
-          schoolList
+          showSchool: true,
+          rangeList: rangeList,
+          schoolList: schoolList
         }
       },
       mounted() {
         this.initChart();
       },
       methods: {
-        subjectChange(value) {
-          console.log(value)
-        },
-        testChange(value) {
-          console.log(value)
-        },
-        schoolChange(value) {
-          console.log(value)
-        },
-        onSearch() {
-          console.log('search')
-        },
         initChart() {
           this.chart = echarts.init(document.getElementById('chart'));
           const xData = (function() {
-            const data = ['识记', '理解', '表达运用', '综合分析'];
+            const data = ['语言积累', '语言运用', '非连文本阅读', '名著阅读', '文言文阅读', '议论文阅读', '文学作品阅读', '作文', '全卷'];
             return data;
           }());
+          const color = this.color;
           this.chart.setOption({
-            backgroundColor: '#344b58',
             title: {
-              text: '所有考试市、区专题得分率监控图',
+              text: '专题得分率监控图',
               x: 'center',
               textStyle: {
-                color: '#fff',
+                color: '#333',
                 fontSize: '20',
               },
               padding: [20, 0, 0, 0]
@@ -120,120 +103,159 @@
               }
             },
             legend: {
-              x: '15%',
-              top: '10%',
+              bottom: '25%',
+              orient: 'vertical',
+              right: 'right',
               textStyle: {
                 color: '#90979c'
               },
-              data: ['厦门市平均', '同安区平均', '厦门市七上', '同安区七上']
+              data: ['平均', '八上']
             },
             calculable: true,
             xAxis: [{
               type: '',
               triggerEvent: true,
+              data: xData,
               axisLine: {
                 lineStyle: {
-                  color: '#fff'
+                  color: '#ccc'
                 }
               },
-              splitLine: {
-                show: false
-              },
-              axisTick: {
-                show: false
-              },
-              splitArea: {
-                show: false
-              },
               axisLabel: {
-                interval: 0
-              },
-              data: xData
+                interval: 0,
+                textStyle: {
+                  color: '#333'
+                }
+              }
             }],
             yAxis: [{
               type: 'value',
+              name: '百分比(%)',
               splitLine: {
                 show: true
               },
               axisLine: {
                 lineStyle: {
-                  color: '#fff'
+                  color: '#ccc'
                 }
               },
               axisTick: {
                 show: false
               },
               axisLabel: {
-                interval: 2
+                interval: 2,
+                textStyle: {
+                  color: '#333'
+                }
               },
               splitArea: {
                 show: false
               }
             }],
+            dataZoom: [{
+              show: true,
+              height: 30,
+              xAxisIndex: [
+                0
+              ],
+              bottom: 30,
+              start: 10,
+              end: 80,
+              handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+              handleSize: '110%',
+              handleStyle: {
+                color: '#d3dee5'
+
+              },
+              textStyle: {
+                color: '#fff' },
+              borderColor: '#90979c'
+            }, {
+              type: 'inside',
+              show: true,
+              height: 15,
+              start: 1,
+              end: 35
+            }],
             series: [{
-              name: '厦门市平均',
+              name: '平均',
               type: 'bar',
-              barWidth: 50,
+              barMaxWidth: 35,
               barGap: '10%',
               itemStyle: {
                 normal: {
-                  color: 'rgba(255,144,128,1)',
+                  color: color[0],
                   label: {
                     show: true,
                     textStyle: {
                       color: '#fff'
                     },
-                    position: 'insideTop',
-                    formatter(p) {
-                      return p.value > 0 ? p.value : '';
-                    }
+                    position: 'insideTop'
                   }
                 }
               },
               data: [
-                0.5,
-                0.3,
-                0.6,
-                0.7
-              ],
-              markLine: {
-              	silent: false
-              }
+                5,
+                3,
+                6,
+                7,
+                5,
+                6,
+                7,
+                5,
+                9
+              ]
             },{
-              name: '同安区七上',
+              name: '八上',
               type: 'bar',
-              barWidth: 50,
-              symbol: 'circle',
+              barMaxWidth: 35,
+              barGap: '10%',
               itemStyle: {
                 normal: {
-                  color: 'rgba(152,230,48,1)',
-                  barBorderRadius: 0,
+                  color: color[1],
                   label: {
                     show: true,
-                    position: 'top',
-                    formatter(p) {
-                      return p.value > 0 ? p.value : '';
-                    }
+                    textStyle: {
+                      color: '#fff'
+                    },
+                    position: 'insideTop'
                   }
                 }
               },
               data: [
-                0.7,
-                1,
-                0.4,
-                0.5
+                7,
+                5,
+                6,
+                7,
+                5,
+                9,
+                5,
+                3,
+                6
               ]
-            }
-            ]
+            }]
           }),
-			this.chart.on('click', params => {
-		        // console.log(params);
-		        if(params.componentType === "xAxis") {
-		          console.log('我点击 的x轴');
-		        }
-				// console.log(this.link[params.seriesName])
-				this.$router.push({ path: '/ability/analysis'});
-			})
+      this.chart.on('click', params => {
+        // console.log(params);
+        if(params.componentType === "xAxis") {
+          console.log('我点击 的x轴');
+        }
+        // console.log(this.link[params.seriesName])
+        this.$router.push({ path: '/ability/analysis'});
+      })
+        },
+        rangeChange(value) {
+          if(value == '学校') {
+            this.showSchool = false
+          }else {
+            this.showSchool = true
+          }
+        },
+        schoolChange(value) {
+          console.log(value)
+        },
+        onSearch() {
+
         }
       }
     }

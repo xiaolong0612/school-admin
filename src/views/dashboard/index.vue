@@ -34,6 +34,8 @@
         //   this.currentRole = 'DefaultDashboard';
         // }
         this.currentRole = 'DefaultDashboard';
+      },
+      mounted() {
       }
     }
 </script>

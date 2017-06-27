@@ -1,30 +1,10 @@
 import { asyncRouterMap, constantRouterMap } from 'src/router';
 
 function hasPermission(roles, route) {
-  // if (roles.indexOf('admin') >= 0) return true;
-  Array.intersect = function () {
-    var result = new Array();
-    var obj = {};
-    for (var i = 0; i < arguments.length; i++) {
-      for (var j = 0; j < arguments[i].length; j++) {
-        var str = arguments[i][j];
-        if (!obj[str]) {
-          obj[str] = 1;
-        }
-        else {
-          obj[str]++;
-          if (obj[str] == arguments.length)
-          {
-            result.push(str);
-          }
-        }
-      }
-    }
-    if(result == null || result == '') return false;
-    return true;
-  }
+  roles = ['admin'];
+  if (roles.indexOf('admin') >= 0) return true;
   if (route.meta && route.meta.role) {
-    return Array.intersect(['7'],route.meta.role)
+    return roles.some(role => route.meta.role.indexOf(role) >= 0)
   } else {
     return true
   }
@@ -46,7 +26,7 @@ const permission = {
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
-        const { roles } = data;
+        const roles = data;
         const accessedRouters = asyncRouterMap.filter(v => {
           // if (roles.indexOf('admin') >= 0) return true;
           if (hasPermission(roles, v)) {

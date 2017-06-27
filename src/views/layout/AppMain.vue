@@ -1,5 +1,5 @@
 <template>
-    <section class="app-main">
+    <section class="app-main padding-a">
         <transition name="fade" mode="out-in">
             <router-view :key="key"></router-view>
         </transition>
@@ -21,3 +21,8 @@
       }
     }
 </script>
+<style type="text/css">
+  .app-main{
+    padding: 15px;
+  }
+</style>
