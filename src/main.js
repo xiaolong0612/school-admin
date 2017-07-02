@@ -31,6 +31,9 @@ Vue.component('Sticky', Sticky);
 Vue.use(ElementUI);
 Vue.use(vueWaves);
 Vue.use(RegionPicker);
+
+Vue.config.productionTip = false;
+
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
@@ -54,16 +57,16 @@ router.beforeEach((to, from, next) => {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo', store.getters.uid).then(res => { // 拉取user_info
           const roles = res.data.teacher.type;
-          store.dispatch('GenerateRoutes', roles ).then(() => { // 生成可访问的路由表
+          store.dispatch('GenerateRoutes', { roles } ).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-            next(to); // hack方法 确保addRoutes已完成
+            next(to.path); // hack方法 确保addRoutes已完成
           })
         }).catch(err => {
           console.log(err);
         });
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
-        if (true) {
+        if (hasPermission(store.getters.roles, to.meta.role)) {
           next();//
         } else {
           next({ path: '/401', query: { noGoBack: true } });
@@ -116,9 +119,9 @@ router.afterEach(() => {
 // })(console.error);
 
 new Vue({
+  el: '#app',
   router,
   store,
-  render: h => h(App)
-}).$mount('#app');
-
-
+  template: '<App/>',
+  components: { App }
+})

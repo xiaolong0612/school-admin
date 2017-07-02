@@ -26,38 +26,38 @@
 			</h3>
 			<div class="ui-table-main">
 				<el-table :data="list" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
-					<el-table-column prop="school" label="学校" width="150" fixed></el-table-column>
-					<el-table-column prop="number1" label="生数" width="90" sortable>
+					<el-table-column prop="schoolName" label="学校" width="150" fixed></el-table-column>
+					<el-table-column prop="examineeCount" label="生数" width="90" sortable>
 					</el-table-column>
-					<el-table-column prop='name1' label='备课组长' width="120"></el-table-column>
+					<el-table-column prop='gradeLeader' label='备课组长' width="120"></el-table-column>
 					<el-table-column label='得分率' header-align='center'>
-						<el-table-column prop="float1" label="平均分" width="100"></el-table-column>
-						<el-table-column prop="number2" label="得分率" width="100" sortable>
+						<el-table-column prop="tmpSchoolScoreRate.averageRate" label="平均分" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.scoreRate" label="得分率" width="100" sortable>
 						</el-table-column>
-						<el-table-column prop="number3" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number4" label="名次" width="100"></el-table-column>
-						<el-table-column prop="float2" label="进步值" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.averageValue" label="超均率" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.ranking" label="名次" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.progressValue" label="进步值" width="100"></el-table-column>
 					</el-table-column>
 					<el-table-column label='优良率' header-align='center'>
-						<el-table-column prop="number5" label="优良数" width="100"></el-table-column>
-						<el-table-column prop="number2" label="优良率" width="100"></el-table-column>
-						<el-table-column prop="number5" label="名次" width="100"></el-table-column>
-						<el-table-column prop="float4" label="进步值" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.excellentCount" label="优良数" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.excellentRate" label="优良率" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.ranking" label="名次" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.progressValue" label="进步值" width="100"></el-table-column>
 					</el-table-column>
 					<el-table-column label='及格率' header-align='center'>
-						<el-table-column prop="float3" label="及格数" width="100"></el-table-column>
-						<el-table-column prop="float1" label="及格率" width="100"></el-table-column>
-						<el-table-column prop="number3" label="名次" width="100"></el-table-column>
-						<el-table-column prop="float2" label="进步值" width="100"></el-table-column>
+						<el-table-column prop="" label="及格数" width="100"></el-table-column>
+						<el-table-column prop="" label="及格率" width="100"></el-table-column>
+						<el-table-column prop="" label="名次" width="100"></el-table-column>
+						<el-table-column prop="" label="进步值" width="100"></el-table-column>
 					</el-table-column>
 					<el-table-column label='低分率' header-align='center'>
-						<el-table-column prop="float3" label="低分数" width="100"></el-table-column>
-						<el-table-column prop="number4" label="低分率" width="100"></el-table-column>
-						<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeCount" label="低分数" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeRate" label="低分率" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.progressValue" label="进步值" width="100"></el-table-column>
 					</el-table-column>
 				</el-table>
 			</div>
-			<div v-show="!listLoading" class="page-wrap fr">
+			<div v-show='false' class="page-wrap fr">
 	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
 	        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
@@ -66,12 +66,11 @@
 	</div>
 </template>
 <script>
-	import { fetchList, fetchPv } from 'api/data';
-	import { setTableHeight } from '../../utils/tableHeight'
+	import { getPaperScore } from 'api/score';
 	export default {
 		data() {
 			return {
-				name: '单次考试全区各校学科分层监控表',
+				name: '',
 				screenHeight: 0,
 				list: [],
 				total: null,
@@ -94,16 +93,21 @@
 		},
 		mounted() {
 			this.getList();
-			this.screenHeight = setTableHeight(this.listLoading);
+			const that = this;
+			that.screenHeight = window.innerHeight-200;
+      window.onresize = () => {
+        return (() => {
+          that.screenHeight = window.innerHeight-200;
+        })()
+      }
 		},
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
+        getPaperScore(2).then(response => {
           this.list = response.data.list;
-          this.total = response.data.total;
+          this.name = this.list[0].paperName;
           this.listLoading = false;
-          
         })
       },
 			formatter(row) {

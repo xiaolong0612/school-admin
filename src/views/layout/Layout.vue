@@ -40,7 +40,9 @@
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
     @import "src/styles/mixin.scss";
-
+    body{
+        background-color: #fafafa;
+    }
     .app-wrapper {
         @include clearfix;
         position: relative;
@@ -84,7 +86,6 @@
             position: relative;
             padding-top: 50px;
             box-sizing: border-box;
-            background-color: #fafafa;
         }
     }
 </style>

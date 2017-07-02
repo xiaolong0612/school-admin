@@ -66,12 +66,10 @@ const user = {
     LoginByAccount({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         loginByAccount(userInfo.account, userInfo.password, userInfo.code, userInfo.type).then(response => {
-          console.log(response)
-          /*const data = response.data;
-          console.log(response);*/
-          /*Cookies.set('UID', data.teacher.id);
-          Cookies.set('Admin-Token', data.teacher);
-          commit('SET_TOKEN', data.teacher);*/
+          const data = response.data;
+          Cookies.set('UID', data.teacher.id);
+          Cookies.set('xxkd-Token', data.teacher);
+          commit('SET_TOKEN', data.teacher);
           resolve(data);
         }).catch(error => {
           console.log(error);
@@ -100,7 +98,7 @@ const user = {
         commit('SET_CODE', code);
         loginByThirdparty(state.status, state.email, state.code, state.auth_type).then(response => {
           commit('SET_TOKEN', response.data.token);
-          Cookies.set('Admin-Token', response.data.token);
+          Cookies.set('xxkd-Token', response.data.token);
           resolve();
         }).catch(error => {
           reject(error);
@@ -115,7 +113,7 @@ const user = {
           commit('SET_UID', '');
           commit('SET_TOKEN', '');
           commit('SET_ROLES', []);
-          Cookies.remove('Admin-Token');
+          Cookies.remove('xxkd-Token');
           resolve();
         }).catch(error => {
           reject(error);
@@ -128,7 +126,7 @@ const user = {
       return new Promise(resolve => {
         commit('SET_TOKEN', '');
         Cookies.remove('UID');
-        Cookies.remove('Admin-Token');
+        Cookies.remove('xxkd-Token');
         resolve();
       });
     }

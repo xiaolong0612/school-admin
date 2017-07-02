@@ -197,6 +197,9 @@
 
 <style rel="stylesheet/scss" lang="scss">
     @import "src/styles/mixin.scss";
+    body{
+      overflow-x: hidden;
+    }
     .el-row {
       margin-bottom: 20px;
     }

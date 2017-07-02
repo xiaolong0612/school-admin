@@ -1,100 +1,104 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-/* layout*/
+const _import = require('./_import_' + process.env.NODE_ENV);
+// in development env not use Lazy Loading,because Lazy Loading large page will cause webpack hot update too slow
+// so only in production use Lazy Loading
+
+/* layout */
 import Layout from '../views/layout/Layout';
 
-// dashboard
-const dashboard = () => import('../views/dashboard/index');
+/* dashboard */
+const dashboard = _import('dashboard/index');
 
-/* error page*/
-const Err404 = () => import('../views/error/404');
-const Err401 = () => import('../views/error/401');
+/* error page */
+const Err404 = _import('error/404');
+const Err401 = _import('error/401');
 
-/* login*/
-import Login from '../views/login/';
-import authRedirect from '../views/login/authredirect';
-import sendPWD from '../views/login/sendpwd';
-import reset from '../views/login/reset';
+/* error log */
+const ErrorLog = _import('errlog/index');
 
-/* error log*/
-const ErrorLog = () => import('../views/errlog/index');
+/* login */
+const Login = _import('login/index');
+const authRedirect = _import('login/authredirect');
+const sendPWD = _import('login/sendpwd');
+const reset = _import('login/reset');
 
 /* permission */
-const Permission = () => import('../views/permission/index');
+const Permission = _import('permission/index');
 
 /* demo */
-const Upload = () => import('../views/demo/Upload');
-const Data = () => import('../views/demo/Data');
+const Upload = _import('demo/Upload');
+const Data = _import('demo/data');
 /* 首页 */
-const TeacherIndex = () => import('../views/teacher/index');        //学科教师0 
-const DirectorIndex = () => import('../views/director/index');     // 年段长、班主任1、3
-const InstructorIndex = () => import('../views/instructor/index'); // 教研员7
-const BureauIndex = () => import('../views/bureau/index');         // 教育局8、9
-const StudentIndex = () => import('../views/student/index');       // 学生10
+const TeacherIndex = _import('teacher/index');        //学科教师0 
+const DirectorIndex = _import('director/index');     // 年段长、班主任1、3
+const InstructorIndex = _import('instructor/index'); // 教研员7
+const BureauIndex = _import('bureau/index');         // 教育局8、9
+const StudentIndex = _import('student/index');       // 学生10
 
 // 成绩管理
-const TotalScore = () => import('../views/achievement/total-score');
-const DisciplineHierarchy = () => import('../views/achievement/discipline-hierarchy');
-const AdministrationDisciplineHierarchy = resolve => require(['../views/achievement/administration-discipline-hierarchy'], resolve);
-const AllClass = resolve => require(['../views/achievement/all-class'], resolve);
-const AllStudent = resolve => require(['../views/achievement/all-student'], resolve);
-const TeachingDisciplineHierarchy = resolve => require(['../views/achievement/teaching-discipline-hierarchy'], resolve);
-const DisciplineAverage = resolve => require(['../views/achievement/discipline-average'], resolve);
-const AdministrationAverage = resolve => require(['../views/achievement/administration-average'], resolve);
-const SectionClassDisciplineHierarchy = () => import('../views/achievement/section-class-discipline-hierarchy');
-const SubjectScore = () => import('../views/achievement/subject-score');
-const AnnualSplit = () => import('../views/achievement/annual-split');
-const StudentScore = () => import('../views/achievement/student-score');
-const TeachingAverage = () => import('../views/achievement/teaching-average');
-const SectionClass = () => import('../views/achievement/section-class');
+const TotalScore = _import('achievement/total-score');
+const DisciplineHierarchy = _import('achievement/discipline-hierarchy');
+const AdministrationDisciplineHierarchy = _import('achievement/administration-discipline-hierarchy');
+const AllClass = _import('achievement/all-class');
+const AllStudent = _import('achievement/all-student');
+const TeachingDisciplineHierarchy = _import('achievement/teaching-discipline-hierarchy');
+const DisciplineAverage = _import('achievement/discipline-average');
+const AdministrationAverage = _import('achievement/administration-average');
+const SectionClassDisciplineHierarchy = _import('achievement/section-class-discipline-hierarchy');
+const SubjectScore = _import('achievement/subject-score');
+const AnnualSplit = _import('achievement/annual-split');
+const StudentScore = _import('achievement/student-score');
+const TeachingAverage = _import('achievement/teaching-average');
+const SectionClass = _import('achievement/section-class');
 // 考点管理
-const AddTest = resolve => require(['../views/test-site/add-test'], resolve);
+const AddTest = _import('test-site/add-test');
 // 专题管理
-const ScoringMonitoring = resolve => require(['../views/special/scoring-monitoring'], resolve);
-const ScoringItem = resolve => require(['../views/special/scoring-item.vue'], resolve);
-const ScoringTestItem = resolve => require(['../views/special/test-item'], resolve);
-const Quality = resolve => require(['../views/special/quality'], resolve);
-const SpecialQualitySchool = resolve => require(['../views/special/quality-school'], resolve);
-const Analysis = resolve => require(['../views/special/analysis'], resolve);
+const ScoringMonitoring = _import('special/scoring-monitoring');
+const ScoringItem = _import('special/scoring-item');
+const ScoringTestItem = _import('special/test-item');
+const Quality = _import('special/quality');
+const SpecialQualitySchool = _import('special/quality-school');
+const Analysis = _import('special/analysis');
 // 优良率
-const ExcellentRegion = resolve => require(['../views/excellent/region'], resolve);
-const ExcellentRegionSchool = resolve => require(['../views/excellent/region-scholl'], resolve);
-const ExcellentRegionTable = resolve => require(['../views/excellent/region-table'], resolve);
-const ExcellentRegionSchoolTable = resolve => require(['../views/excellent/region-school-table'], resolve);
-const ExcellentSubject = resolve => require(['../views/excellent/subject'], resolve);
-const ExcellentRegionSubject = resolve => require(['../views/excellent/region-subject'] ,resolve);
-const ExcellentClassSubject = resolve => require(['../views/excellent/class-subject'] ,resolve);
-const ExcellentSchool = resolve => require(['../views/excellent/school'], resolve);
-const ExcellentClass = resolve => require(['../views/excellent/class'], resolve);
-const ExcellentRegionAllSubject = resolve => require(['../views/excellent/region-all-subject'], resolve);
+const ExcellentRegion = _import('excellent/region');
+const ExcellentRegionSchool = _import('excellent/region-scholl');
+const ExcellentRegionTable = _import('excellent/region-table');
+const ExcellentRegionSchoolTable = _import('excellent/region-school-table');
+const ExcellentSubject = _import('excellent/subject');
+const ExcellentRegionSubject = _import('excellent/region-subject');
+const ExcellentClassSubject = _import('excellent/class-subject');
+const ExcellentSchool = _import('excellent/school');
+const ExcellentClass = _import('excellent/class');
+const ExcellentRegionAllSubject = _import('excellent/region-all-subject');
 // 能力
-const AbilityIndex = resolve => require(['../views/ability/index'], resolve);
-const AbilitySchool = resolve => require(['../views/ability/school'], resolve);
-const AbilitySpecial = resolve => require(['../views/ability/special'], resolve);
-const AbilityAnalysis = resolve => require(['../views/ability/analysis'], resolve);
+const AbilityIndex = _import('ability/index');
+const AbilitySchool = _import('ability/school');
+const AbilitySpecial = _import('ability/special');
+const AbilityAnalysis = _import('ability/analysis');
 // 总分管理
-const FractionRegion = resolve => require(['../views/fraction/region'], resolve);
-const FractionAdministration = resolve => require(['../views/fraction/administration'], resolve);
+const FractionRegion = _import('fraction/region');
+const FractionAdministration = _import('fraction/administration');
 // 学科管理
-const SubjectSchool = resolve => require(['../views/subject/school'], resolve);
-const SubjectAdministration = resolve => require(['../views/subject/administration'], resolve);
-const SubjectTeaching = resolve => require(['../views/subject/teaching'], resolve);
+const SubjectSchool = _import('subject/school');
+const SubjectAdministration = _import('subject/administration');
+const SubjectTeaching = _import('subject/teaching');
 // P值
-const PSingleSchool = resolve => require(['../views/P/single-school'], resolve);
-const PSingleClass = resolve => require(['../views/P/single-class'], resolve);
-const PAllSchool = resolve => require(['../views/P/all-school'], resolve);
-const PAllRegion = resolve => require(['../views/P/all-region'], resolve);
-const PAllClass = resolve => require(['../views/P/all-class'], resolve);
-const PSingleRegion = resolve => require(['../views/P/single-region'], resolve);
-const PSingleRegionClass = resolve => require(['../views/P/single-region-class'], resolve);
+const PSingleSchool = _import('P/single-school');
+const PSingleClass = _import('P/single-class');
+const PAllSchool = _import('P/all-school');
+const PAllRegion = _import('P/all-region');
+const PAllClass = _import('P/all-class');
+const PSingleRegion = _import('P/single-region');
+const PSingleRegionClass = _import('P/single-region-class');
 // 学生页
-const StudentSubject = () => import('../views/student/subject/subject');
-const StudentSpecial = () => import('../views/student/subject/special');
-const StudentTest = () => import('../views/student/subject/test');
-const StudentQuestions = () => import('../views/student/subject/questions');
-const StudentSummary = () => import('../views/student/subject/summary');
-const StudentMark = () => import('../views/student/mark');
+const StudentSubject = _import('student/subject/subject');
+const StudentSpecial = _import('student/subject/special');
+const StudentTest = _import('student/subject/test');
+const StudentQuestions = _import('student/subject/questions');
+const StudentSummary = _import('student/subject/summary');
+const StudentMark = _import('student/mark');
 // const StudentChinese = () => import('../views/student/subject/Chinese');
 // const StudentEnglish = () => import('../views/student/subject/English');
 // const StudentMathematics = () => import('../views/student/subject/Mathematics');
@@ -105,8 +109,8 @@ const StudentMark = () => import('../views/student/mark');
 // const StudentPhysics = () => import('../views/student/subject/Physics'); // 物理
 // const StudentBiology = () => import('../views/student/subject/Biology'); // 生物
 
-const getSchoolList = resolve =>require(['../views/info-administration/school/get-school-list'], resolve);
-const addSchool = resolve => require(['../views/info-administration/school/add-school'], resolve);
+const getSchoolList = _import('info-administration/school/get-school-list');
+const addSchool = _import('info-administration/school/add-school');
 
 Vue.use(Router);
 

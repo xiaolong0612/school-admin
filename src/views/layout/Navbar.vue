@@ -1,17 +1,20 @@
 <template>
     <el-menu class="navbar" mode="horizontal">
-        <div class="avatar-container">
+        <div class="avatar-container fr">
+            <screenfull></screenfull>
             <div class="avatar-wrapper">
                 <img class="user-avatar" src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80">
                 <el-button type="text" @click="logout">退出</el-button>
             </div>
         </div>
         <Hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></Hamburger>
-        <levelbar></levelbar>
+        <!-- <levelbar></levelbar> -->
+        <tabs-view></tabs-view>
         <div class='fl'>
             <img src="../../assets/logo.jpg" style="margin-top: 5px;" height="40">
         </div>
-        <ErrLog v-if="log.length>0" class="errLog-container" :logsList="log"></ErrLog>
+        
+        <!-- <ErrLog v-if="log.length>0" class="errLog-container" :logsList="log"></ErrLog> -->
         
     </el-menu>
 </template>
@@ -19,19 +22,23 @@
 <script>
     import { mapGetters } from 'vuex';
     import Levelbar from './Levelbar';
+    import TabsView from './TabsView';
     import Hamburger from 'components/Hamburger';
-    import ErrLog from 'components/ErrLog';
-    import errLogStore from 'store/errLog';
+    import Screenfull from 'components/Screenfull';
+    import ErrorLog from 'components/ErrLog';
+    /*import errLogStore from 'store/errLog';*/
 
     export default {
       components: {
         Levelbar,
+        TabsView,
         Hamburger,
-        ErrLog
+        /*ErrorLog,*/
+        Screenfull
       },
       data() {
         return {
-          log: errLogStore.state.errLog
+          /*log: errLogStore.state.errLog*/
         }
       },
       computed: {
@@ -77,15 +84,17 @@
             position: absolute;
             right: 150px;
         }
+        .screenfull{
+            vertical-align: middle;
+        }
         .avatar-container {
             height: 50px;
             display: inline-block;
-            position: absolute;
-            right: 35px;
+            padding-right: 20px;
             .avatar-wrapper {
                 cursor: pointer;
-                position: relative;
                 line-height: 46px;
+                display: inline-block;
                 .user-avatar {
                     width: 40px;
                     height: 40px;
@@ -93,9 +102,6 @@
                     vertical-align: middle;
                 }
                 .el-icon-caret-bottom {
-                    position: absolute;
-                    right: -20px;
-                    top: 25px;
                     font-size: 12px;
                 }
             }
