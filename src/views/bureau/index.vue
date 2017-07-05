@@ -122,7 +122,6 @@
         const data3 = this.data3;
         const data4 = this.data4;
         const color = this.color;
-        console.log(color)
         this.chart.setOption({
           title: {
             text: '同安区初中2018届七上市质检总分监控图（最近考试）',

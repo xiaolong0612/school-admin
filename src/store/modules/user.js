@@ -9,7 +9,7 @@ const user = {
     code: '',
     uid: Cookies.get('UID'),
     auth_type: '',
-    token: Cookies.get('Admin-Token'),
+    token: Cookies.get('xxkd-Token'),
     name: '',
     avatar: '',
     introduction: '',
@@ -68,6 +68,7 @@ const user = {
         loginByAccount(userInfo.account, userInfo.password, userInfo.code, userInfo.type).then(response => {
           const data = response.data;
           Cookies.set('UID', data.teacher.id);
+          commit('SET_UID', data.teacher.id);
           Cookies.set('xxkd-Token', data.teacher);
           commit('SET_TOKEN', data.teacher);
           resolve(data);
@@ -83,7 +84,8 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo(uid).then(response => {
           const data = response.data;
-          commit('SET_ROLES', data.teacher.type);
+          let roles = data.teacher.type.split(',');
+          commit('SET_ROLES', roles);
           commit('SET_NAME', data.teacher.name);
           resolve(response);
         }).catch(error => {
@@ -109,7 +111,8 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout().then(() => {
+        logout().then((res) => {
+          console.log(res);
           commit('SET_UID', '');
           commit('SET_TOKEN', '');
           commit('SET_ROLES', []);

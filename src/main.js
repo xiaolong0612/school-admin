@@ -19,6 +19,8 @@ import vueWaves from './directive/waves';// 水波纹指令
 import errLog from 'store/errLog';// error log组件
 import './mock/index.js';  // 该项目所有请求使用mockjs模拟
 import RegionPicker from 'region-picker'; // 省市区三级联动
+import Cookies from 'js-cookie'; // Coolies
+
 import { path } from 'utils/index'; // 全局的path
 Vue.prototype.path = path;
 
@@ -32,7 +34,6 @@ Vue.use(ElementUI);
 Vue.use(vueWaves);
 Vue.use(RegionPicker);
 
-Vue.config.productionTip = false;
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {
@@ -55,11 +56,11 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' });
     } else {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
-        store.dispatch('GetInfo', store.getters.uid).then(res => { // 拉取user_info
-          const roles = res.data.teacher.type;
+        store.dispatch('GetInfo', Cookies.get('UID')).then(res => { // 拉取user_info
+          const roles = res.data.teacher.type.split(',');
           store.dispatch('GenerateRoutes', { roles } ).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-            next(to.path); // hack方法 确保addRoutes已完成
+            next(Object.assign({}, to)); // hack方法 确保addRoutes已完成
           })
         }).catch(err => {
           console.log(err);

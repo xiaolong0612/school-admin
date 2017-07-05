@@ -80,7 +80,7 @@
 		mounted() {
 			this.getList();
 			window.onresize = () => {
-        this.screenHeight = this.setTableHeight(this.listLoading);
+				this.screenHeight = this.setTableHeight(this.listLoading);
 				this.key++;
       }
 		},
