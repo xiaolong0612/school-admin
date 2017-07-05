@@ -15,20 +15,11 @@
 <script>
   import { mapGetters } from 'vuex';
   import { fetchList, fetchPv } from 'api/data';
-  import { colorArray } from 'utils/index';
-
-   // 引入 ECharts 主模块
-  const echarts = require('echarts/lib/echarts');
-  require('echarts/lib/chart/bar');
-  // 引入提示框和标题组件
-  require('echarts/lib/component/tooltip');
-  require('echarts/lib/component/title');
-  require('echarts/lib/component/legend');
-  require('echarts/lib/component/dataZoom');
+  import echarts from 'echarts';
+  require('echarts/theme/macarons'); // echarts 主题
   export default {
   	data() {
   		return {
-  			color: colorArray(5 ,8),
   			data1: null,
   			data2: null,
   			data3: null,
@@ -116,7 +107,10 @@
         });
       },
   		initChart() {
-        this.chart = echarts.init(document.getElementById('chart'));
+        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
+        this.setOption();
+      },
+      setOption() {
         const data1 = this.data1;
         const data2 = this.data2;
         const data3 = this.data3;
@@ -129,15 +123,12 @@
             textStyle: {
               color: '#333',
               fontSize: '20',
-            },
-            padding: [20, 0, 0, 0]
+            }
           },
           tooltip: {
             trigger: 'axis',
-            axisPointer: {
-              textStyle: {
-                color: '#fff'
-              }
+            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
             }
           },
           grid: {
@@ -149,64 +140,39 @@
             }
           },
           legend: {
-            bottom: '25%',
             orient: 'vertical',
-            right: 'right',
-            textStyle: {
-              color: '#90979c'
-            },
+            bottom: '25%',
+            right: '0',
             data: ['得分率', '超均率', '位置', '进步值']
           },
           calculable: true,
           xAxis: [{
-            type: '',
+            type: 'category',
             triggerEvent: true,
-            nameTextStyle: {
-            	color: '#333'
-            },
             axisLine: {
               lineStyle: {
                 color: '#ccc'
               }
             },
-            splitLine: {
-              show: false
-            },
-            axisTick: {
-              show: true
-            },
-            splitArea: {
-              show: false
-            },
             axisLabel: {
-              interval: 0,
               textStyle: {
-              	color: '#333'
+                color: '#333'
               }
             },
             data: ['语文', '数学', '英语', '物理', '化学', '生物', '思品', '历史', '地理', '总分', '折合总分']
           }],
           yAxis: [{
             type: 'value',
-            splitLine: {
-              show: true
-            },
             axisLine: {
               lineStyle: {
                 color: '#ccc'
               }
             },
-            axisTick: {
-              show: false
-            },
             axisLabel: {
               interval: 2,
               textStyle: {
-              	color: '#333'
+                color: '#333'
               }
-            },
-            splitArea: {
-              show: false
             }
           }],
           series: [{
@@ -214,8 +180,6 @@
             type: 'bar',
             itemStyle: {
               normal: {
-                color: color[0],
-                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -231,8 +195,6 @@
             type: 'bar',
             itemStyle: {
               normal: {
-                color: color[1],
-                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -248,8 +210,6 @@
             type: 'bar',
             itemStyle: {
               normal: {
-                color: color[2],
-                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -265,8 +225,6 @@
             type: 'bar',
             itemStyle: {
               normal: {
-                color: color[3],
-                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',

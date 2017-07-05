@@ -35,14 +35,9 @@
 </template>
 
 <script>
-   // 引入 ECharts 主模块
-  const echarts = require('echarts/lib/echarts');
-  require('echarts/lib/chart/bar');
-  // 引入提示框和标题组件
-  require('echarts/lib/component/tooltip');
-  require('echarts/lib/component/title');
-  require('echarts/lib/component/legend');
-  require('echarts/lib/component/dataZoom');
+  // 引入 ECharts 主模块
+  import echarts from 'echarts';
+  require('echarts/theme/macarons'); // echarts 主题
 
   import IndexItem from './index/indexItem';
   export default {
@@ -87,7 +82,7 @@
   	},
   	methods: {
   		initChart() {
-        this.chart = echarts.init(document.getElementById('chart'));
+        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
         this.setOption();
 			},
     	setOption() {
@@ -99,15 +94,12 @@
             textStyle: {
               color: '#333',
               fontSize: '20',
-            },
-            padding: [20, 0, 0, 0]
+            }
           },
           tooltip: {
             trigger: 'axis',
-            axisPointer: {
-              textStyle: {
-                color: '#fff'
-              }
+            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
             }
           },
           grid: {
@@ -119,61 +111,39 @@
             }
           },
           legend: {
-            bottom: '25%',
             orient: 'vertical',
-            right: 'right',
-            textStyle: {
-              color: '#90979c'
-            },
+            bottom: '25%',
+            right: '20px',
             data: ['厦门市', '同安区']
           },
           calculable: true,
           xAxis: [{
-            type: '',
+            type: 'category',
             triggerEvent: true,
             axisLine: {
               lineStyle: {
                 color: '#ccc'
               }
             },
-            splitLine: {
-              show: false
-            },
-            axisTick: {
-              show: true
-            },
-            splitArea: {
-              show: false
-            },
             axisLabel: {
-              interval: 0,
               textStyle: {
-              	color: '#333'
+                color: '#333'
               }
             },
             data: ['语文', '数学', '英语', '物理', '化学', '生物', '思品', '历史', '地理', '总分', '折合总分']
           }],
           yAxis: [{
             type: 'value',
-            splitLine: {
-              show: true
-            },
             axisLine: {
               lineStyle: {
                 color: '#ccc'
               }
             },
-            axisTick: {
-              show: false
-            },
             axisLabel: {
               interval: 2,
               textStyle: {
-              	color: '#333'
+                color: '#333'
               }
-            },
-            splitArea: {
-              show: false
             }
           }],
           series: [
@@ -183,8 +153,6 @@
             stack: '语言运用',
             itemStyle: {
               normal: {
-                color: 'rgba(0,191,183,1)',
-                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -194,28 +162,13 @@
                 }
               }
             },
-            data: [
-              0.2,
-              0.4,
-              0.2,
-              0.5,
-              0.4,
-              0.2,
-              0.5,
-              0.4,
-              0.2,
-              0.5,
-              0.2
-            ]
+            data: [ 0.2, 0.4, 0.2, 0.5, 0.4, 0.2, 0.5, 0.4, 0.2, 0.5, 0.2 ]
           }, {
             name: '厦门市',
             type: 'bar',
             stack: '非连文本阅读',
-            symbol: 'circle',
             itemStyle: {
               normal: {
-                color: 'rgba(252,230,48,1)',
-                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -225,19 +178,7 @@
                 }
               }
             },
-            data: [
-              0.6,
-              0.8,
-              0.4,
-              0.2,
-              0.8,
-              0.4,
-              0.2,
-              0.8,
-              0.4,
-              0.2,
-              0.4
-            ]
+            data: [ 0.6, 0.8, 0.4, 0.2, 0.8,0.4,0.2, 0.8,0.4,0.2,0.4 ]
           }]
         })
     	}

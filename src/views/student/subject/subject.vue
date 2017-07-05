@@ -67,14 +67,9 @@
 <script>
   import { mapGetters } from 'vuex';
   import { fetchList, fetchPv } from 'api/data';
-   // 引入 ECharts 主模块
-  const echarts = require('echarts/lib/echarts');
-  require('echarts/lib/chart/bar');
-  // 引入提示框和标题组件
-  require('echarts/lib/component/tooltip');
-  require('echarts/lib/component/title');
-  require('echarts/lib/component/legend');
-  require('echarts/lib/component/dataZoom');
+  // 引入 ECharts 主模块
+  import echarts from 'echarts';
+  require('echarts/theme/macarons'); // echarts 主题
   export default {
     data() {
       return {
@@ -132,19 +127,15 @@
           this.data1 = response.data.list[0].array1;
           this.data2 = response.data.list[1].array1;
           this.initChart();
-          this.setOption();
         });
       },
       initChart() {
-        this.chart = echarts.init(document.getElementById('chart'));
+        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
+        this.setOption();
       },
       setOption() {
         const data1 = this.data1;
         const data2 = this.data2;
-        const xData = (function() {
-          const data = ['得分率', '超均率', '名次', '进步值', '优良率', '名次', '进步值', '及格率', '名次', '进步值', '低分率', '进步值'];
-          return data;
-        }());
         this.chart.setOption({
           title: {
             text: '所有考试市、区专题得分率监控图',
@@ -152,11 +143,13 @@
             textStyle: {
               color: '#333',
               fontSize: '20',
-            },
-            padding: [20, 0, 0, 0]
+            }
           },
           tooltip: {
             trigger: 'axis',
+            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+            }
           },
           grid: {
             borderWidth: 0,
@@ -167,42 +160,29 @@
             }
           },
           legend: {
-            bottom: '25%',
             orient: 'vertical',
-            right: 'right',
-            textStyle: {
-              color: '#90979c'
-            },
+            bottom: '25%',
+            right: '0',
             data: ['厦门市', '同安区']
           },
           calculable: true,
           xAxis: [{
-            type: '',
+            type: 'category',
             triggerEvent: true,
-            nameTextStyle: {
-              color: '#333333'
-            },
             axisLine: {
               lineStyle: {
                 color: '#ccc'
               }
             },
-            splitLine: {
-              show: false
-            },
             axisLabel: {
-              interval: 0,
               textStyle: {
                 color: '#333'
               }
             },
-            data: xData
+            data: ['得分率', '超均率', '名次', '进步值', '优良率', '名次', '进步值', '及格率', '名次', '进步值', '低分率', '进步值']
           }],
           yAxis: [{
             type: 'value',
-            splitLine: {
-              show: true
-            },
             axisLine: {
               lineStyle: {
                 color: '#ccc'
@@ -213,19 +193,14 @@
               textStyle: {
                 color: '#333'
               }
-            },
-            axisTick: {
-              show: false
-            },
+            }
           }],
           series: [
           {
             name: '同安区',
             type: 'bar',
-            stack: '语言运用',
             itemStyle: {
               normal: {
-                color: 'rgba(0,191,183,1)',
                 barBorderRadius: 0,
                 label: {
                   show: true,
@@ -240,11 +215,8 @@
           }, {
             name: '厦门市',
             type: 'bar',
-            stack: '非连文本阅读',
-            symbol: 'circle',
             itemStyle: {
               nor2al: {
-                color: '#97a8be',
                 barBorderRadius: 0,
                 label: {
                   show: true,

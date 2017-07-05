@@ -4,14 +4,9 @@
 
 <script>
   import { mapGetters } from 'vuex';
-   // 引入 ECharts 主模块
-  const echarts = require('echarts/lib/echarts');
-  require('echarts/lib/chart/bar');
-  // 引入提示框和标题组件
-  require('echarts/lib/component/tooltip');
-  require('echarts/lib/component/title');
-  require('echarts/lib/component/legend');
-  require('echarts/lib/component/dataZoom');
+  // 引入 ECharts 主模块
+  import echarts from 'echarts';
+  require('echarts/theme/macarons'); // echarts 主题
   export default {
     props: {
       id: {
@@ -57,7 +52,7 @@
   	},
   	methods: {
   		initChart() {
-        this.chart = echarts.init(document.getElementById(this.id));
+        this.chart = echarts.init(document.getElementById(this.id), 'macarons');
         this.setOption();
 			},
     	setOption() {
@@ -74,14 +69,11 @@
           },
           tooltip: {
             trigger: 'axis',
-            axisPointer: {
-              textStyle: {
-                color: '#fff'
-              }
+            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
             }
           },
           grid: {
-            borderWidth: 0,
             top: 110,
             bottom: 95,
             textStyle: {
@@ -89,33 +81,21 @@
             }
           },
           legend: {
-            bottom: '25%',
             orient: 'vertical',
-            right: 'right',
-            textStyle: {
-              color: '#90979c'
-            }
+            bottom: '25%',
+            right: '0',
+            data: [ '同安区']
           },
           calculable: true,
           xAxis: [{
-            type: '',
+            type: 'category',
             triggerEvent: true,
             axisLine: {
               lineStyle: {
                 color: '#ccc'
               }
             },
-            splitLine: {
-              show: false
-            },
-            axisTick: {
-              show: true
-            },
-            splitArea: {
-              show: false
-            },
             axisLabel: {
-              interval: 0,
               textStyle: {
                 color: '#333'
               }
@@ -124,35 +104,24 @@
           }],
           yAxis: [{
             type: 'value',
-            splitLine: {
-              show: true
-            },
             axisLine: {
               lineStyle: {
                 color: '#ccc'
               }
-            },
-            axisTick: {
-              show: false
             },
             axisLabel: {
               interval: 2,
               textStyle: {
                 color: '#333'
               }
-            },
-            splitArea: {
-              show: false
             }
           }],
           series: [
           {
             name: '同安区',
             type: 'bar',
-            stack: '语言运用',
             itemStyle: {
               normal: {
-                color: 'rgb(38, 118, 213)',
                 barBorderRadius: 0,
                 label: {
                   show: true,
@@ -163,14 +132,7 @@
                 }
               }
             },
-            data: [
-              0.2,
-              0.4,
-              0.2,
-              0.5,
-              0.4,
-              0.2
-            ]
+            data:[ 0.2,0.4,0.2,0.5,0.4,0.2 ]
           }]
         })
       }
