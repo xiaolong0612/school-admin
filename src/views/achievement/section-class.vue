@@ -123,7 +123,7 @@
     },
 		mounted() {
 			this.getList();
-			this.screenHeight = setTableHeight(this.listLoading);
+			this.screenHeight = setTableHeight(false);
 		},
 		methods: {
 			getList() {

@@ -1,79 +1,83 @@
 <template>
 	<div>
-		<h3 class="title-name" style="line-height: 40px">
-			<wscn-icon-svg style="color: rgb(107,194,85);font-size: 20px" icon-class="shuxian"/>
-			{{name}}
-		</h3>
-		<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="maxHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-			<el-table-column prop="test" label="历次" width="150" fixed></el-table-column>
-			<el-table-column prop="number5" label="语文" width="60">
-				<el-table-column label='优秀数' width="100">
-					<template scope="scope">
-						<div :formatter="formatter(scope.row.number5)" :style="{color: formatter(scope.row.number5)}">{{scope.row.number5}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column prop="number5" label="数学" width="60">
-				<el-table-column label='优秀数' width="100">
-					<template scope="scope">
-						<div :formatter="formatter(scope.row.number4)" :style="{color: formatter(scope.row.number4)}">{{scope.row.number4}}</div>
-					</template>
-				</el-table-column>
-				</el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column prop="number5" label="英语" width="60">
-				<el-table-column label='优秀数' width="100">
-					<template scope="scope">
-						<div :formatter="formatter(scope.row.number3)" :style="{color: formatter(scope.row.number3)}">{{scope.row.number3}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column prop="number5" label="思品" width="60">
-				<el-table-column prop="number1" label='优秀数' width="100">
-					<template scope="scope">
-						<div :formatter="formatter(scope.row.number1)" :style="{color: formatter(scope.row.number1)}">{{scope.row.number1}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column prop="number5" label="历史" width="60">
-				<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column prop="number5" label="地理" width="60">
-				<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column prop="number5" label="物理" width="60">
-				<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column prop="number5" label="化学" width="60">
-				<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column prop="number5" label="生物" width="60">
-				<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
-				<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-		</el-table>
+		<div class="ui-table-wrap clearfix">
+			<h3 class="ui-table-title">
+				<wscn-icon-svg icon-class="shuxian"/>
+				{{name}}
+			</h3>
+			<div class="ui-table-main">
+				<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
+					<el-table-column prop="test" label="历次" width="150" fixed></el-table-column>
+					<el-table-column prop="number5" label="语文" width="60">
+						<el-table-column label='优秀数' width="100">
+							<template scope="scope">
+								<div :formatter="formatter(scope.row.number5)" :style="{color: formatter(scope.row.number5)}">{{scope.row.number5}}</div>
+							</template>
+						</el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column prop="number5" label="数学" width="60">
+						<el-table-column label='优秀数' width="100">
+							<template scope="scope">
+								<div :formatter="formatter(scope.row.number4)" :style="{color: formatter(scope.row.number4)}">{{scope.row.number4}}</div>
+							</template>
+						</el-table-column>
+						</el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column prop="number5" label="英语" width="60">
+						<el-table-column label='优秀数' width="100">
+							<template scope="scope">
+								<div :formatter="formatter(scope.row.number3)" :style="{color: formatter(scope.row.number3)}">{{scope.row.number3}}</div>
+							</template>
+						</el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column prop="number5" label="思品" width="60">
+						<el-table-column prop="number1" label='优秀数' width="100">
+							<template scope="scope">
+								<div :formatter="formatter(scope.row.number1)" :style="{color: formatter(scope.row.number1)}">{{scope.row.number1}}</div>
+							</template>
+						</el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column prop="number5" label="历史" width="60">
+						<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column prop="number5" label="地理" width="60">
+						<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column prop="number5" label="物理" width="60">
+						<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column prop="number5" label="化学" width="60">
+						<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column prop="number5" label="生物" width="60">
+						<el-table-column prop="number3" label='优秀数' width="100"></el-table-column>
+						<el-table-column prop="float3" label="优秀率" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+				</el-table>
 		<!-- <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
         :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div> -->
+    	</div>
+    </div>
 	</div>
 </template>
 <script>
@@ -93,9 +97,8 @@
 			return {
 				name: '历次考试全区各科优良率监控表',
 				subjectList,
-				list: null,
-				maxHeight: '',
-				isRed: false,
+				list: [],
+				screenHeight: '',
 				total: null,
         listLoading: true,
         listQuery: {
@@ -115,12 +118,7 @@
       this.getList();
     },
 		mounted() {
-			this.maxHeight = window.innerHeight-80;
-			window.onresize = () => {
-	          return (() => {
-	            this.maxHeight = window.innerHeight-80;
-	          })()
-	        }
+			this.screenHeight = this.setTableHeight(true);
 		},
 		methods: {
 			getList() {

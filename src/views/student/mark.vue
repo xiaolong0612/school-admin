@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
-			<el-form :inline="true" :model="fromData" class="form-inline">
+			<el-form :inline="true" :model="fromData">
 				<el-form-item label="学校">
 					<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择">
 					  <el-option v-for="item in list" :value="item.school" :key="item.school">
@@ -78,11 +78,8 @@
 			}
 		},
 		mounted() {
+			this.screenHeight = this.setTableHeight(false);
 			this.getList();
-			window.onresize = () => {
-				this.screenHeight = this.setTableHeight(this.listLoading);
-				this.key++;
-      }
 		},
 		methods: {
 			getList() {
@@ -91,12 +88,7 @@
           this.list = response.data.list;
           this.total = response.data.total;
           this.listLoading = false;
-          this.autoTable();
         })
-      },
-      autoTable() {
-        this.screenHeight = this.setTableHeight(this.listLoading);
-				this.key++;
       },
       handleSizeChange(val) {
         this.listQuery.limit = val;

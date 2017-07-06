@@ -2,14 +2,8 @@
     <div class="chart" id="chart" style="height:600px;width:100%"></div>
 </template>
 <script>
-    // 引入 ECharts 主模块
-    const echarts = require('echarts/lib/echarts');
-    require('echarts/lib/chart/line');
-    // 引入提示框和标题组件
-    require('echarts/lib/component/tooltip');
-    require('echarts/lib/component/title');
-    require('echarts/lib/component/legend');
-    require('echarts/lib/component/dataZoom');
+  import echarts from 'echarts';
+  require('echarts/theme/macarons'); // echarts 主题
     export default {
       data() {
         return {

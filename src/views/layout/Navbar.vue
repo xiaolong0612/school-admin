@@ -9,10 +9,8 @@
         </div>
         <Hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></Hamburger>
         <!-- <levelbar></levelbar> -->
+        <img src="../../assets/logo.png" height="50">
         <tabs-view></tabs-view>
-        <div class='fl'>
-            <img src="../../assets/logo.jpg" style="margin-top: 5px;" height="40">
-        </div>
         
         <!-- <ErrLog v-if="log.length>0" class="errLog-container" :logsList="log"></ErrLog> -->
         

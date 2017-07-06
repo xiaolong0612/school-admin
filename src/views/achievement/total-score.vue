@@ -95,7 +95,6 @@
 </template>
 <script>
 	import { fetchList } from 'api/data';
-	import { setTableHeight } from '../../utils/tableHeight';
 	export default {
 		data() {
 			return {
@@ -122,8 +121,8 @@
       
     },
 		mounted() {
+			this.screenHeight = this.setTableHeight(false);
 			this.getList();
-			this.screenHeight = setTableHeight(this.listLoading);
 		},
 		methods: {
 			getList() {

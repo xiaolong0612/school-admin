@@ -93,13 +93,7 @@
 		},
 		mounted() {
 			this.getList();
-			const that = this;
-			that.screenHeight = window.innerHeight-200;
-      window.onresize = () => {
-        return (() => {
-          that.screenHeight = window.innerHeight-200;
-        })()
-      }
+			this.screenHeight = this.setTableHeight(false);
 		},
 		methods: {
 			getList() {

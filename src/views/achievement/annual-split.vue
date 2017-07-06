@@ -67,7 +67,6 @@
 </template>
 <script>
 	import { fetchList, fetchPv } from 'api/data';
-	import { setTableHeight } from '../../utils/tableHeight'
 	export default {
 		data() {
 			return {
@@ -91,10 +90,10 @@
 			}
 		},
 		created() {
-		},
+		},	
 		mounted() {
+			this.screenHeight = this.setTableHeight(false);
 			this.getList();
-			this.screenHeight = setTableHeight(this.listLoading);
 		},
 		methods: {
 			getList() {
@@ -107,9 +106,7 @@
         })
       },
 			formatter(row) {
-				if(row.chineseScoringRate < 6){
-					this.isRed = true
-				}
+				
 			},
 			handleSizeChange(val) {
         this.listQuery.limit = val;
@@ -125,8 +122,3 @@
 		}
 	}
 </script>
-<style rel="stylesheet/scss" lang="scss">
-	.form-inline .el-form-item{
-		margin-bottom: 15px
-	}
-</style>

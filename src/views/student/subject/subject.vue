@@ -143,7 +143,8 @@
             textStyle: {
               color: '#333',
               fontSize: '20',
-            }
+            },
+            padding: [25, 0, 0, 0]
           },
           tooltip: {
             trigger: 'axis',

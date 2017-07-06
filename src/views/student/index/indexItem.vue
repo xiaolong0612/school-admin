@@ -4,7 +4,6 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  // 引入 ECharts 主模块
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
   export default {
