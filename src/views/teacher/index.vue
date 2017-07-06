@@ -76,7 +76,7 @@
 <script>
   import { mapGetters } from 'vuex';
   import echarts from 'echarts';
-  require('echarts/theme/macarons');
+  require('echarts/theme/macarons'); // echarts 主题
   export default {
   	data() {
   		return {
@@ -127,7 +127,7 @@
               color: '#fff',
               fontSize: '20',
             },
-            padding: [20, 0, 0, 0]
+            padding: [25, 0, 0, 0]
           },
           tooltip: {
             trigger: 'axis',

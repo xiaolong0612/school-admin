@@ -14,7 +14,7 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  import { fetchList, fetchPv } from 'api/data';
+  import { fetchList, fetchPv } from 'api/data';// 引入 ECharts 主模块
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
   export default {
@@ -123,7 +123,8 @@
             textStyle: {
               color: '#333',
               fontSize: '20',
-            }
+            },
+            padding: [25, 0, 0, 0]
           },
           tooltip: {
             trigger: 'axis',

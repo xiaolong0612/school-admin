@@ -1,99 +1,105 @@
 <template>
 	<div>
-		<el-form :inline="true" :model="fromData" class="form-inline fr">
-			<el-form-item label="学校">
-				<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择">
-				  <el-option v-for="item in list" :value="item.school" :key="item.school">
-				  </el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item>
-	          <el-button type="primary" @click="onSearch">查询</el-button>
-	        </el-form-item>
-		</el-form>
-		<h3 class="title-name" style="line-height: 35px">
-			<wscn-icon-svg style="color: rgb(107,194,85);font-size: 20px" icon-class="shuxian"/>
-			{{name}}
-		</h3>
-		<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-			<el-table-column prop="school" label="学校" width="150" fixed>
-				<template scope="scope">
-					<router-link to="/achievement/all-student">
-						{{scope.row.school}}
-					</router-link>
-				</template>
-			</el-table-column>
-			<el-table-column prop='number5' label="班级" width="90" sortable fixed>
-				<template scope="scope">
-					<router-link to="/achievement/all-student">
-						{{scope.row.number5}}
-					</router-link>
-				</template>
-			</el-table-column>
-			<el-table-column prop='number1' label="生数" width="90" sortable></el-table-column>
-			<el-table-column prop='number2' label="考生数" width='100'></el-table-column>
-			<el-table-column prop='name2' label='年段长' width="120"></el-table-column>
-			<el-table-column label='语文' header-align='center'>
-				<el-table-column prop="name3" label="组长" width="100"></el-table-column>
-				<el-table-column label="均分" width="100">
-					<template scope="scope">
-						<div :formatter="formatter(scope.row.number1)" :style="{color: formatter(scope.row.number1)}">{{scope.row.number1}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="float1" label="得分率" width="100" sortable></el-table-column>
-				<el-table-column prop="float2" label="超均率" width="100"></el-table-column>
-				<el-table-column label="区位置" width="100">
-					<template scope="scope">
-						<div :formatter="formatter(scope.row.number4)" :style="{color: formatter(scope.row.number4)}">{{scope.row.number4}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="number5" label="市位置" width="100">
-					<template scope="scope">
-						<div :formatter="formatter(scope.row.number5)" :style="{color: formatter(scope.row.number5)}">{{scope.row.number5}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="number6" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column label='数学' header-align='center'>
-				<el-table-column prop="name4" label="组长" width="100"></el-table-column>
-				<el-table-column prop="number1" label="均分" width="100"></el-table-column>
-				<el-table-column prop="float4" label="得分率" width="100"></el-table-column>
-				<el-table-column prop="float3" label="超均率" width="100"></el-table-column>
-				<el-table-column prop="number8" label="区位置" width="100"></el-table-column>
-				<el-table-column prop="number6" label="市位置" width="100"></el-table-column>
-				<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column label='英语' header-align='center'>
-				<el-table-column prop="name5" label="组长" width="100"></el-table-column>
-				<el-table-column prop="number2" label="均分" width="100"></el-table-column>
-				<el-table-column prop="float8" label="得分率" width="100"></el-table-column>
-				<el-table-column prop="float4" label="超均率" width="100"></el-table-column>
-				<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
-				<el-table-column prop="number2" label="市位置" width="100"></el-table-column>
-				<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column label='总分' header-align='center'>
-				<el-table-column prop="number1" label="均分" width="100"></el-table-column>
-				<el-table-column prop="float3" label="得分率" width="100"></el-table-column>
-				<el-table-column prop="float4" label="超均率" width="100"></el-table-column>
-				<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
-				<el-table-column prop="number2" label="市位置" width="100"></el-table-column>
-				<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column label='折合总分' header-align='center'>
-				<el-table-column prop="number1" label="均分" width="100"></el-table-column>
-				<el-table-column prop="number3" label="得分率" width="100"></el-table-column>
-				<el-table-column prop="float7" label="超均率" width="100"></el-table-column>
-				<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
-				<el-table-column prop="number5" label="市位置" width="100"></el-table-column>
-				<el-table-column prop="number2" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-		</el-table>
-		<div v-show="!listLoading" class="pagination-container fr">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+			<el-form :inline="true" :model="fromData">
+				<el-form-item label="学校">
+					<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择">
+					  <el-option v-for="item in list" :value="item.school" :key="item.school">
+					  </el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
+	        <el-button type="primary" @click="onSearch">查询</el-button>
+	      </el-form-item>
+			</el-form>
+		</div>
+		<div class="ui-table-wrap clearfix">
+			<h3 class="ui-table-title">
+				<wscn-icon-svg icon-class="shuxian"/>
+				{{name}}
+			</h3>
+			<div class="ui-table-main">
+				<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
+					<el-table-column prop="school" label="学校" width="150" fixed>
+						<template scope="scope">
+							<router-link to="/achievement/all-student">
+								{{scope.row.school}}
+							</router-link>
+						</template>
+					</el-table-column>
+					<el-table-column prop='number5' label="班级" width="90" sortable fixed>
+						<template scope="scope">
+							<router-link to="/achievement/all-student">
+								{{scope.row.number5}}
+							</router-link>
+						</template>
+					</el-table-column>
+					<el-table-column prop='number1' label="生数" width="90" sortable></el-table-column>
+					<el-table-column prop='number2' label="考生数" width='100'></el-table-column>
+					<el-table-column prop='name2' label='年段长' width="120"></el-table-column>
+					<el-table-column label='语文' header-align='center'>
+						<el-table-column prop="name3" label="组长" width="100"></el-table-column>
+						<el-table-column label="均分" width="100">
+							<template scope="scope">
+								<div :formatter="formatter(scope.row.number1)" :style="{color: formatter(scope.row.number1)}">{{scope.row.number1}}</div>
+							</template>
+						</el-table-column>
+						<el-table-column prop="float1" label="得分率" width="100" sortable></el-table-column>
+						<el-table-column prop="float2" label="超均率" width="100"></el-table-column>
+						<el-table-column label="区位置" width="100">
+							<template scope="scope">
+								<div :formatter="formatter(scope.row.number4)" :style="{color: formatter(scope.row.number4)}">{{scope.row.number4}}</div>
+							</template>
+						</el-table-column>
+						<el-table-column prop="number5" label="市位置" width="100">
+							<template scope="scope">
+								<div :formatter="formatter(scope.row.number5)" :style="{color: formatter(scope.row.number5)}">{{scope.row.number5}}</div>
+							</template>
+						</el-table-column>
+						<el-table-column prop="number6" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column label='数学' header-align='center'>
+						<el-table-column prop="name4" label="组长" width="100"></el-table-column>
+						<el-table-column prop="number1" label="均分" width="100"></el-table-column>
+						<el-table-column prop="float4" label="得分率" width="100"></el-table-column>
+						<el-table-column prop="float3" label="超均率" width="100"></el-table-column>
+						<el-table-column prop="number8" label="区位置" width="100"></el-table-column>
+						<el-table-column prop="number6" label="市位置" width="100"></el-table-column>
+						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column label='英语' header-align='center'>
+						<el-table-column prop="name5" label="组长" width="100"></el-table-column>
+						<el-table-column prop="number2" label="均分" width="100"></el-table-column>
+						<el-table-column prop="float8" label="得分率" width="100"></el-table-column>
+						<el-table-column prop="float4" label="超均率" width="100"></el-table-column>
+						<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
+						<el-table-column prop="number2" label="市位置" width="100"></el-table-column>
+						<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column label='总分' header-align='center'>
+						<el-table-column prop="number1" label="均分" width="100"></el-table-column>
+						<el-table-column prop="float3" label="得分率" width="100"></el-table-column>
+						<el-table-column prop="float4" label="超均率" width="100"></el-table-column>
+						<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
+						<el-table-column prop="number2" label="市位置" width="100"></el-table-column>
+						<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+					<el-table-column label='折合总分' header-align='center'>
+						<el-table-column prop="number1" label="均分" width="100"></el-table-column>
+						<el-table-column prop="number3" label="得分率" width="100"></el-table-column>
+						<el-table-column prop="float7" label="超均率" width="100"></el-table-column>
+						<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
+						<el-table-column prop="number5" label="市位置" width="100"></el-table-column>
+						<el-table-column prop="number2" label="进步值" width="100"></el-table-column>
+					</el-table-column>
+				</el-table>
+				<div v-show="!listLoading" class="pagination-container fr">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      </el-pagination>
+		    </div>
+		  </div>
+		</div>
 	</div>
 </template>
 <script>
@@ -124,16 +130,11 @@
 			}
 		},
 		created() {
-      this.getList();
+      
     },
 		mounted() {
-	    const that = this;
-			that.screenHeight = window.innerHeight-200;
-      window.onresize = () => {
-        return (() => {
-          that.screenHeight = window.innerHeight-200;
-        })()
-      }
+	    this.screenHeight = this.setTableHeight(false);
+	    this.getList();
 		},
 		methods: {
 			getList() {
@@ -168,8 +169,3 @@
 		}
 	}
 </script>
-<style rel="stylesheet/scss" lang="scss">
-	.form-inline .el-form-item{
-		margin-bottom: 15px
-	}
-</style>

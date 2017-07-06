@@ -1,4 +1,4 @@
-单次考试学校各班<template>
+<template>
 	<div>
 		<el-form :inline="true" :model="fromData" class="demo-form-inline">
 			<el-form-item label="届">

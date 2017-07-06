@@ -21,15 +21,8 @@
   </div>
 </template>
 <script>
-    import { colorArray } from 'utils/index'
-    // 引入 ECharts 主模块
-    const echarts = require('echarts/lib/echarts');
-    require('echarts/lib/chart/bar');
-    // 引入提示框和标题组件
-    require('echarts/lib/component/tooltip');
-    require('echarts/lib/component/title');
-    require('echarts/lib/component/legend');
-    require('echarts/lib/component/dataZoom');
+  import echarts from 'echarts';
+  require('echarts/theme/macarons'); // echarts 主题
     const rangeList = [
       {value: '学校'},
       {value: '行政班'},
