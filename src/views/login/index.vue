@@ -141,7 +141,20 @@
           codeImg: '',
           loading: false,
           showDialog: false,
-          disabled: false
+          disabled: false,
+          pathList: {
+            0: '/teacher/index',
+            1: '/director/index',
+            2: '',
+            3: '/director/index',
+            4: '',
+            5: '',
+            6: '',
+            7: '/instructor/index',
+            8: '/bureau/index',
+            9: '/bureau/index',
+            10: '/student/index'
+          }
         }
       },
       computed: {
@@ -167,7 +180,7 @@
                 // }else {
                 //   this.$router.push({ path: '/bureau/index' });
                 // }
-                this.$router.push({ path: '/director/index' });
+                this.$router.push({ path: this.pathList[res.teacher.type] });
               }).catch(err => {
                 this.loading = false;
                 this.$message.error(err);

@@ -1,66 +1,72 @@
 <template>
 	<div>
-		<el-form :inline="true" :model="fromData" class="demo-form-inline">
-			<el-form-item label="届">
-				<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择">
-				  <el-option v-for="item in list" :value="item.number4" :key="item.number4">
-				  </el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="学期">
-				<el-select v-model="fromData.selectedClass" filterable placeholder="请选择">
-				  <el-option v-for="item in list" :value="item.number1" :key="item.number1">
-				  </el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="学校">
-				<el-select v-model="fromData.selectedSchool" filterable placeholder="请选择">
-				  <el-option v-for="item in list" :value="item.school" :key="item.school">
-				  </el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="班级">
-				<el-select v-model="fromData.selectedClass1" filterable placeholder="请选择">
-				  <el-option v-for="item in list" :value="item.number1" :key="item.number1">
-				  </el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item>
-	          <el-button type="primary" @click="onSearch">查询</el-button>
-	        </el-form-item>
-		</el-form>
-		<h3 class="title-name" style="line-height: 40px">
-			<wscn-icon-svg style="color: rgb(107,194,85);font-size: 20px" icon-class="shuxian"/>
-			{{name}}
-		</h3>
-		<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="maxHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-			<el-table-column label="单位" width="150" fixed>
-				<template scope="scope">
-					<router-link to="/P/single-school">{{scope.row.school}}</router-link>
-				</template>
-			</el-table-column>
-			<el-table-column prop="number4" label="班级" width="100"></el-table-column>
-			<el-table-column prop="number4" label="班主任" width="100"></el-table-column>
-			<el-table-column prop="number4" label="应考数" width="100"></el-table-column>
-			<el-table-column prop="number2" label="实考数" width="100"></el-table-column>
-			<el-table-column prop="float3" label="总分超均率" width="120"></el-table-column>
-			<el-table-column prop="float3" label="全科及格率率" width="120"></el-table-column>
-			<el-table-column prop="float3" label="单科优良率" width="120"></el-table-column>
-			<el-table-column prop="float3" label="规模比例" width="100"></el-table-column>
-			<el-table-column prop="float3" label="巩固率" width="100"></el-table-column>
-			<el-table-column prop="float3" label="P值" width="100"></el-table-column>
-			<el-table-column label='进步值' width="100">
-				<template scope="scope">
-					<div :formatter="formatter(scope.row.number5)" :style="{color: formatter(scope.row.number5)}">{{scope.row.number5}}</div>
-				</template>
-			</el-table-column>
-			<el-table-column prop="number7" label="区名次" width="100"></el-table-column>
-		</el-table>
-		<div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+			<el-form :inline="true" :model="fromData" class="form-inline">
+				<el-form-item label="届">
+					<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择">
+					  <el-option v-for="item in list" :value="item.number4" :key="item.number4">
+					  </el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="学期">
+					<el-select v-model="fromData.selectedClass" filterable placeholder="请选择">
+					  <el-option v-for="item in list" :value="item.number1" :key="item.number1">
+					  </el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="学校">
+					<el-select v-model="fromData.selectedSchool" filterable placeholder="请选择">
+					  <el-option v-for="item in list" :value="item.school" :key="item.school">
+					  </el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="班级">
+					<el-select v-model="fromData.selectedClass1" filterable placeholder="请选择">
+					  <el-option v-for="item in list" :value="item.number1" :key="item.number1">
+					  </el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
+          <el-button type="primary" @click="onSearch">查询</el-button>
+        </el-form-item>
+			</el-form>
+		</div>
+		<div class="ui-table-wrap clearfix">
+			<h3 class="ui-table-title">
+				<wscn-icon-svg icon-class="shuxian"/>
+				{{name}}
+			</h3>
+			<div class="ui-table-main">
+				<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="maxHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
+					<el-table-column label="单位" width="150" fixed>
+						<template scope="scope">
+							<router-link to="/P/single-school">{{scope.row.school}}</router-link>
+						</template>
+					</el-table-column>
+					<el-table-column prop="number4" label="班级" width="100"></el-table-column>
+					<el-table-column prop="number4" label="班主任" width="100"></el-table-column>
+					<el-table-column prop="number4" label="应考数" width="100"></el-table-column>
+					<el-table-column prop="number2" label="实考数" width="100"></el-table-column>
+					<el-table-column prop="float3" label="总分超均率" width="120"></el-table-column>
+					<el-table-column prop="float3" label="全科及格率率" width="120"></el-table-column>
+					<el-table-column prop="float3" label="单科优良率" width="120"></el-table-column>
+					<el-table-column prop="float3" label="规模比例" width="100"></el-table-column>
+					<el-table-column prop="float3" label="巩固率" width="100"></el-table-column>
+					<el-table-column prop="float3" label="P值" width="100"></el-table-column>
+					<el-table-column label='进步值' width="100">
+						<template scope="scope">
+							<div :formatter="formatter(scope.row.number5)" :style="{color: formatter(scope.row.number5)}">{{scope.row.number5}}</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="number7" label="区名次" width="100"></el-table-column>
+				</el-table>
+				<div v-show="!listLoading" class="pagination-container">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      </el-pagination>
+		    </div>
+			</div>
+		</div>
 	</div>
 </template>
 <script>
@@ -80,7 +86,7 @@
 			return {
 				name: '历次考试班级各科优良率监控表',
 				subjectList,
-				list: null,
+				list: [],
 				maxHeight: '',
 				isRed: false,
 				total: null,
@@ -105,12 +111,7 @@
       this.getList();
     },
 		mounted() {
-			this.maxHeight = window.innerHeight-80;
-			window.onresize = () => {
-	          return (() => {
-	            this.maxHeight = window.innerHeight-80;
-	          })()
-	        }
+			this.screenHeight = this.setTableHeight(false);
 		},
 		methods: {
 			getList() {

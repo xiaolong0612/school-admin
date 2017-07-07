@@ -115,7 +115,7 @@
 			return {
 				name: '历次考试班级各科优良率监控表',
 				subjectList,
-				list: null,
+				list: [],
 				maxHeight: '',
 				isRed: false,
 				total: null,
