@@ -22,7 +22,7 @@
 				<el-table :data="list" v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
 					<el-table-column prop="school" label="学校" width="150" fixed>
 						<template scope="scope">
-							<router-link to='/achievement/all-class'>{{scope.row.school}}</router-link>
+							{{scope.row.school}}
 						</template>
 					</el-table-column>
 					<el-table-column prop='number1' label="生数" width="90" sortable></el-table-column>
@@ -128,9 +128,7 @@
 			getList() {
         this.listLoading = true;
         fetchList(this.listQuery).then(response => {
-        	console.log(response);
           this.list = response.data.list;
-          console.log(response.data);
           this.total = response.data.total;
           this.listLoading = false;
         })

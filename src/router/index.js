@@ -32,7 +32,7 @@ const Upload = _import('demo/Upload');
 const Data = _import('demo/data');
 /* 首页 */
 const TeacherIndex = _import('teacher/index');        //学科教师0 
-const DirectorIndex = _import('director/index');     // 年段长、班主任1、3
+const DirectorIndex = _import('director/index');     // 年段长3、班主任1
 const InstructorIndex = _import('instructor/index'); // 教研员7
 const BureauIndex = _import('bureau/index');         // 教育局8、9
 const StudentIndex = _import('student/index');       // 学生10
@@ -313,11 +313,6 @@ export const asyncRouterMap = [
         component: AllClass,
         meta: { role: ['9'] }
       }, {
-        path: 'all-student',
-        name: '学生单次考试',
-        component: AllStudent,
-        meta: { role: [ '1', '3', '9'] }
-      }, {
         path: 'administration-discipline-hierarchy',
         name: '行政班学科分层',
         component: AdministrationDisciplineHierarchy,
@@ -327,6 +322,11 @@ export const asyncRouterMap = [
         component: TeachingDisciplineHierarchy,
         name: "教学班学科分层",
         meta: { role: ['7'] }
+      }, {
+        path: 'all-student',
+        name: '学生单次考试',
+        component: AllStudent,
+        meta: { role: [ '1', '3', '9'] }
       }, {
         path: 'discipline-average',
         component: DisciplineAverage,
@@ -361,7 +361,7 @@ export const asyncRouterMap = [
     name: '考点管理',
     icon: 'zhuantiguanli',
     noDropdown: true,
-    meta: { role: ['7'] },
+    meta: { role: ['admin'] },
     children: [
       {
         path: 'add-test',

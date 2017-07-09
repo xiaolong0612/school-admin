@@ -1,25 +1,6 @@
 <template>
-  <div>
-    <!-- <el-form :inline="true" :model="formData" class="form-inline fr">
-      <el-form-item label="全区">
-        <el-select v-model="formData.selectedRange" filterable placeholder="请选择" :change="rangeChange(formData.selectedRange)">
-          <el-option v-for="item in rangeList" :value="item.value" :key="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item v-show="showSchool" label="学校">
-        <el-select v-model="formData.selectedSchool" clearable placeholder="请选择" :change="schoolChange(formData.selectedSchool)">
-          <el-option v-for="item in schoolList" filterable  :value="item.value" :key="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSearch">查询</el-button>
-      </el-form-item>
-    </el-form> -->
-    <div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%">
+  <div class="echarts-wrap ui-echart-wrap">
     <div class="chart" id="chart" style="height:600px;width:100%"></div>
-    </div>
   </div>
 </template>
 <script>
@@ -93,70 +74,41 @@
               color: '#fff'
             }
           },
+          legend: {
+            orient: 'vertical',
+            bottom: '20%',
+            right: '1%',
+            textStyle: {
+              color: '#90979c'
+            },
+            data: ['市平均', '区平均', '市九上', '区九上']
+          },
           calculable: true,
           xAxis: [{
             type: 'category',
             triggerEvent: true,
-            axisLine: {
-              lineStyle: {
-                color: '#ccc'
-              }
+            axisTick: {
+              alignWithLabel: true
             },
-            axisLabel: {
-              textStyle: {
-                color: '#333'
-              }
-            },
-            data: ['全市', '启悟中学', '育才学校', '城东学校', '莲美学校']
+            nameRotate: 50,
+            data: ['内厝中学','新店中学','厦门市国祺中学','厦门市第二外国语学校','厦门市五显中学','厦门市东山中学','厦门市启悟中学','同安一中','巷西中学','刘五店中学','巷南中学','彭厝学校','巷东中学','厦门市竹坝学校','厦门市澳溪中学','厦门市城东中学','厦门华兴学校','厦门市美林中学','厦门市莲美中学']
           }],
           yAxis: [{
-            type: 'value',
-            name: '百分比(%)',
-            axisLine: {
-              lineStyle: {
-                color: '#ccc'
-              }
-            },
-            axisLabel: {
-              interval: 2,
-              textStyle: {
-                color: '#333'
-              }
-            }
+            type: 'value'
           }],
           dataZoom: [{
             show: true,
-            height: 30,
-            xAxisIndex: [
-              0
-            ],
-            bottom: 30,
-            start: 10,
-            end: 80,
+            bottom: 15,
             handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
-            handleSize: '110%',
-            handleStyle: {
-              color: '#d3dee5'
-
-            },
-            textStyle: {
-              color: '#333' },
-            borderColor: '#90979c'
           }, {
             type: 'inside',
             show: true,
-            height: 15,
-            start: 1,
-            end: 35
           }],
           series: [{
             name: 'data',
             type: 'bar',
-            barMaxWidth: 35,
-            barGap: '10%',
             itemStyle: {
               normal: {
-                color: 'rgba(255,144,128,1)',
                 label: {
                   show: true,
                   textStyle: {
@@ -166,13 +118,7 @@
                 }
               }
             },
-            data: [
-              5,
-              3,
-              6,
-              7,
-              5
-            ]
+            data: [ 5, 3, 6, 7, 5, 0.4, 0.4,1.2, 1, 0.9,1.2, 1, 0.9, 0.9, 0.9,7, 5, 0.4 ]
           }]
         })
       },

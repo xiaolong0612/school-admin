@@ -20,13 +20,22 @@
 			</el-form>
 		</div>
 		<div class="ui-table-wrap clearfix">
-			<h3 class="ui-table-title">
-				<wscn-icon-svg icon-class="shuxian"/>
-				{{name}}
-			</h3>
+			<div class="ui-table-title-wrap">
+				<router-link class="fr" to="/achievement/teaching-discipline-hierarchy">
+					<el-button type="warning" size="small">查看教学班</el-button>
+				</router-link>
+				<h3 class="ui-table-title">
+					<wscn-icon-svg icon-class="shuxian"/>
+					{{name}}
+				</h3>
+			</div>
 			<div class="ui-table-main">
 				<el-table :data="list" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
-					<el-table-column prop="schoolName" label="学校" width="150" fixed></el-table-column>
+					<el-table-column prop="schoolName" label="学校" width="150" fixed>
+						<template scope="scope">
+							<router-link to="/achievement/administration-discipline-hierarchy">{{scope.row.schoolName}}</router-link>
+						</template>
+					</el-table-column>
 					<el-table-column prop="examineeCount" label="生数" width="90" sortable>
 					</el-table-column>
 					<el-table-column prop='gradeLeader' label='备课组长' width="120"></el-table-column>

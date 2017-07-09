@@ -143,6 +143,7 @@
           showDialog: false,
           disabled: false,
           pathList: {
+            admin: '/',
             0: '/teacher/index',
             1: '/director/index',
             2: '',

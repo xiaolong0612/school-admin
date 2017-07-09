@@ -14,10 +14,15 @@
 			</el-form>
 		</div>
 		<div class="ui-table-wrap clearfix">
-			<h3 class="ui-table-title">
-				<wscn-icon-svg icon-class="shuxian"/>
-				{{name}}
-			</h3>
+			<div class="ui-table-title-wrap">
+				<router-link class="fr" to="/achievement/teaching-discipline-hierarchy">
+					<el-button type="warning" size="small">查看教学班</el-button>
+				</router-link>
+				<h3 class="ui-table-title">
+					<wscn-icon-svg icon-class="shuxian"/>
+					{{name}}
+				</h3>
+			</div>
 			<div class="ui-table-main">
 				<el-table :data="list" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
 					<el-table-column prop="school" label="学校" width="120" fixed></el-table-column>

@@ -21,8 +21,3 @@
       }
     }
 </script>
-<style type="text/css">
-  .app-main{
-    padding: 15px;
-  }
-</style>

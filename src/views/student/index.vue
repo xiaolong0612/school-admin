@@ -7,6 +7,36 @@
 			  <el-col :span="24">
 			  	<div class="wrap">
 						<div class="chart" id="chart" style="height:600px;width:100%"></div>
+            <div class="ui-course">
+              <div class="clearfix ui-course_nr">
+                <ul class="ui-course_nr2">
+                  <li>2007
+                    <div class="ui-once">
+                      <h1>2007</h1>
+                      <p>内容描述4</p>
+                    </div>
+                  </li>
+                  <li>2008
+                    <div class="ui-once">
+                      <h1>2008</h1>
+                      <p>内容描述5</p>
+                    </div>
+                  </li>
+                  <li>2009
+                    <div class="ui-once">
+                      <h1>2009</h1>
+                      <p>内容描述6</p>
+                    </div>
+                  </li>
+                  <li>2013
+                    <div class="ui-once">
+                      <h1>2013</h1>
+                      <p>内容描述7</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
 					</div>
 			  </el-col>
 			</el-row>
@@ -114,7 +144,7 @@
           legend: {
             orient: 'vertical',
             bottom: '25%',
-            right: '20px',
+            right: '2%',
             data: ['厦门市', '同安区']
           },
           calculable: true,

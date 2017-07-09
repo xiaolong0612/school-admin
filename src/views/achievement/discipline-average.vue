@@ -22,13 +22,24 @@
 			</el-form>
 		</div>
 		<div class="ui-table-wrap clearfix">
-			<h3 class="ui-table-title">
-				<wscn-icon-svg icon-class="shuxian"/>
-				{{name}}
-			</h3>
+			<div class="ui-table-title-wrap">
+				<router-link class="fr" to="/achievement/teaching-average">
+					<el-button type="warning" size="small">查看教学班</el-button>
+				</router-link>
+				<h3 class="ui-table-title">
+					<wscn-icon-svg icon-class="shuxian"/>
+					{{name}}
+				</h3>
+			</div>
 			<div class="ui-table-main">
 				<el-table :data="list" border style="width: 100%" :max-height="screenHeight">
-					<el-table-column prop="school" label="学校" width="120" fixed></el-table-column>
+					<el-table-column prop="school" label="学校" width="120" fixed>
+						<template scope='scope'>
+							<router-link to="/achievement/teaching-average">
+								{{scope.row.school}}
+							</router-link>
+						</template>
+					</el-table-column>
 					<el-table-columnlabel='入学考试' header-align='center'>
 						<el-table-column prop="number1" label="平均分" width="100"></el-table-column>
 						<el-table-column prop="number2" label="区位置" width="100" sortable>
@@ -53,7 +64,7 @@
 						<el-table-column prop="number2" label="进步值" width="100"></el-table-column>
 					</el-table-column>
 				</el-table>
-				<div v-show="!listLoading" class="pagination-container fr">
+				<div v-show="!listLoading" class="page-wrap fr">
 		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
 		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
@@ -69,7 +80,7 @@
 			return {
 				name: '所有考试全区各校学科均分监控表',
 				screenHeight: 0,
-				list: null,
+				list: [],
 				total: null,
         listLoading: true,
         listQuery: {

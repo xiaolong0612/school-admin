@@ -1,22 +1,5 @@
 <template>
   <div>
-    <!-- <el-form :inline="true" :model="formData" class="demo-form-inline">
-      <el-form-item label="全区">
-        <el-select v-model="formData.selectedRange" filterable placeholder="请选择" :change="rangeChange(formData.selectedRange)">
-          <el-option v-for="item in rangeList" :value="item.value" :key="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item v-show="showSchool" label="学校">
-        <el-select v-model="formData.selectedSchool" clearable placeholder="请选择" :change="schoolChange(formData.selectedSchool)">
-          <el-option v-for="item in schoolList" filterable  :value="item.value" :key="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSearch">查询</el-button>
-      </el-form-item>
-    </el-form> -->
     <div class="chart" id="chart" style="height:600px;width:100%"></div>
   </div>
 </template>
@@ -35,7 +18,6 @@
     export default {
       data() {
         return {
-          color: colorArray(5, 9),
           chart: '',
           link: {
             语言积累: 'http://www.baidu.com',
@@ -63,12 +45,10 @@
       },
       methods: {
         initChart() {
-          this.chart = echarts.init(document.getElementById('chart'));
-          const xData = (function() {
-            const data = ['语言积累', '语言运用', '非连文本阅读', '名著阅读', '文言文阅读', '议论文阅读', '文学作品阅读', '作文', '全卷'];
-            return data;
-          }());
-          const color = this.color;
+          this.chart = echarts.init(document.getElementById('chart'), 'macarons');
+          this.setOption();
+        },
+        setOption() {
           this.chart.setOption({
             title: {
               text: '专题得分率监控图',
@@ -108,7 +88,7 @@
             xAxis: [{
               type: '',
               triggerEvent: true,
-              data: xData,
+              data: ['语言积累', '语言运用', '非连文本阅读', '名著阅读', '文言文阅读', '议论文阅读', '文学作品阅读', '作文', '全卷'],
               axisLine: {
                 lineStyle: {
                   color: '#ccc'
@@ -173,11 +153,8 @@
             series: [{
               name: '平均',
               type: 'bar',
-              barMaxWidth: 35,
-              barGap: '10%',
               itemStyle: {
                 normal: {
-                  color: color[0],
                   label: {
                     show: true,
                     textStyle: {
@@ -187,25 +164,12 @@
                   }
                 }
               },
-              data: [
-                5,
-                3,
-                6,
-                7,
-                5,
-                6,
-                7,
-                5,
-                9
-              ]
+              data: [ 5, 3, 6, 7, 5, 6, 7, 5, 9 ]
             },{
               name: '八上',
               type: 'bar',
-              barMaxWidth: 35,
-              barGap: '10%',
               itemStyle: {
                 normal: {
-                  color: color[1],
                   label: {
                     show: true,
                     textStyle: {
@@ -215,17 +179,7 @@
                   }
                 }
               },
-              data: [
-                7,
-                5,
-                6,
-                7,
-                5,
-                9,
-                5,
-                3,
-                6
-              ]
+              data: [7, 5, 6, 7, 5, 9, 5, 3, 6 ]
             }]
           }),
       this.chart.on('click', params => {

@@ -5,30 +5,60 @@
 		</div>
 		<div>
 		<el-row :gutter="15">
+      <el-col :span="4">
+        <div class="wrap">
+          <ul>
+            <li v-for="item in specialList">
+              <el-row class="ui-sidebar">
+                <el-col :span="12">
+                  <div class="ui-label">
+                    <router-link to="/">{{item.name}}</router-link>
+                  </div>
+                </el-col>
+                <el-col :span="12">
+                  <div class="ui-number">
+                    <router-link to="/">{{item.number}}</router-link>
+                  </div>
+                </el-col>
+              </el-row>
+            </li>
+          </ul>
+        </div>
+      </el-col>
 		  <el-col :span="16">
 		  	<div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
 					<div class="chart" id="chart" style="height:600px;width:100%"></div>
+          <div class="ui-course">
+            <div class="clearfix ui-course_nr">
+              <ul class="ui-course_nr2">
+                <li>2007
+                  <div class="ui-once">
+                    <h1>2007</h1>
+                    <p>内容描述4</p>
+                  </div>
+                </li>
+                <li>2008
+                  <div class="ui-once">
+                    <h1>2008</h1>
+                    <p>内容描述5</p>
+                  </div>
+                </li>
+                <li>2009
+                  <div class="ui-once">
+                    <h1>2009</h1>
+                    <p>内容描述6</p>
+                  </div>
+                </li>
+                <li>2013
+                  <div class="ui-once">
+                    <h1>2013</h1>
+                    <p>内容描述7</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
 				</div>
-		  </el-col>
-		  <el-col :span="4">
-		  	<div class="wrap">
-					<ul>
-						<li v-for="item in specialList">
-							<el-row class="ui-sidebar">
-							  <el-col :span="12">
-							  	<div class="ui-label">
-							  		<router-link to="/">{{item.name}}</router-link>
-							  	</div>
-							  </el-col>
-							  <el-col :span="12">
-							  	<div class="ui-number">
-							  		<router-link to="/">{{item.number}}</router-link>
-							  	</div>
-							  </el-col>
-							</el-row>
-						</li>
-					</ul>
-		  	</div>
 		  </el-col>
 		  <el-col :span="4">
 		  	<div class="wrap" style="margin-bottom: 15px">
@@ -69,9 +99,6 @@
 		  	</div>
 		  </el-col>
 		</el-row>
-			<!-- <div class="echarts-wrap">
-				<div class="chart" id="chart" style="height:600px;width:70%"></div>
-			</div> -->
 		</div>
 	</div>
 </template>
