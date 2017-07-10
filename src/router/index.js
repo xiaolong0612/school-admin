@@ -475,6 +475,132 @@ export const asyncRouterMap = [
         meta: {role: [ '1', '3', '9' ] }
       }
     ]
+  },
+  {
+    path: '/excellent',
+    component: Layout,
+    name: '低分率',
+    icon: 'kaoshi',
+    meta: { role: [ '1', '3', '7', '9'] },
+    children: [
+      {
+        path: 'region',
+        component: ExcellentRegion,
+        name: ' 区低分率图',
+        meta: { role: ['7'] }
+      }, {
+        path: 'region-school',
+        component: ExcellentRegionSchool,
+        name: ' 区低分率表',
+        meta: { role: ['1', '3', '7'] },
+        hidden: true
+      }, {
+        path: 'region-table',
+        component: ExcellentRegionTable,
+        name: ' 区低分率表',
+        meta: { role: ['7'] },
+      }, {
+        path: 'region-school-table',
+        component: ExcellentRegionSchoolTable,
+        name: ' 学校低分率表',
+        meta: { role: ['7'] },
+        hidden: true
+      }, {
+        path: 'subject',
+        component: ExcellentSubject,
+        name: '学科低分率',
+        meta: { role: ['7'] },
+        hidden: true
+      }, {
+        path: 'region-subject',
+        component: ExcellentRegionSubject,
+        name: '全区单科',
+        meta: { role: ['9'] }
+      }, {
+        path: 'class-subject',
+        component: ExcellentClassSubject,
+        name: '所有班级单科',
+        meta: { role: ['1', '3', '9'] }
+      }, {
+        path: 'region-all-subject',
+        name: '全区各科',
+        component: ExcellentRegionAllSubject,
+        meta: { role: ['9'] }
+      }, {
+        path: 'school',
+        component: ExcellentSchool,
+        name: '学校历次各科低分率',
+        meta: { role: ['1', '3', '9'] }
+      }, {
+        path: 'class',
+        component: ExcellentClass,
+        name: '班级历次各科低分率',
+        meta: {role: [ '1', '3', '9' ] }
+      }
+    ]
+  },
+  {
+    path: '/excellent',
+    component: Layout,
+    name: '及格率',
+    icon: 'kaoshi',
+    meta: { role: [ '1', '3', '7', '9'] },
+    children: [
+      {
+        path: 'region',
+        component: ExcellentRegion,
+        name: ' 区及格率图',
+        meta: { role: ['7'] }
+      }, {
+        path: 'region-school',
+        component: ExcellentRegionSchool,
+        name: ' 区及格率表',
+        meta: { role: ['1', '3', '7'] },
+        hidden: true
+      }, {
+        path: 'region-table',
+        component: ExcellentRegionTable,
+        name: ' 区及格率表',
+        meta: { role: ['7'] },
+      }, {
+        path: 'region-school-table',
+        component: ExcellentRegionSchoolTable,
+        name: ' 学校及格率表',
+        meta: { role: ['7'] },
+        hidden: true
+      }, {
+        path: 'subject',
+        component: ExcellentSubject,
+        name: '学科及格率',
+        meta: { role: ['7'] },
+        hidden: true
+      }, {
+        path: 'region-subject',
+        component: ExcellentRegionSubject,
+        name: '全区单科',
+        meta: { role: ['9'] }
+      }, {
+        path: 'class-subject',
+        component: ExcellentClassSubject,
+        name: '所有班级单科',
+        meta: { role: ['1', '3', '9'] }
+      }, {
+        path: 'region-all-subject',
+        name: '全区各科',
+        component: ExcellentRegionAllSubject,
+        meta: { role: ['9'] }
+      }, {
+        path: 'school',
+        component: ExcellentSchool,
+        name: '学校历次各科及格率',
+        meta: { role: ['1', '3', '9'] }
+      }, {
+        path: 'class',
+        component: ExcellentClass,
+        name: '班级历次各科及格率',
+        meta: {role: [ '1', '3', '9' ] }
+      }
+    ]
   }, 
   {
     path: '/ability',

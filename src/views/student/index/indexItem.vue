@@ -80,9 +80,8 @@
             }
           },
           legend: {
-            orient: 'vertical',
-            bottom: '25%',
-            right: '0',
+            top: '18%',
+            left: '10%',
             data: [ '同安区']
           },
           calculable: true,

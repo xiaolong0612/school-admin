@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="echarts-wrap ui-echart-wrap">
     <div class="chart" id="chart" style="height:600px;width:100%"></div>
   </div>
 </template>
@@ -78,7 +78,7 @@
             legend: {
               bottom: '25%',
               orient: 'vertical',
-              right: 'right',
+              right: '2%',
               textStyle: {
                 color: '#90979c'
               },

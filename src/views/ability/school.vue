@@ -105,7 +105,7 @@
           legend: {
             bottom: '25%',
             orient: 'vertical',
-            right: 'right',
+            right: '2%',
             textStyle: {
               color: '#90979c'
             },
