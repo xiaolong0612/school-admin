@@ -30,7 +30,7 @@
 				</h3>
 			</div>
 			<div class="ui-table-main">
-				<el-table :data="list" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
+				<el-table :data="list" stripe border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
 					<el-table-column prop="schoolName" label="学校" width="150" fixed>
 						<template scope="scope">
 							<router-link to="/achievement/administration-discipline-hierarchy">{{scope.row.schoolName}}</router-link>

@@ -25,7 +25,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
 					<el-table-column prop="school" label="学校" width="150" fixed></el-table-column>
 					<el-table-column prop='number1' label="班级" width="90" fixed></el-table-column>
 					<el-table-column prop='name5' label="学生" width="90" fixed></el-table-column>

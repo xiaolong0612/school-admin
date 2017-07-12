@@ -10,6 +10,7 @@
       <div class="ui-table-main">
         <el-table
           :data="list"
+          stripe
           style="width: 100%" :max-height="screenHeight">
           <el-table-column
             prop="number1"

@@ -32,7 +32,7 @@
 				</h3>
 			</div>
 			<div class="ui-table-main">
-				<el-table :data="list" border style="width: 100%" :max-height="screenHeight">
+				<el-table :data="list" stripe border style="width: 100%" :max-height="screenHeight">
 					<el-table-column prop="school" label="学校" width="120" fixed>
 						<template scope='scope'>
 							<router-link to="/achievement/teaching-average">

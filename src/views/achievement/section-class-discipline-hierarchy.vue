@@ -25,7 +25,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
+				<el-table :data="list" stripe border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
 					<el-table-column prop="school" label="学校" width="150" fixed></el-table-column>
 					<el-table-column prop="number1" label="生数" width="90" sortable>
 					</el-table-column>
