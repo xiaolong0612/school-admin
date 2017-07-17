@@ -112,6 +112,10 @@ const StudentMark = _import('student/mark');
 const getSchoolList = _import('info-administration/school/get-school-list');
 const addSchool = _import('info-administration/school/add-school');
 
+// form
+const formExamination = _import('form/examination');
+const formTest = _import('form/test');
+
 Vue.use(Router);
 
  /**
@@ -183,20 +187,20 @@ export const asyncRouterMap = [
     path: '/demo',
     component: Layout,
     name: 'demo',
-    icon: 'zonghe',
     hidden: true,
     children: [
-      {path: 'upload', component: Upload, name: '图片上传'}
+      {path: 'upload', component: Upload, name: '图片上传'},
+      {path: 'data', component: Data, name: 'data'}
     ]
   },
   {
-    path: '/data',
+    path: '/form',
     component: Layout,
-    name: 'data',
-    icon: 'zonghe',
+    name: 'form',
     hidden: true,
     children: [
-      {path: 'data', component: Data, name: 'data'}
+      {path: 'examination', component: formExamination, name: '新增试题', meta: { role: ['7'] } },
+      {path: 'test', component: formTest, name: '新增考点', meta: { role: ['7'] } }
     ]
   },
   { // 学科教师
@@ -767,6 +771,17 @@ export const asyncRouterMap = [
     noDropdown: true,
     children: [
       { path: 'index', name: '考后总结', component: StudentSummary, meta: { role: ['10'] } }
+    ]
+  },
+  {
+    path: '/form',
+    component: Layout,
+    name: '题目管理',
+    icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+    meta: { role: ['7'] },
+    children: [
+      {path: 'examination', component: formExamination, name: '新增试题', meta: { role: ['7'] } },
+      {path: 'test', component: formTest, name: '新增考点', meta: { role: ['7'] } }
     ]
   },
   { path: '*', redirect: '/404', hidden: true }

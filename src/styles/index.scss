@@ -314,11 +314,11 @@ code {
   .el-col {
     line-height: 36px;
     height: 36px;
+    position: relative;
     border-bottom: 1px solid #ccc;
     font-size: 14px;
     .ui-label{
       padding: 0 10px;
-      position: relative;
       color: #808080;
       &:before{
         content: '';
@@ -332,7 +332,7 @@ code {
         transition: width .3s linear;
       }
       &:hover:before{
-        width: 400%;
+        width: 200%;
       }
     }
     .ui-number{
@@ -340,7 +340,6 @@ code {
       padding: 0 10px;
       text-align: right;
       height: 36px;
-      position: relative;
       &:before{
         content: '';
         display: block;
@@ -353,7 +352,7 @@ code {
         transition: width .3s linear;
       }
       &:hover:before{
-        width: 1000%;
+        width: 200%;
       }
     }
   }
@@ -412,6 +411,9 @@ code {
   background-color: #fff;
   border-radius: 5px;
   box-sizing: border-box;
+}
+.ui-form .el-select{
+  width: 100%;
 }
 .ui-course{background:#FFF;min-height: 89px;}
 .ui-course_nr{background:url(http://www.jq22.com/demo/time-141118185149/images/ico9.gif) repeat-x center 35px}

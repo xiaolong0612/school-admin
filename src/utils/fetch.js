@@ -39,9 +39,9 @@ service.interceptors.response.use(
         duration: 5 * 1000
       });
       // 登出
-      store.dispatch('FedLogOut').then(() => {
-        router.push({ path: '/login' })
-      });
+      // store.dispatch('FedLogOut').then(() => {
+      //   router.push({ path: '/login' })
+      // });
     } else {
       return response
     }
