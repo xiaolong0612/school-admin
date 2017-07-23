@@ -32,19 +32,19 @@
 						<el-table-column prop="name3" label="组长" width="100"></el-table-column>
 						<el-table-column prop="number1" label="均分" width="100" sortable>
 							<template scope="scope">
-								<div :formatter="formatter(scope.row.number1)" :style="{color: formatter(scope.row.number1)}">{{scope.row.number1}}</div>
+								<div >{{scope.row.number1}}</div>
 							</template>
 						</el-table-column>
 						<el-table-column prop="float1" label="得分率" width="100" sortable></el-table-column>
 						<el-table-column prop="float2" label="超均率" width="100"></el-table-column>
 						<el-table-column label="区位置" width="100">
 							<template scope="scope">
-								<div :formatter="formatter(scope.row.number4)" :style="{color: formatter(scope.row.number4)}">{{scope.row.number4}}</div>
+								<div>{{scope.row.number4}}</div>
 							</template>
 						</el-table-column>
 						<el-table-column prop="number5" label="市位置" width="100">
 							<template scope="scope">
-								<div :formatter="formatter(scope.row.number5)" :style="{color: formatter(scope.row.number5)}">{{scope.row.number5}}</div>
+								<div>{{scope.row.number5}}</div>
 							</template>
 						</el-table-column>
 						<el-table-column prop="number6" label="进步值" width="100"></el-table-column>
@@ -140,15 +140,6 @@
       handleCurrentChange(val) {
         this.listQuery.page = val;
         this.getList();
-      },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
       },
       onSearch() {
       	console.log('111');

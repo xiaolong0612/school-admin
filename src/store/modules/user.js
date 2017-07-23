@@ -85,7 +85,7 @@ const user = {
         getInfo(uid).then(response => {
           const data = response.data;
           let roles = data.teacher.type.split(',');
-          commit('SET_ROLES', roles);
+          commit('SET_ROLES', ['0']);
           commit('SET_NAME', data.teacher.name);
           resolve(response);
         }).catch(error => {

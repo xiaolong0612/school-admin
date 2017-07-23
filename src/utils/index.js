@@ -279,7 +279,7 @@ export function getPlace(dataPlace, placeNumber){
   return location;
 }
 
-export const path = {
+export const gpath = {
   code: 'http://118.178.93.124/admin/code/',
   img: 'http://xueqingkuaidi.oss-cn-shenzhen.aliyuncs.com/xueqingkuaidi/images'
 }

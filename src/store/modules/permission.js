@@ -7,6 +7,7 @@ import { deepClone } from 'utils'
  * @param route
  */
 function hasPermission(roles, route) {
+  // roles = ['0'];
   if (route.meta && route.meta.role) {
     return roles.some(role => route.meta.role.indexOf(role) >= 0)
   } else {

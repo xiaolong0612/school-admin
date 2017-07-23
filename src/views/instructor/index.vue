@@ -160,21 +160,6 @@
   		this.getList();
   	},
   	methods: {
-  		// 最近一次打开
-  		examinationActive(index) {
-  			if(index == 0){
-  				return 'finish'
-  			}else{
-  				return 'wait'
-  			}
-  		},
-  		examinationOpen(item) {
-  			if(typeof item.finish == 'undefined'){
-  				this.$set(item, "finish", true);
-  			} else{
-  				item.finish = !item.finish;	
-  			}
-  		},
   		getList() {
         fetchList(this.listQuery).then(response => {
           this.data1 = response.data.list[0].array1;

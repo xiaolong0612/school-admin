@@ -119,15 +119,6 @@
         this.listQuery.page = val;
         this.getList();
       },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
-      },
       onSearch() {
 
       }

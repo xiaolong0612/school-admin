@@ -21,8 +21,8 @@ import './mock/index.js';  // 该项目所有请求使用mockjs模拟
 import RegionPicker from 'region-picker'; // 省市区三级联动
 import Cookies from 'js-cookie'; // Coolies
 
-import { path } from 'utils/index'; // 全局的path
-Vue.prototype.path = path;
+import { gpath } from 'utils/index'; // 全局的path
+Vue.prototype.gpath = gpath;
 
 import { setTableHeight } from 'utils/tableHeight'; // 全局设置table高度的函数
 Vue.prototype.setTableHeight = setTableHeight;

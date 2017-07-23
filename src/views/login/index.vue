@@ -145,14 +145,14 @@
           pathList: {
             admin: '/',
             0: '/teacher/index',
-            1: '/director/index',
+            1: '/headmaster/index',
             2: '',
             3: '/director/index',
             4: '',
             5: '',
             6: '',
             7: '/instructor/index',
-            8: '/bureau/index',
+            8: '/training-college/index',
             9: '/bureau/index',
             10: '/student/index'
           }
@@ -168,7 +168,7 @@
       },
       methods: {
         setCodeImg() {
-          this.codeImg = this.path.code +'?'+ new Date;
+          this.codeImg = this.gpath.code +'?'+ +new Date;
         },
         handleLogin() {
           this.$refs.loginForm.validate(valid => {
@@ -176,12 +176,8 @@
               this.loading = true;
               this.$store.dispatch('LoginByAccount', this.loginForm).then((res) => {
                 this.loading = false;
-                // if(this.loginForm.type == 7){
-                //   this.$router.push({ path: '/instructor/index' });
-                // }else {
-                //   this.$router.push({ path: '/bureau/index' });
-                // }
-                this.$router.push({ path: this.pathList[res.teacher.type] });
+                console.log(this.pathList[res.teacher.type]);
+                this.$router.push({ path: this.pathList[0]});
               }).catch(err => {
                 this.loading = false;
                 this.$message.error(err);
