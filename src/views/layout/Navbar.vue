@@ -17,11 +17,39 @@
                         首页
                     </el-dropdown-item>
                 </router-link> -->
-                <router-link v-if="roles == '0'" to="/class/list">
-                    <el-dropdown-item>
-                        班级列表
-                    </el-dropdown-item>
-                </router-link>
+                <div v-if="roles[1] == 0">
+                    <router-link to="/student/list">
+                        <el-dropdown-item>
+                            学生列表
+                        </el-dropdown-item>
+                    </router-link>
+                </div>
+                <div v-if="roles[1] == 7">
+                    <router-link to="/task/list">
+                        <el-dropdown-item>
+                            任务列表
+                        </el-dropdown-item>
+                    </router-link>
+                </div>
+                <div v-if="roles[1] == 5 || roles[1] == 6">
+                    <router-link to="/teacher/list">
+                        <el-dropdown-item>
+                            老师列表
+                        </el-dropdown-item>
+                    </router-link>
+                    <router-link to="/class/list">
+                        <el-dropdown-item>
+                            班级列表
+                        </el-dropdown-item>
+                    </router-link>
+                </div>
+                <div v-if="roles[1] == 9">
+                    <router-link to="/school/list">
+                        <el-dropdown-item>
+                            学校列表
+                        </el-dropdown-item>
+                    </router-link>
+                </div>
                 <el-dropdown-item divided><span @click="logout" style="display:block;">退出登录</span></el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>

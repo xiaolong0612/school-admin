@@ -94,7 +94,9 @@
 	</div>
 </template>
 <script>
-	import { fetchList } from 'api/data';
+	import { mapGetters } from 'vuex';
+	import store from 'store';
+	import { getScore } from 'api/score';
 	export default {
 		data() {
 			return {
@@ -104,12 +106,8 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          // groupid: store.getters.uid
+          groupid: 1
         },
         fromData: {
 					selectedSubject: '启悟中学',
@@ -117,6 +115,11 @@
         }
 			}
 		},
+		computed: {
+      ...mapGetters([
+        'uid'
+      ])
+    },
 		created() {
       
     },
@@ -127,9 +130,8 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.list;
-          this.total = response.data.total;
+        getScore(this.listQuery).then(response => {
+          console.log(response);
           this.listLoading = false;
         })
       },

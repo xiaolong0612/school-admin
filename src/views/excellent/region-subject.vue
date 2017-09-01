@@ -20,17 +20,17 @@
 			</h3>
 			<div class="ui-table-main">
 				<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-					<el-table-column prop="school" label="学校" width="150" fixed>
+					<el-table-column prop="schoolName" label="学校" width="150" fixed>
 						<template scope="scope">
 							<router-link to="/excellent/class-subject">
-								{{scope.row.school}}
+								{{scope.row.schoolName}}
 							</router-link>
 						</template>
 					</el-table-column>
-					<el-table-column prop='number1' label="生数" width="90" fixed></el-table-column>
+					<el-table-column prop='examineeCount' label="生数" width="90" fixed></el-table-column>
 					<el-table-column pro
 					<el-table-column label='入学' header-align='center'>
-						<el-table-column prop="number1" label="总分" sortable width="100" style="color:red">
+						<el-table-column prop="excellentCount" label="总分" sortable width="100" style="color:red">
 						</el-table-column>
 						<el-table-column prop="float1" label="得分率" width="100" sortable></el-table-column>
 						<el-table-column prop="float2" label="超均率" width="100"></el-table-column>
@@ -60,8 +60,8 @@
 					</el-table-column>
 				</el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="listQuery.pageNo">
 		      </el-pagination>
 		    </div>
 			</div>
@@ -69,7 +69,7 @@
 	</div>
 </template>
 <script>
-	import { fetchList } from 'api/data';
+	import { getSchoolScoreExcellent } from 'api/excellent';
 	const subjectList = [
 		{value: '0', label: '语文'},
     	{value: '1', label: '数学'},
@@ -85,17 +85,15 @@
 			return {
 				name: '所有考试全区各班单科优良率监控表',
 				subjectList,
-				list: '',
+				list: [],
 				screenHeight: 0,
 				total: '',
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          pageNo: 1,
+          pageSize: 10,
+          period: 2017,
+          subject: '语文'
         },
         fromData: {
 					selectedSubject: '语文'
@@ -111,9 +109,10 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
+        getSchoolScoreExcellent(this.listQuery).then(response => {
           this.list = response.data.list;
-          this.total = response.data.total;
+          // this.total = response.data.total;
+        	console.log(this.list);
           this.listLoading = false;
         })
       },

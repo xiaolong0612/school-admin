@@ -19,7 +19,9 @@
         ...mapGetters([
           'name',
           'avatar',
-          'roles'
+          'roles',
+          'email',
+          'telephone',
         ])
       }
     }

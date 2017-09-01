@@ -1,0 +1,353 @@
+<template>
+	<div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+			<el-form :inline="true" :model="fromData">
+				<el-form-item>
+	        <el-upload
+				    class="upload-demo"
+				    ref="upload"
+				    action="http://118.178.93.124/admin/upload?type=2"
+				    type=file
+				    accept=".docx, .doc, .txt"
+				    :show-file-list="false"
+				    :file-list="fileList">
+				    <el-button slot="trigger" type="primary">批量导入教师</el-button>
+				  </el-upload>
+	      </el-form-item>
+	      <el-form-item>
+	        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
+	      </el-form-item>
+			</el-form>
+		</div>
+		<div class="ui-table-wrap clearfix">
+			<h3 class="ui-table-title">
+				<wscn-icon-svg icon-class="shuxian"/>
+				{{name}}
+			</h3>
+			<div class="ui-table-main">
+				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name'}">
+
+					<el-table-column prop='teacherNo' label="教师编号" width="130" sortable fixed></el-table-column>
+
+					<el-table-column prop='name' label="姓名" width="110" sortable fixed></el-table-column>
+
+					<el-table-column prop='age' label="年龄" width="90" sortable></el-table-column>
+
+					<el-table-column prop='sex' label="性别" width="90" sortable></el-table-column>
+
+					<el-table-column prop='birthdayStr' label="出身日期" width="150" sortable></el-table-column>
+
+					<el-table-column prop='nativePlace' label="籍贯" width="90" sortable></el-table-column>
+
+					<el-table-column prop='gradeNo' label="年级" width="90" sortable></el-table-column>
+
+					<el-table-column prop='classNo' label="班级" width="90" sortable></el-table-column>
+
+					<el-table-column prop='schoolName' label="所属学校" width="140" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.schoolName"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.schoolName}}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column prop='entryTime' label="入职时间" width="150" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.entryTime"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.entryTime}}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column prop='highestEducation' label="最高学历" width="120" sortable></el-table-column>
+
+					<el-table-column prop='email' label="email" width="190" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.email"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.email}}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column prop='telephone' label="联系方式" width="140" sortable fixed="right">
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.telephone"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.telephone}}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column prop="" label="操作" width="140" fixed="right">
+						<template scope="scope">
+							<div v-show="!scope.row.edit">
+								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
+								<el-button type="danger" icon="delete" size="small" @click="handleDel(scope.row.id)"></el-button>
+							</div>
+							<div v-show="scope.row.edit">
+								<el-button type="success" icon="circle-check" size="small" @click="handleMod(scope)"></el-button>
+								<el-button type="warning" icon="circle-cross" size="small" @click="handleCancel(scope)"></el-button>
+							</div>
+						</template>
+					</el-table-column>
+
+				</el-table>
+			</div>
+			<div v-show="!listLoading" class="page-wrap fr">
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
+	        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+	      </el-pagination>
+	    </div>
+	  </div>
+	  <el-dialog
+		  title="提示"
+		  :visible.sync="dialogVisible"
+		  size="tiny">
+		  <el-form class="small-space ui-form" :model="fromData" label-position="right" :rules="rules" ref="fromData" label-width="100px" style="padding:0 30px;">
+		  <el-form-item label="老师名称" prop="name">
+          <el-input v-model="fromData.name"></el-input>
+        </el-form-item>
+        
+		  	<el-form-item label="老师编号" prop="teacherNo">
+          <el-input v-model="fromData.teacherNo"></el-input>
+        </el-form-item>
+        
+		  	<el-form-item label="年龄" prop="age">
+          <el-input v-model="fromData.age"></el-input>
+        </el-form-item>
+        
+        <el-form-item label="性别">
+			    <el-radio-group v-model="fromData.sex">
+			      <el-radio label="男"></el-radio>
+			      <el-radio label="女"></el-radio>
+			    </el-radio-group>
+			  </el-form-item>
+				
+				<el-form-item label="生日">
+			    <el-date-picker type="date" placeholder="选择日期" v-model="fromData.birthday" style="width: 100%;"></el-date-picker>
+				</el-form-item>
+
+		  	<el-form-item label="籍贯" prop="nativePlace">
+          <el-input v-model="fromData.nativePlace"></el-input>
+        </el-form-item>
+
+		  	<el-form-item label="入职时间" prop="entryTime">
+          <el-date-picker type="date" placeholder="选择日期" v-model="fromData.entryTime" style="width: 100%;"></el-date-picker>
+        </el-form-item>
+
+		  	<el-form-item label="第一学历" prop="firstEducation">
+          <el-input v-model="fromData.firstEducation"></el-input>
+        </el-form-item>
+
+		  	<el-form-item label="最高学历" prop="highestEducation">
+          <el-input v-model="fromData.highestEducation"></el-input>
+        </el-form-item>
+
+		  	<el-form-item label="班级" prop="classNo">
+          <el-input v-model="fromData.classNo"></el-input>
+        </el-form-item>
+
+		  	<el-form-item label="年级" prop="gradeNo">
+          <el-input v-model="fromData.gradeNo"></el-input>
+        </el-form-item>
+
+		  	<el-form-item label="身份" prop="type">
+          <el-input v-model="fromData.type"></el-input>
+        </el-form-item>
+
+		  	<el-form-item label="联系方式" prop="telephone">
+          <el-input v-model="fromData.telephone"></el-input>
+        </el-form-item>
+
+		  	<el-form-item label="邮箱" prop="email">
+          <el-input v-model="fromData.email"></el-input>
+        </el-form-item>
+		  </el-form>
+		  <span slot="footer" class="dialog-footer">
+		  	<el-button @click="handleAdd('fromData')" type="primary">确定</el-button>
+      	<el-button @click="resetForm('fromData')">重置</el-button>
+      	<el-button :plain="true" type='warning' @click="dialogVisible = false">取消</el-button>
+		  </span>
+		</el-dialog>
+	</div>
+</template>
+<script>
+	import { getListTeacher, addTeacher, modTeacher, delTeacher} from 'api/info-administration/teacher';
+	import { validataPhone } from 'utils/validate';
+	export default {
+		data() {
+			const isPhone = (rule, value, callback) => {
+        if (!validataPhone(value)) {
+          callback(new Error('请输入正确的手机号'));
+        } else {
+          callback();
+        }
+      };
+			return {
+				name: '老师列表',
+				screenHeight: 0,
+				list: [],
+				backList: [],
+				fileList:[],
+				total: 0,
+        listLoading: true,
+        dialogVisible: false,
+        listQuery: {
+          pageNo: 1,
+          pageSize: 20,
+          name: '',
+          classNo: '',
+          gradeNo: '',
+          schoolName: ''
+        },
+        fromData: {
+        	name: '',
+					teacherNo: '',
+					age: '',
+					sex: '',
+					birthday: '',
+					nativePlace: '',
+					entryTime: '',
+					firstEducation: '',
+					highestEducation: '',
+					classNo: '1',
+					gradeNo: '1',
+					type: '',
+					schoolId: '1',
+					telephone: '',
+					email: ''
+        },
+        rules: {
+        	name: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					teacherNo: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					age: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					sex: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					birthday: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					nativePlace: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					entryTime: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					firstEducation: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					highestEducation: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					classNo: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					gradeNo: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					type: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					schoolId: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ],
+					telephone: [
+	        	{ required: true, message: '必填项', trigger: 'blur', validator: isPhone }
+	        ],
+					email: [
+	        	{ required: true, message: '必填项', trigger: 'blur' }
+	        ]
+        }
+			}
+		},
+		created() {
+      
+    },
+		mounted() {
+			this.screenHeight = this.setTableHeight(false);
+			this.getList();
+		},
+		methods: {
+			getList() {
+        this.listLoading = true;
+        getListTeacher(this.listQuery).then(response => {
+          this.list = response.data.list;
+        	for(let i=0; i<this.list.length; i++){
+        		this.$set(this.list[i], 'edit', false);
+        	}
+        	this.backList = JSON.parse(JSON.stringify(this.list));
+          this.total = response.data.total;
+          this.listLoading = false;
+        })
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val;
+        this.getList();
+      },
+      handleCurrentChange(val) {
+        this.listQuery.page = val;
+        this.getList();
+      },
+      handleAdd(formName){
+      	this.$refs[formName].validate((valid) => {
+	        if (valid) {
+      			addClss(this.fromData).then(response => {
+      				if(typeof response == 'undefined') return;
+	            this.$message({
+			          message: '添加成功',
+			          type: 'success'
+			        });
+			        this.dialogVisible = false;
+			        this.getList();
+	        	})
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+      	})
+      },
+      handleMod(scope){
+      	modTeacher(scope.row).then(response => {
+      		if(typeof response == 'undefined') return;
+      		this.$message({
+	          message: '修改成功',
+	          type: 'success'
+	        });
+	        let bridge = {
+	      		gradeTeacherName: scope.row.gradeTeacherName,
+	      		chargeTeacherName: scope.row.chargeTeacherName,
+	      		index: scope.$index
+	      	}
+
+      		this.backList[bridge.index].gradeTeacherName = bridge.gradeTeacherName;
+      		this.backList[bridge.index].chargeTeacherName = bridge.chargeTeacherName;
+      		scope.row.edit = false
+      	})
+      },
+      handleCancel(scope){
+      	let index = scope.$index;
+      	let bridge = {
+      		schoolName: this.backList[index].schoolName,
+      		entryTime: this.backList[index].entryTime,
+      		email: this.backList[index].email,
+      		telephone: this.backList[index].telephone
+      	}
+      	scope.row.schoolName = bridge.schoolName;
+      	scope.row.entryTime = bridge.entryTime;
+      	scope.row.email = bridge.email;
+      	scope.row.telephone = bridge.telephone;
+      	scope.row.edit = false;
+      },
+      handleDel(id) {
+      	delTeacher(id).then(response => {
+      		if(typeof response == 'undefined') return;
+      		this.$message({
+	          message: '删除成功',
+	          type: 'success'
+	        });
+      	})
+      }
+		}
+	}
+</script>

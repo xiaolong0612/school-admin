@@ -6,16 +6,27 @@
 <script>
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
+  import { listSchoolLevel } from 'api/ability'
   export default {
     data() {
       return {
-        chart: ''
+        chart: '',
+        listQuery: {
+          levelCode: '识记'
+        }
       }
     },
     mounted() {
       this.initChart();
     },
     methods: {
+      getList() {
+        this.listLoading = true;
+        listSchoolLevel(this.listQuery).then(response => {
+          console.log(response);
+          this.listLoading = false;
+        })
+      },
       initChart() {
         this.chart = echarts.init(document.getElementById('chart'),'macarons');
         this.setOption();

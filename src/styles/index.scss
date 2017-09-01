@@ -311,6 +311,7 @@ code {
 //  首页侧边列表
 .ui-sidebar {
   overflow: hidden;
+  margin-bottom: 0px!important;
   .el-col {
     line-height: 36px;
     height: 36px;
@@ -401,7 +402,7 @@ code {
   .ui-table-main{
     padding: 15px 15px 0;
   }
-  .page-wrap{
+  .page-wrap, .pagination-container{
     padding: 15px 15px 0;
   } 
 }

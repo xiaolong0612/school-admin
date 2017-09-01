@@ -7,6 +7,8 @@
             <div class="info-container">
                 <span class="display_name">{{name}}</span>
             </div>
+            <span>{{email}}</span>
+            <span>{{telephone}}</span>
         </div>
         <div>
             <img class='emptyGif' :src="emptyGif" >
@@ -28,11 +30,9 @@
       computed: {
         ...mapGetters([
           'name',
-          'avatar',
+          'roles',
           'email',
-          'uid',
-          'introduction',
-          'roles'
+          'telephone',
         ])
       }
     }

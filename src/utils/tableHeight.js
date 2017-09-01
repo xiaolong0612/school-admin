@@ -1,9 +1,9 @@
-function set(page) {
+function set(page, from) {
 	let height = 0,
 			pageHeight = 62,
 			titleHeight = 36, // 含padding
 			margin = 45;
-	if (document.getElementById('ui-search-wrap')!=undefined) {
+	if (from) {
 		height = document.getElementById('ui-search-wrap').offsetHeight;
 		margin += 15;
 	}

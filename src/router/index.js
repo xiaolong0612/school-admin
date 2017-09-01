@@ -32,7 +32,8 @@ const Upload = _import('demo/Upload');
 const Data = _import('demo/data');
 /* 首页 */
 const TeacherIndex = _import('teacher/index');        //学科教师0 
-const DirectorIndex = _import('director/index');     // 班主任1、年段长3、
+const DirectorIndex = _import('director/index');     // 班主任1、年段长3
+const PrincipalIndex = _import('principal/index');    // 教务处5、 校领导6
 const InstructorIndex = _import('instructor/index'); // 教研员7
 const BureauIndex = _import('bureau/index');         // 教育局8、进修学校领导9
 const StudentIndex = _import('student/index');       // 学生10
@@ -54,6 +55,7 @@ const TeachingAverage = _import('achievement/teaching-average');
 const SectionClass = _import('achievement/section-class');
 // 考点管理
 const AddTest = _import('test-site/add-test');
+const IndexTest = _import('test-site/index');
 // 专题管理
 const ScoringMonitoring = _import('special/scoring-monitoring');
 const ScoringItem = _import('special/scoring-item');
@@ -109,7 +111,11 @@ const StudentMark = _import('student/mark');
 // const StudentPhysics = () => import('../views/student/subject/Physics'); // 物理
 // const StudentBiology = () => import('../views/student/subject/Biology'); // 生物
 
-const ClassList = _import('teacher/class-list');
+const ClassList = _import('List/class-list');
+const StudentList = _import('List/student-list');
+const TaskList = _import('List/task-list');
+const TeacherList = _import('List/teacher-list');
+const SchoolList = _import('List/school-list');
 
 const getSchoolList = _import('info-administration/school/get-school-list');
 const addSchool = _import('info-administration/school/add-school');
@@ -239,6 +245,26 @@ export const asyncRouterMap = [
       {path: 'index', name: '年段长', component: DirectorIndex, meta: { role: ['3'] } }
     ]
   },
+  { // 教务处
+    path: '/principal',
+    component: Layout,
+    redirect: '/principal/index',
+    name: '首页',
+    icon: 'shouye-shouye',
+    meta: { role: ['5'] },
+    noDropdown: true,
+    children: [{ path: 'index', name: '教务处', component: PrincipalIndex, meta: { role: ['5'] } }]
+  }, 
+  { // 校领导
+    path: '/principal',
+    component: Layout,
+    redirect: '/principal/index',
+    name: '首页',
+    icon: 'shouye-shouye',
+    meta: { role: ['6'] },
+    noDropdown: true,
+    children: [{ path: 'index', name: '校领导', component: PrincipalIndex, meta: { role: ['6'] } }]
+  }, 
   { // 教研员
     path: '/instructor',
     component: Layout,
@@ -249,7 +275,7 @@ export const asyncRouterMap = [
     noDropdown: true,
     children: [{ path: 'index', name: '教研员', component: InstructorIndex, meta: { role: ['7'] } }]
   }, 
-  { // 教育局领导
+  { // 进修校领导
     path: '/training-college',
     name: '首页',
     component: Layout,
@@ -260,7 +286,7 @@ export const asyncRouterMap = [
     children: [
       {path: 'index', name: '进修学校领导', component: BureauIndex, meta: { role: ['8'] } }
     ]
-  },,
+  },
   { // 教育局领导
     path: '/bureau',
     name: '首页',
@@ -306,6 +332,18 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/test',
+    component: Layout,
+    name: '考点',
+    redirect: '/test/index',
+    icon: 'shouye-shouye',
+    meta: { role: ['7'] },
+    noDropdown: true,
+    children: [
+      {path: 'index', name: '考点', component: IndexTest, meta: { role: ['7'] } }
+    ]
+  },
+  {
     path: '/achievement',
     component: Layout,
     name: '成绩管理',
@@ -315,7 +353,7 @@ export const asyncRouterMap = [
       {
         path: 'total-score',
         component: TotalScore,
-        name: '全区各校单考总分',
+        name: '单考全区各校总分',
         meta: { role: ['0', '1', '3', '7', '8', '9'] }
       }, {
         path: 'section-class',
@@ -709,8 +747,8 @@ export const asyncRouterMap = [
     name: 'P值管理',
     component: Layout,
     icon: 'p',
-    // meta: { role: ['1', '3', '8', '9'] },
-    meta: { role: ['admin'] },
+    meta: { role: ['100'] },
+    // meta: { role: ['admin'] },
     children: [
       {
         path: 'single-region',
@@ -816,10 +854,54 @@ export const asyncRouterMap = [
     component: Layout,
     name: '班级列表',
     icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+    meta: { role: ['3','5','6'] },
+    hidden: true,
+    children: [
+      {path: 'list', component: ClassList, name: '班级列表', meta: { role: ['3','5','6'] } }
+    ]
+  },
+  {
+    path: '/student',
+    component: Layout,
+    name: '学生列表',
+    icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
     meta: { role: ['0'] },
     hidden: true,
     children: [
-      {path: 'list', component: ClassList, name: '班级列表', meta: { role: ['0'] } }
+      {path: 'list', component: StudentList, name: '学生列表', meta: { role: ['0'] } }
+    ]
+  },
+  {
+    path: '/task',
+    component: Layout,
+    name: '任务列表',
+    icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+    meta: { role: ['7'] },
+    hidden: true,
+    children: [
+      {path: 'list', component: TaskList, name: '任务列表', meta: { role: ['7'] } }
+    ]
+  },
+  {
+    path: '/teacher',
+    component: Layout,
+    name: '老师列表',
+    icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+    meta: { role: ['5', '6'] },
+    hidden: true,
+    children: [
+      {path: 'list', component: TeacherList, name: '学生列表', meta: { role: ['5', '6'] } }
+    ]
+  },
+  {
+    path: '/school',
+    component: Layout,
+    name: '学校列表',
+    icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+    meta: { role: ['9'] },
+    hidden: true,
+    children: [
+      {path: 'list', component: SchoolList, name: '学校列表', meta: { role: ['9'] } }
     ]
   },
   { path: '*', redirect: '/404', hidden: true }

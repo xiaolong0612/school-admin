@@ -3,10 +3,11 @@ import fetch from 'utils/fetch';
  * @author xiaolong
  * @default 首页
  */
-export function student() {
+export function student(query) {
   return fetch({
-    url: '',
+    url: '/admin/student/get-top',
     method: 'post',
+    params: query
   });
 }
 

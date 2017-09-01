@@ -10,28 +10,10 @@
             <div class="ui-course">
               <div class="clearfix ui-course_nr">
                 <ul class="ui-course_nr2">
-                  <li>2007
+                  <li v-for='item in klass'>{{item.time}}
                     <div class="ui-once">
-                      <h1>2007</h1>
-                      <p>内容描述4</p>
-                    </div>
-                  </li>
-                  <li>2008
-                    <div class="ui-once">
-                      <h1>2008</h1>
-                      <p>内容描述5</p>
-                    </div>
-                  </li>
-                  <li>2009
-                    <div class="ui-once">
-                      <h1>2009</h1>
-                      <p>内容描述6</p>
-                    </div>
-                  </li>
-                  <li>2013
-                    <div class="ui-once">
-                      <h1>2013</h1>
-                      <p>内容描述7</p>
+                      <h1>{{item.time}}</h1>
+                      <p>{{item.name}}</p>
                     </div>
                   </li>
                 </ul>
@@ -70,6 +52,7 @@
   require('echarts/theme/macarons'); // echarts 主题
 
   import IndexItem from './index/indexItem';
+  import { student } from 'api/index'
   export default {
   	components: {
   		IndexItem
@@ -77,6 +60,9 @@
   	data() {
   		return {
   			name: '',
+        listQuery: {
+          type: 0
+        },
   			subjectList: [{
           value: '1',
           label: '语文'
@@ -104,13 +90,29 @@
         }, {
           value: '5',
           label: '思品'
+        }],
+        klass: [{
+          time: 2017,
+          name: '考试1'
+        },{
+          time: 2017,
+          name: '考试1'
+        },{
+          time: 2017,
+          name: '考试1'
         }]
   		}
   	},
   	mounted() {
+      this.getData();
   		this.initChart();
   	},
   	methods: {
+      getData() {
+        student(this.listQuery).then(response => {
+          console.log(response);
+        })
+      },
   		initChart() {
         this.chart = echarts.init(document.getElementById('chart'), 'macarons');
         this.setOption();
@@ -181,7 +183,6 @@
           {
             name: '同安区',
             type: 'bar',
-            stack: '语言运用',
             itemStyle: {
               normal: {
                 label: {
@@ -197,7 +198,6 @@
           }, {
             name: '厦门市',
             type: 'bar',
-            stack: '非连文本阅读',
             itemStyle: {
               normal: {
                 label: {

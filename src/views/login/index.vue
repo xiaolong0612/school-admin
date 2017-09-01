@@ -119,10 +119,14 @@
             }
           ],
           loginForm: {
-            account: '18636787915',
-            password: '123456',
-            code: '215217',
-            type: 'admin'
+            // account: '18805070151',
+            // password: '123456',
+            // code: '215217',
+            // type: 'admin'
+            account: '',
+            password: '',
+            code: '',
+            type: ''
           },
           loginRules: {
             account: [
@@ -149,8 +153,8 @@
             2: '',
             3: '/director/index',
             4: '',
-            5: '',
-            6: '',
+            5: '/principal/index',
+            6: '/principal/index',
             7: '/instructor/index',
             8: '/training-college/index',
             9: '/bureau/index',
@@ -176,8 +180,7 @@
               this.loading = true;
               this.$store.dispatch('LoginByAccount', this.loginForm).then((res) => {
                 this.loading = false;
-                console.log(this.pathList[res.teacher.type]);
-                this.$router.push({ path: this.pathList[0]});
+                this.$router.push({ path: this.pathList[res.teacher.typeStr]});
               }).catch(err => {
                 this.loading = false;
                 this.$message.error(err);
@@ -231,7 +234,7 @@
         display: table-cell;
         vertical-align: middle;
         background-color: #2d3a4b;
-        background: url('/static/img/login-bg.png') center no-repeat;
+        background: url('/static/img/Sky.jpg') center no-repeat;
         background-size: cover;
         input:-webkit-autofill {
             -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;

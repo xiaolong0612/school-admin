@@ -68,24 +68,20 @@
 	</div>
 </template>
 <script>
-	import { fetchList, fetchPv } from 'api/data';
-	import { setTableHeight } from '../../utils/tableHeight';
+	import { getClassScore } from 'api/score';
 	export default {
 		data() {
 			return {
 				name: '单次考试全区所有行政班学科分层监控表',
 				screenHeight: 0,
-				list: null,
+				list: [],
 				isRed: false,
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 30,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          pageNo: 1,
+          pageSize: 30,
+          id: 2
         },
         fromData: {
 					selectedSubject: '启悟中学'
@@ -97,12 +93,13 @@
     },
 		mounted() {
 			this.getList();
-			this.screenHeight = setTableHeight(false);
+			this.screenHeight = this.setTableHeight(false);
 		},
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
+        getClassScore(this.listQuery).then(response => {
+        	console.log(response)
           this.list = response.data.list;
           this.total = response.data.total;
           this.listLoading = false;

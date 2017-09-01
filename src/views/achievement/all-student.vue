@@ -93,7 +93,7 @@
 	</div>
 </template>
 <script>
-	import { fetchList, fetchPv } from 'api/data';
+	import { getAllScore } from 'api/score';
 	export default {
 		data() {
 			return {
@@ -103,12 +103,10 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          pageNo: 1,
+          pageSize: 10,
+          paperName: 5,
+          period: 2017
         },
         fromData: {
 					selectedSubject: '启悟中学',
@@ -125,9 +123,8 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.list;
-          this.total = response.data.total;
+        getAllScore(this.listQuery).then(response => {
+        	console.log(response);
           this.listLoading = false;
         })
       },

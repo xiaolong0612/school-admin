@@ -24,11 +24,11 @@ export function modStudent(id) {
 	})
 }
 
-export function getListStudent(data) {
+export function getListStudent(query) {
 		return fetch({
 		url: '/admin/student/list-student',
 		method: 'post',
-		params: data
+		params: query
 	})
 }
 

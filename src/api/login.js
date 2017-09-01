@@ -9,19 +9,18 @@ export function loginByAccount(account, password, code, type) {
   });
 }
 
-export function logout() {
-  return fetch({
-    url: '/admin/login-out',
-    method: 'post'
-  });
-}
-
-export function getInfo(id) {
-  const data = { id };
+export function getInfo(query) {
   return fetch({
     url: '/admin/get-login-info',
     method: 'post',
-    params: data
+    params: query
   });
 }
 
+export function logout(query) {
+  return fetch({
+    url: '/admin/login-out',
+    method: 'post',
+    params: query
+  });
+}

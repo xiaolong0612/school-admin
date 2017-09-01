@@ -3,55 +3,71 @@ import Cookies from 'js-cookie';
 
 const user = {
   state: {
-    user: '',
-    status: '',
-    email: '',
-    code: '',
-    uid: Cookies.get('UID'),
-    auth_type: '',
+    // 登陆状态
     token: Cookies.get('xxkd-Token'),
+    uid: Cookies.get('xxkd-uid'),
+    api_get_type: Cookies.get('xxkd-type'),
+    // 用户基本信息
     name: '',
-    avatar: '',
+    age: '',
+    email: '',
+    birthday: '',
+    telephone: '',
+    highestEducation: '',
+    nativePlace: '',
     introduction: '',
+    // 权限and接口使用
     roles: [],
-    setting: {
-      articlePlatform: []
-    }
+    schoolId: '',
+    gradeNo: '',
+    classNo: ''
   },
 
   mutations: {
-    SET_AUTH_TYPE: (state, type) => {
-      state.auth_type = type;
-    },
-    SET_CODE: (state, code) => {
-      state.code = code;
-    },
     SET_TOKEN: (state, token) => {
       state.token = token;
     },
     SET_UID: (state, uid) => {
       state.uid = uid;
     },
-    SET_EMAIL: (state, email) => {
-      state.email = email;
-    },
-    SET_INTRODUCTION: (state, introduction) => {
-      state.introduction = introduction;
-    },
-    SET_SETTING: (state, setting) => {
-      state.setting = setting;
-    },
-    SET_STATUS: (state, status) => {
-      state.status = status;
+    SET_APIGETTYPE: (state, type) => {
+      state.api_get_type = type;
     },
     SET_NAME: (state, name) => {
       state.name = name;
     },
-    SET_AVATAR: (state, avatar) => {
-      state.avatar = avatar;
+    SET_AGE: (state, age) => {
+      state.age = age;
+    },
+    SET_EMAIL: (state, email) => {
+      state.email = email;
+    },
+    SET_BIRTHDAY: (state, birthday) => {
+      state.birthday = birthday;
+    },
+    SET_TELEPHONE: (state, telephone) => {
+      state.telephone = telephone;
+    },
+    SET_HIGHESTEDUCATION: (state, highestEducation) => {
+      state.highestEducation = highestEducation;
+    },
+    SET_NATIVEPLACE: (state, nativePlace) => {
+      state.nativePlace = nativePlace;
+    },
+    SET_INTRODUCTION: (state, introduction) => {
+      state.introduction = introduction;
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles;
+    },
+    SET_SCHOOLID: (state, schoolId) => {
+      state.schoolId = schoolId;
+    },
+    SET_GRADENO: (state, gradeNo) => {
+      state.gradeNo = gradeNo;
+    },
+    SET_CLASSNO: (state, classNo) => {
+      state.classNo = classNo;
     },
     LOGIN_SUCCESS: () => {
       console.log('login success')
@@ -66,11 +82,19 @@ const user = {
     LoginByAccount({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         loginByAccount(userInfo.account, userInfo.password, userInfo.code, userInfo.type).then(response => {
+ 
           const data = response.data;
-          Cookies.set('UID', data.teacher.id);
+
+          let setType = 0;  // 默认老师
+          if(userInfo.type == 10) setType = 1; // 学生
+          Cookies.set('xxkd-Token', data);
+          Cookies.set('xxkd-uid', data.teacher.id);
+          Cookies.set('xxkd-type', setType);
+
+          commit('SET_APIGETTYPE', setType); // Get user information usage
+          commit('SET_TOKEN', data);
           commit('SET_UID', data.teacher.id);
-          Cookies.set('xxkd-Token', data.teacher);
-          commit('SET_TOKEN', data.teacher);
+
           resolve(data);
         }).catch(error => {
           console.log(error);
@@ -80,13 +104,29 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }, uid) {
+    GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo(uid).then(response => {
-          const data = response.data;
-          let roles = data.teacher.type.split(',');
-          commit('SET_ROLES', ['0']);
-          commit('SET_NAME', data.teacher.name);
+        let query = {
+          id: state.uid,
+          type: state.api_get_type 
+        };
+        getInfo(query).then(response => {
+          const user = response.data.teacher;
+          let roles = user.type.split(',');
+          commit('SET_ROLES', roles);
+
+          commit('SET_NAME', user.name);
+          commit('SET_AGE', user.age);
+          commit('SET_EMAIL', user.email);
+          commit('SET_BIRTHDAY', user.birthday);
+          commit('SET_TELEPHONE', user.telephone);
+          commit('SET_HIGHESTEDUCATION', user.highestEducation);
+          commit('SET_NATIVEPLACE', user.nativePlace);
+
+          commit('SET_SCHOOLID', user.schoolId);
+          commit('SET_GRADENO', user.gradeNo);
+          commit('SET_CLASSNO', user.classNo);
+
           resolve(response);
         }).catch(error => {
           reject(error);
@@ -100,7 +140,7 @@ const user = {
         commit('SET_CODE', code);
         loginByThirdparty(state.status, state.email, state.code, state.auth_type).then(response => {
           commit('SET_TOKEN', response.data.token);
-          Cookies.set('xxkd-Token', response.data.token);
+          setToken(response.data.token);
           resolve();
         }).catch(error => {
           reject(error);
@@ -110,13 +150,20 @@ const user = {
 
     // 登出
     LogOut({ commit, state }) {
+      let query = {
+        id: state.uid,
+        type: state.api_get_type 
+      };
       return new Promise((resolve, reject) => {
-        logout().then((res) => {
-          console.log(res);
+        logout(query).then((res) => {
           commit('SET_UID', '');
+          commit('SET_APIGETTYPE');
           commit('SET_TOKEN', '');
           commit('SET_ROLES', []);
+
           Cookies.remove('xxkd-Token');
+          Cookies.remove('xxkd-uid');
+          Cookies.remove('xxkd-type');
           resolve();
         }).catch(error => {
           reject(error);
@@ -128,8 +175,7 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '');
-        Cookies.remove('UID');
-        Cookies.remove('xxkd-Token');
+        removeToken();
         resolve();
       });
     }

@@ -54,10 +54,10 @@
 						<el-table-column prop="tmpSchoolExcellentRate.progressValue" label="进步值" width="100"></el-table-column>
 					</el-table-column>
 					<el-table-column label='及格率' header-align='center'>
-						<el-table-column prop="" label="及格数" width="100"></el-table-column>
-						<el-table-column prop="" label="及格率" width="100"></el-table-column>
-						<el-table-column prop="" label="名次" width="100"></el-table-column>
-						<el-table-column prop="" label="进步值" width="100"></el-table-column>
+						<el-table-column prop="passCount" label="及格数" width="100"></el-table-column>
+						<el-table-column prop="passRate" label="及格率" width="100"></el-table-column>
+						<el-table-column prop="progressValue" label="名次" width="100"></el-table-column>
+						<el-table-column prop="ranking" label="进步值" width="100"></el-table-column>
 					</el-table-column>
 					<el-table-column label='低分率' header-align='center'>
 						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeCount" label="低分数" width="100"></el-table-column>
@@ -85,12 +85,9 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          id: 2,
+          pageNo: 1,
+          pageSize: 15
         },
         fromData: {
 					selectedSubject: '语文',
@@ -107,7 +104,8 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        getPaperScore(2).then(response => {
+        getPaperScore(this.listQuery).then(response => {
+        	console.log(response)
           this.list = response.data.list;
           this.name = this.list[0].paperName;
           this.listLoading = false;

@@ -20,9 +20,9 @@
 			</h3>
 			<div class="ui-table-main">
 				<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-					<el-table-column prop="school" label="学校" width="150" fixed></el-table-column>
-					<el-table-column prop='number3' label="班级" width="90" fixed></el-table-column>
-					<el-table-column prop='number1' label="生数" width="90" fixed></el-table-column>
+					<el-table-column prop="schoolName" key='schoolId' label="学校" width="150" fixed></el-table-column>
+					<el-table-column prop='className' key="classId" label="班级" width="90" fixed></el-table-column>
+					<el-table-column prop='actualExamineeCount' label="生数" width="90" fixed></el-table-column>
 					<el-table-column pro
 					<el-table-column label='入学' header-align='center'>
 						<el-table-column prop="number1" label="总分" sortable width="100" style="color:red">
@@ -64,7 +64,7 @@
 	</div>
 </template>
 <script>
-	import { fetchList, fetchPv } from 'api/data';
+	import { getClassStudent } from 'api/total_points';
 	export default {
 		data() {
 			return {
@@ -74,12 +74,9 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          pageNo: 1,
+          pageSize: 10,
+          period: 2017			// 届
         },
         fromData: {
 					selectedSubject: '启悟中学',
@@ -96,7 +93,8 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
+        getClassStudent(this.listQuery).then(response => {
+        	console.log(response);	
           this.list = response.data.list;
           this.total = response.data.total;
           this.listLoading = false;
