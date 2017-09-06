@@ -21,7 +21,7 @@
     </div>
     <el-dialog title="登陆" :visible.sync="showDialog" size="tiny">
       <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="70px" class="login-form" >
-          <el-form-item prop="account" label="帐号">
+          <el-form-item label="帐号">
               <el-input name="account" type="text" v-model="loginForm.account" autoComplete="on" placeholder="帐号"></el-input>
           </el-form-item>
           <el-form-item prop="password" label="密码">
@@ -72,13 +72,6 @@
       components: { socialSign },
       name: 'login',
       data() {
-        const validateAccount = (rule, value, callback) => {
-          if (!validataPhone(value)) {
-            callback(new Error('请输入正确的手机号'));
-          } else {
-            callback();
-          }
-        };
         const validatePass = (rule, value, callback) => {
           if (value.length < 6) {
             callback(new Error('密码不能小于6位'));
@@ -129,9 +122,6 @@
             type: ''
           },
           loginRules: {
-            account: [
-                { required: true, trigger: 'blur', validator: validateAccount }
-            ],
             password: [
                 { required: true, trigger: 'blur', validator: validatePass }
             ],

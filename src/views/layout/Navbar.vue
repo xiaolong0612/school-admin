@@ -17,21 +17,12 @@
                         首页
                     </el-dropdown-item>
                 </router-link> -->
-                <div v-if="roles[1] == 0">
+                <div v-if="roles[1] == 5 || roles[1] == 6">
                     <router-link to="/student/list">
                         <el-dropdown-item>
                             学生列表
                         </el-dropdown-item>
                     </router-link>
-                </div>
-                <div v-if="roles[1] == 7">
-                    <router-link to="/task/list">
-                        <el-dropdown-item>
-                            任务列表
-                        </el-dropdown-item>
-                    </router-link>
-                </div>
-                <div v-if="roles[1] == 5 || roles[1] == 6">
                     <router-link to="/teacher/list">
                         <el-dropdown-item>
                             老师列表
@@ -42,6 +33,23 @@
                             班级列表
                         </el-dropdown-item>
                     </router-link>
+                </div>
+                <div v-if="roles[1] == 7">
+                    <router-link to="/task/list">
+                        <el-dropdown-item>
+                            任务列表
+                        </el-dropdown-item>
+                    </router-link>
+                   <!--  <router-link to="/paper/list">
+                        <el-dropdown-item>
+                            试卷列表
+                        </el-dropdown-item>
+                    </router-link> -->
+                   <!--  <router-link to="/examination/list">
+                        <el-dropdown-item>
+                            试题列表
+                        </el-dropdown-item>
+                    </router-link> -->
                 </div>
                 <div v-if="roles[1] == 9">
                     <router-link to="/school/list">

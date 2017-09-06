@@ -101,7 +101,6 @@
           },
           calculable: true,
           xAxis: [{
-            data: ['1班', '2班', '3班', '4班', '5班'],
             type: '',
             triggerEvent: true,
             data: ['1班', '2班', '3班', '4班', '5班'],

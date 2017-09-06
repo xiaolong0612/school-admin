@@ -6,9 +6,11 @@
 	        <el-upload
 				    class="upload-demo"
 				    ref="upload"
-				    action="http://118.178.93.124/admin/upload?type=3"
+				    :action="'http://118.178.93.124/admin/upload?type=3&teacherId='+uid"
+				    :on-success='onSuccess'
+				    :on-error='onErroe'
 				    type="file"
-				    accept=".docx, .doc, .txt"
+				    accept=".xlsx, .xls"
 				    :show-file-list="false"
 				    :file-list="fileList">
 				    <el-button slot="trigger" type="primary">批量导入成绩</el-button>
@@ -41,6 +43,7 @@
 	</div>
 </template>
 <script>
+	import { mapGetters } from 'vuex';
 	import { getTaskRecord, calculation } from 'api/task';
 	export default {
 		data() {
@@ -59,8 +62,10 @@
         fromData: {}
 			}
 		},
-		created() {
-      
+		computed: {
+      ...mapGetters([
+        'uid'
+      ])
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(false);
@@ -103,6 +108,19 @@
       	this.interval = setInterval(function() {
       		_that.handleCalculation();
       	},10000)
+      },
+      onSuccess(response, file, fileList) {
+      	console.log(response)
+      	this.$message({
+          message: '文件上传成功',
+          type: 'success'
+        });
+      },
+      onErroe(err, file, fileList) {
+      	this.$message({
+          message: '文件上传失败',
+          type: 'success'
+        });
       }
 		}
 	}

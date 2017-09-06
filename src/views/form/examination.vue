@@ -50,7 +50,7 @@
 	</el-row>
 </template>
 <script>
-	import { saveExaminationPaperItem } from 'api/test/examination';
+	import { addExaminationPaperItem } from 'api/test/examination';
 	export default {
 		data() {
 			return {
@@ -119,7 +119,7 @@
       submitForm() {
       	this.$refs.ruleForm.validate(valid => {
       		if(valid) {
-      			saveExaminationPaperItem(this.ruleForm).then(response => {
+      			addExaminationPaperItem(this.ruleForm).then(response => {
 		        	this.$message({
 			          message: '试题添加成功',
 			          type: 'success'

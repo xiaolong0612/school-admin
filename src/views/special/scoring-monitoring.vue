@@ -150,10 +150,10 @@
         this.chart.on('click', params => {
           // console.log(params);
           if(params.componentType === "xAxis") {
-            console.log('我点击 的x轴');
+            console.log(params);
           }
           // console.log(this.link[params.seriesName])
-          this.$router.push({ path: '/special/scoring-item'});
+          // this.$router.push({ path: '/special/scoring-item'});
         })
       }
     }

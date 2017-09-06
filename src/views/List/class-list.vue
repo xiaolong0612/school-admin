@@ -220,9 +220,6 @@
             return false;
           }
       	})
-      },
-      onSearch() {
-      	console.log('111');
       }
 		}
 	}

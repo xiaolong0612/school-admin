@@ -5,7 +5,7 @@ import fetch from 'utils/fetch';
  * @namespace 考点
  */
 // 获取专题考点列表
-export function listTestSites(query) {
+export function getTestSitesList(query) {
   return fetch({
   	url: '/admin/test-sites/list-test-sites',
   	method: 'post',
@@ -14,7 +14,7 @@ export function listTestSites(query) {
 }
 
 // 新增专题考点
-export function saveTestSites(query) {
+export function addTestSites(query) {
   return fetch({
   	url: '/admin/test-sites/save-test-sites',
   	method: 'post',

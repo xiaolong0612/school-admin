@@ -6,13 +6,13 @@
 	        <el-upload
 				    class="upload-demo"
 				    ref="upload"
-				    action="http://118.178.93.124/admin/upload?type=1"
+				    :action="'http://118.178.93.124/admin/upload?type=1&teacherId='+uid"
+				    :on-success='onSuccess'
+				    :on-error='onErroe'
 				    type="file"
-				    accept=".docx, .doc, .txt"
-				    :show-file-list="false"
-				    :on-success="handleSuccess"
+				    accept=".xlsx, .xls"
 				    :file-list="fileList">
-				    <el-button slot="trigger" size="small" type="primary">批量导入学生</el-button>
+				    <el-button slot="trigger" size="small" type="primary">导入学生列表</el-button>
 				  </el-upload>
 	      </el-form-item>
 			</el-form>
@@ -44,6 +44,7 @@
 	</div>
 </template>
 <script>
+	import { mapGetters } from 'vuex';
 	import { getListStudent } from 'api/info-administration/student';
 	export default {
 		data() {
@@ -63,8 +64,10 @@
         fromData: {}
 			}
 		},
-		created() {
-      
+		computed: {
+      ...mapGetters([
+        'uid'
+      ])
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(false);
@@ -92,6 +95,19 @@
       },
       onUpInfo() {
       	console.log('111');
+      },
+      onSuccess(response, file, fileList) {
+      	console.log(response)
+      	this.$message({
+          message: '文件上传成功',
+          type: 'success'
+        });
+      },
+      onErroe(err, file, fileList) {
+      	this.$message({
+          message: '文件上传失败',
+          type: 'success'
+        });
       }
 		}
 	}

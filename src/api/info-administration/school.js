@@ -16,11 +16,12 @@ export function delSchool(id) {
 	})
 }
 
-export function modSchool(id) {
+export function modSchool(data) {
+	console.log(data)
 	return fetch({
 		url: '/admin/school/mod-school',
 		method: 'post',
-		params: id
+		params: data
 	})
 }
 

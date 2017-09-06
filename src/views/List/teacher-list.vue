@@ -6,9 +6,11 @@
 	        <el-upload
 				    class="upload-demo"
 				    ref="upload"
-				    action="http://118.178.93.124/admin/upload?type=2"
+				    :action="'http://118.178.93.124/admin/upload?type=2&teacherId='+uid"
 				    type=file
-				    accept=".docx, .doc, .txt"
+				    :on-success='onSuccess'
+				    :on-error='onErroe'
+				    accept=".xlsx, .xls"
 				    :show-file-list="false"
 				    :file-list="fileList">
 				    <el-button slot="trigger" type="primary">批量导入教师</el-button>
@@ -167,6 +169,7 @@
 	</div>
 </template>
 <script>
+	import { mapGetters } from 'vuex';
 	import { getListTeacher, addTeacher, modTeacher, delTeacher} from 'api/info-administration/teacher';
 	import { validataPhone } from 'utils/validate';
 	export default {
@@ -261,8 +264,10 @@
         }
 			}
 		},
-		created() {
-      
+		computed: {
+      ...mapGetters([
+        'uid'
+      ])
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(false);
@@ -347,6 +352,19 @@
 	          type: 'success'
 	        });
       	})
+      },
+      onSuccess(response, file, fileList) {
+      	console.log(response)
+      	this.$message({
+          message: '文件上传成功',
+          type: 'success'
+        });
+      },
+      onErroe(err, file, fileList) {
+      	this.$message({
+          message: '文件上传失败',
+          type: 'success'
+        });
       }
 		}
 	}

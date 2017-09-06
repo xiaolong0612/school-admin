@@ -6,7 +6,7 @@ import router from '../router';
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000                  // 请求超时时间
+  timeout: 5000,                // 请求超时时间
 });
 service.defaults.withCredentials=true;
 // request拦截器
@@ -15,6 +15,10 @@ service.interceptors.request.use(config => {
   // if (store.getters.token) {
   //   config.headers['A-Token'] = '123'; // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
   // }
+  if (config.method === 'post') {
+    config.headers['Content-Type'] = 'application/text; charset=UTF-8'
+  }
+
   return config;
 }, error => {
   // Do something with request error

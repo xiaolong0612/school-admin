@@ -121,12 +121,13 @@
 	</div>
 </template>
 <script>
-	import { listTestSites, modTestSites, saveTestSites, delTestSites} from 'api/test/test';
+	import { getTestSitesList, modTestSites, addTestSites, delTestSites} from 'api/test/test';
 	export default {
 		data() {
 			return {
 				name: '考点管理',
 				list: [],
+				backList: [],
 				screenHeight: 0,
 				total: 0,
         listLoading: true,
@@ -195,15 +196,15 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        listTestSites(this.listQuery).then(response => {
-        	let list = response.data.list;
-        	for(let i=0; i<list.length; i++){
-        		this.$set(list[i], 'edit', false)
-        		this.$set(list[i], 'fenxi', '考点分析')
-        		this.$set(list[i], 'jianyi', '教学建议')
-        		this.$set(list[i], 'liti', '典型例题')
+        getTestSitesList(this.listQuery).then(response => {
+        	this.list = response.data.list;
+        	for(let i=0; i<this.list.length; i++){
+        		this.$set(this.list[i], 'edit', false)
+        		this.$set(this.list[i], 'fenxi', '考点分析')
+        		this.$set(this.list[i], 'jianyi', '教学建议')
+        		this.$set(this.list[i], 'liti', '典型例题')
         	}
-          this.list = list;
+          this.backList = JSON.parse(JSON.stringify(this.list));
           this.total = response.data.total;
           this.listLoading = false;
         })
@@ -219,8 +220,8 @@
       handleMod(formName) {
       	this.$refs[formName].validate((valid) => {
 	        if (valid) {
-      			saveTestSites(this.fromData).then(response => {
-      		
+      			addTestSites(this.fromData).then(response => {
+      				if(typeof response == 'undefined') return;
 	            this.$message({
 			          message: '添加成功',
 			          type: 'success'
@@ -234,12 +235,11 @@
       },
       handleDel(id) {
       	delTestSites(id).then(response => {
-      		if(typeof response != 'undefined'){
-      			this.$message({
-		          message: '删除成功',
-		          type: 'success'
-		        });
-      		}
+      		if(typeof response == 'undefined') return;
+    			this.$message({
+	          message: '删除成功',
+	          type: 'success'
+	        });
       	})
       },
       resetForm(formName) {

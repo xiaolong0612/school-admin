@@ -41,7 +41,7 @@
 	</el-row>
 </template>
 <script>
-	import { saveTestSites } from 'api/test/test';
+	import { addTestSites } from 'api/test/test';
 	export default {
 		data() {
 			return {
@@ -87,7 +87,7 @@
       submitForm() {
       	this.$refs.ruleForm.validate(valid => {
       		if(valid) {
-      			saveTestSites(this.ruleForm).then(response => {
+      			addTestSites(this.ruleForm).then(response => {
 		        	this.$message({
 			          message: '考点添加成功',
 			          type: 'success'

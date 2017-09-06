@@ -5,9 +5,9 @@ import fetch from 'utils/fetch';
  * @namespace 优良率
  */
 // 所有考试全区各校单科优良率监控表
-export function getSchoolScoreExcellent(query){
+export function getClassExcellentRatePaperId(query){
 	return fetch({
-		url: '/admin/education/get-school-score-excellent',
+		url: '/admin/class-basic/getClassExcellentRatePaperId',
 		method: 'post',
 		params: query
 	})

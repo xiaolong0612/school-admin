@@ -116,6 +116,8 @@ const StudentList = _import('List/student-list');
 const TaskList = _import('List/task-list');
 const TeacherList = _import('List/teacher-list');
 const SchoolList = _import('List/school-list');
+const PaperList = _import('List/paper-list');
+const ExaminationList = _import('List/examination-list');
 
 const getSchoolList = _import('info-administration/school/get-school-list');
 const addSchool = _import('info-administration/school/add-school');
@@ -348,14 +350,22 @@ export const asyncRouterMap = [
     component: Layout,
     name: '成绩管理',
     icon: 'chengjiguanli',
-    meta: { role: ['0', '1', '3', '7', '8', '9'] },
+    meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] },
     children: [
       {
         path: 'total-score',
         component: TotalScore,
         name: '单考全区各校总分',
-        meta: { role: ['0', '1', '3', '7', '8', '9'] }
+        meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
       }, {
+        path: 'administration-com',
+        name: '行政班单考总表',
+        meta: { role: ['5', '6'] }
+      },{
+        path: 'area-all-student-com',
+        name: '区单考学生成绩总表',
+        meta: { role: ['5', '6'] }
+      },{
         path: 'section-class',
         component: SectionClass,
         name: '年段各班总分',
@@ -486,6 +496,73 @@ export const asyncRouterMap = [
     component: Layout,
     name: '优良率',
     icon: 'kaoshi',
+    meta: { role: [ '1', '3','5','6', '7', '8', '9'] },
+    children: [
+      {
+        path: 'region',
+        component: ExcellentRegion,
+        name: ' 区优良率图',
+        meta: { role: ['7'] }
+      }, {
+        path: 'region-school',
+        component: ExcellentRegionSchool,
+        name: ' 区优良率表',
+        meta: { role: ['1', '3', '7'] },
+        hidden: true
+      }, {
+        path: 'region-table',
+        component: ExcellentRegionTable,
+        name: ' 区优良率表',
+        meta: { role: ['7'] },
+      }, {
+        path: 'region-school-table',
+        component: ExcellentRegionSchoolTable,
+        name: ' 学校优良率表',
+        meta: { role: ['7'] },
+        hidden: true
+      }, {
+        path: 'subject',
+        component: ExcellentSubject,
+        name: '学科优良率',
+        meta: { role: ['7'] },
+        hidden: true
+      }, {
+        path: 'region-subject',
+        component: ExcellentRegionSubject,
+        name: '全区单科',
+        meta: { role: [ '8', '9'] }
+      }, {
+        path: 'area-class-subjest',
+        name: '区各班级单科',
+        meta: { role: ['5','6'] }
+      },{
+        path: 'class-subject',
+        component: ExcellentClassSubject,
+        name: '所有班级单科',
+        meta: { role: ['1', '3','5','6', '8', '9'] }
+      }, {
+        path: 'region-all-subject',
+        name: '全区各科',
+        component: ExcellentRegionAllSubject,
+        meta: { role: [ '8', '9'] }
+      }, {
+        path: 'school',
+        component: ExcellentSchool,
+        name: '历考学校各科优良率',
+        meta: { role: ['1', '3','5','6', '8', '9'] }
+      }, {
+        path: 'class',
+        component: ExcellentClass,
+        name: '班级历次各科优良率',
+        meta: {role: [ '1', '3','5','6', '8', '9' ] }
+      }
+    ]
+  },
+  {
+    path: '/low-score',
+    component: Layout,
+    name: '低分率',
+    icon: 'kaoshi',
     meta: { role: [ '1', '3', '7', '8', '9'] },
     children: [
       {
@@ -522,10 +599,14 @@ export const asyncRouterMap = [
         name: '全区单科',
         meta: { role: [ '8', '9'] }
       }, {
+        path: 'area-class-subjest',
+        name: '区各班级单科',
+        meta: { role: ['5','6'] }
+      },{
         path: 'class-subject',
         component: ExcellentClassSubject,
         name: '所有班级单科',
-        meta: { role: ['1', '3', '8', '9'] }
+        meta: { role: ['1', '3','5','6', '8', '9'] }
       }, {
         path: 'region-all-subject',
         name: '全区各科',
@@ -534,81 +615,18 @@ export const asyncRouterMap = [
       }, {
         path: 'school',
         component: ExcellentSchool,
-        name: '学校历次各科优良率',
-        meta: { role: ['1', '3', '8', '9'] }
+        name: '历考学校各科优良率',
+        meta: { role: ['1', '3','5','6', '8', '9'] }
       }, {
         path: 'class',
         component: ExcellentClass,
         name: '班级历次各科优良率',
-        meta: {role: [ '1', '3', '8', '9' ] }
+        meta: {role: [ '1', '3','5','6', '8', '9' ] }
       }
     ]
   },
   {
-    path: '/excellent',
-    component: Layout,
-    name: '低分率',
-    icon: 'kaoshi',
-    meta: { role: [ '1', '3', '7', '8', '9'] },
-    children: [
-      {
-        path: 'region',
-        component: ExcellentRegion,
-        name: ' 区低分率图',
-        meta: { role: ['7'] }
-      }, {
-        path: 'region-school',
-        component: ExcellentRegionSchool,
-        name: ' 区低分率表',
-        meta: { role: ['1', '3', '7'] },
-        hidden: true
-      }, {
-        path: 'region-table',
-        component: ExcellentRegionTable,
-        name: ' 区低分率表',
-        meta: { role: ['7'] },
-      }, {
-        path: 'region-school-table',
-        component: ExcellentRegionSchoolTable,
-        name: ' 学校低分率表',
-        meta: { role: ['7'] },
-        hidden: true
-      }, {
-        path: 'subject',
-        component: ExcellentSubject,
-        name: '学科低分率',
-        meta: { role: ['7'] },
-        hidden: true
-      }, {
-        path: 'region-subject',
-        component: ExcellentRegionSubject,
-        name: '全区单科',
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'class-subject',
-        component: ExcellentClassSubject,
-        name: '所有班级单科',
-        meta: { role: ['1', '3', '8', '9'] }
-      }, {
-        path: 'region-all-subject',
-        name: '全区各科',
-        component: ExcellentRegionAllSubject,
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'school',
-        component: ExcellentSchool,
-        name: '学校历次各科低分率',
-        meta: { role: ['1', '3', '8', '9'] }
-      }, {
-        path: 'class',
-        component: ExcellentClass,
-        name: '班级历次各科低分率',
-        meta: {role: [ '1', '3', '8', '9' ] }
-      }
-    ]
-  },
-  {
-    path: '/excellent',
+    path: '/pass-score',
     component: Layout,
     name: '及格率',
     icon: 'kaoshi',
@@ -617,56 +635,60 @@ export const asyncRouterMap = [
       {
         path: 'region',
         component: ExcellentRegion,
-        name: ' 区及格率图',
+        name: ' 区优良率图',
         meta: { role: ['7'] }
       }, {
         path: 'region-school',
         component: ExcellentRegionSchool,
-        name: ' 区及格率表',
+        name: ' 区优良率表',
         meta: { role: ['1', '3', '7'] },
         hidden: true
       }, {
         path: 'region-table',
         component: ExcellentRegionTable,
-        name: ' 区及格率表',
+        name: ' 区优良率表',
         meta: { role: ['7'] },
       }, {
         path: 'region-school-table',
         component: ExcellentRegionSchoolTable,
-        name: ' 学校及格率表',
+        name: ' 学校优良率表',
         meta: { role: ['7'] },
         hidden: true
       }, {
         path: 'subject',
         component: ExcellentSubject,
-        name: '学科及格率',
+        name: '学科优良率',
         meta: { role: ['7'] },
         hidden: true
       }, {
         path: 'region-subject',
         component: ExcellentRegionSubject,
         name: '全区单科',
-        meta: { role: ['9'] }
+        meta: { role: [ '8', '9'] }
       }, {
+        path: 'area-class-subjest',
+        name: '区各班级单科',
+        meta: { role: ['5','6'] }
+      },{
         path: 'class-subject',
         component: ExcellentClassSubject,
         name: '所有班级单科',
-        meta: { role: ['1', '3', '8', '9'] }
+        meta: { role: ['1', '3','5','6', '8', '9'] }
       }, {
         path: 'region-all-subject',
         name: '全区各科',
         component: ExcellentRegionAllSubject,
-        meta: { role: ['9'] }
+        meta: { role: [ '8', '9'] }
       }, {
         path: 'school',
         component: ExcellentSchool,
-        name: '学校历次各科及格率',
-        meta: { role: ['1', '3', '8', '9'] }
+        name: '历考学校各科优良率',
+        meta: { role: ['1', '3','5','6', '8', '9'] }
       }, {
         path: 'class',
         component: ExcellentClass,
-        name: '班级历次各科及格率',
-        meta: {role: [ '1', '3', '8', '9' ] }
+        name: '班级历次各科优良率',
+        meta: {role: [ '1', '3','5','6', '8', '9' ] }
       }
     ]
   }, 
@@ -709,10 +731,10 @@ export const asyncRouterMap = [
     name: '总分管理',
     component: Layout,
     icon: 'zongfen',
-    meta: { role: [ '1', '3', '8', '9'] },
+    meta: { role: [ '1', '3','5','6', '8', '9'] },
     children: [
-      { path: 'regoin', name: '历检全区总分', component: FractionRegion, meta: { role: [ '1', '3', '8', '9'] } },
-      { path: 'administration', name: '历检全区行政班', component: FractionAdministration, meta: { role: [ '1', '3', '8', '9'] } }
+      { path: 'regoin', name: '历检全区总分', component: FractionRegion, meta: { role: [ '1', '3','5','6', '8', '9'] } },
+      { path: 'administration', name: '历检全区行政班', component: FractionAdministration, meta: { role: [ '1', '3','5','6', '8', '9'] } }
     ]
   },
   {
@@ -720,25 +742,25 @@ export const asyncRouterMap = [
     name: '学科管理',
     component: Layout,
     icon: 'xueke',
-    meta: { role: [ '1', '3', '8', '9'] },
+    meta: { role: [ '1', '3','5','6', '8', '9'] },
     children: [
       {
         path: 'shcool',
         name: '历检全区学校',
         component: SubjectSchool,
-        meta: { role: [ '1', '3', '8', '9'] }
+        meta: { role: [ '1', '3','5','6', '8', '9'] }
       },
       {
         path: 'administration',
-        name: '历检全区行政班',
+        name: '历检区行政班',
         component: SubjectAdministration,
-        meta: { role: [ '1', '3', '8', '9'] }
+        meta: { role: [ '1', '3', '5','6','8', '9'] }
       },
       {
         path: 'teaching',
         name: '历检全区教学班',
         component: SubjectTeaching,
-        meta: { role: [ '1', '3', '8', '9'] }
+        meta: { role: [ '1', '3','5','6', '8', '9'] }
       }
     ]
   },
@@ -776,6 +798,15 @@ export const asyncRouterMap = [
       }
     ]
   },
+  // {
+  //   path: 'personnel-man',
+  //   name: '人员管理',
+  //   component: PAllClass,
+  //   meta: { role: ['5', '6'] },
+  //   children: [
+
+  //   ]
+  // },
   {
     path: '/student-mark',
     name: '历次质检表',
@@ -839,14 +870,16 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/form',
+    path: '/paper',
+    redirect: '/paper/list',
     component: Layout,
-    name: '题目管理',
+    name: '试卷管理',
     icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+    noDropdown: true,
     meta: { role: ['7'] },
     children: [
-      {path: 'examination', component: formExamination, name: '新增试题', meta: { role: ['7'] } },
-      {path: 'test', component: formTest, name: '新增考点', meta: { role: ['7'] } }
+      {path: 'list', component: PaperList, name: '试卷管理', meta: { role: ['7'] } },
+      {path: 'examination-list/:id/:name', component: ExaminationList, name: '试题列表', meta: { role: ['7'] } }
     ]
   },
   {
@@ -865,10 +898,10 @@ export const asyncRouterMap = [
     component: Layout,
     name: '学生列表',
     icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
-    meta: { role: ['0'] },
+    meta: { role: ['5','6'] },
     hidden: true,
     children: [
-      {path: 'list', component: StudentList, name: '学生列表', meta: { role: ['0'] } }
+      {path: 'list', component: StudentList, name: '学生列表', meta: { role: ['5','6'] } }
     ]
   },
   {
@@ -904,6 +937,28 @@ export const asyncRouterMap = [
       {path: 'list', component: SchoolList, name: '学校列表', meta: { role: ['9'] } }
     ]
   },
+  // {
+  //   path: '/paper',
+  //   component: Layout,
+  //   name: '试卷',
+  //   icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+  //   meta: { role: ['7'] },
+  //   hidden: true,
+  //   children: [
+  //     {path: 'list', component: PaperList, name: '试卷列表', meta: { role: ['7'] } }
+  //   ]
+  // },
+  // {
+  //   path: '/examination',
+  //   component: Layout,
+  //   name: '试题列表',
+  //   icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+  //   meta: { role: ['7'] },
+  //   hidden: true,
+  //   children: [
+      
+  //   ]
+  // },
   { path: '*', redirect: '/404', hidden: true }
 ];
 

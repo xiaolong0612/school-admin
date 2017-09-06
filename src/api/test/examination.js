@@ -6,7 +6,7 @@ import fetch from 'utils/fetch';
  */
 
 // 获取考卷列表
-export function listExaminationPaperItem(query) {
+export function getExaminationPaperItemList(query) {
   return fetch({
     url: '/admin/examination-paper-item/list-examination-paper-item',
     method: 'post',
@@ -15,7 +15,7 @@ export function listExaminationPaperItem(query) {
 }
 
 // 新增试题
-export function saveExaminationPaperItem(query) {
+export function addExaminationPaperItem(query) {
   return fetch({
     url: '/admin/examination-paper-item/save-examination-paper-item',
     method: 'post',

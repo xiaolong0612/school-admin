@@ -4,6 +4,7 @@
   </div>
 </template>
 <script>
+  import { getClassExcellentRatePaperId } from 'api/excellent'
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
   const rangeList = [
@@ -19,6 +20,7 @@
     data() {
       return {
         chart: '',
+        list: [],
         link: {
         	语言积累: 'http://www.baidu.com',
         	语言运用: 'http://www.yuyan.com',
@@ -31,9 +33,9 @@
         	作文: 'http://www.baidu.com',
         	全卷: 'http://www.baidu.com'
         },
-        formData: {
-          selectedRange: '学校',
-          selectedSchool: ''
+        listQuery: {
+          paperId: 2,
+          state: 0
         },
         showSchool: true,
         rangeList: rangeList,
@@ -42,14 +44,23 @@
     },
     mounted() {
       this.initChart();
+      this.getList();
     },
     methods: {
+      getList() {
+        getClassExcellentRatePaperId(this.listQuery).then(response => {
+          var data = response.data;
+            this.list = data[0];
+            this.setOption();
+        })
+      },
       initChart() {
         this.chart = echarts.init(document.getElementById('chart'), 'macarons');
         this.setOption();
         this.addChartClick();
       },
       setOption() {
+        var _that = this;
         this.chart.setOption({
           title: {
             text: '单次考试全区各校优良率',
@@ -74,15 +85,6 @@
               color: '#fff'
             }
           },
-          legend: {
-            orient: 'vertical',
-            bottom: '20%',
-            right: '1%',
-            textStyle: {
-              color: '#90979c'
-            },
-            data: ['市平均', '区平均', '市九上', '区九上']
-          },
           calculable: true,
           xAxis: [{
             type: 'category',
@@ -91,7 +93,7 @@
               alignWithLabel: true
             },
             nameRotate: 50,
-            data: ['内厝中学','新店中学','厦门市国祺中学','厦门市第二外国语学校','厦门市五显中学','厦门市东山中学','厦门市启悟中学','同安一中','巷西中学','刘五店中学','巷南中学','彭厝学校','巷东中学','厦门市竹坝学校','厦门市澳溪中学','厦门市城东中学','厦门华兴学校','厦门市美林中学','厦门市莲美中学']
+            data: _that.list.title
           }],
           yAxis: [{
             type: 'value'
@@ -107,6 +109,7 @@
           series: [{
             name: 'data',
             type: 'bar',
+            barMaxWidth: 100,
             itemStyle: {
               normal: {
                 label: {
@@ -118,7 +121,7 @@
                 }
               }
             },
-            data: [ 5, 3, 6, 7, 5, 0.4, 0.4,1.2, 1, 0.9,1.2, 1, 0.9, 0.9, 0.9,7, 5, 0.4 ]
+            data: _that.list.data
           }]
         })
       },
