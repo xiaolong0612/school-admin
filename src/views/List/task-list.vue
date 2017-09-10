@@ -95,7 +95,7 @@
         this.getList();
       },
       handleCalculation() {
-      	calculation().then(response => {
+      	calculation(this.uid).then(response => {
       		if(typeof response == 'undefined') return;
       		this.$message({
 	          message: '恭喜你，这是一条成功消息',
@@ -106,7 +106,7 @@
       refreshTime() {
       	var _that = this;
       	this.interval = setInterval(function() {
-      		_that.handleCalculation();
+      		_that.getList();
       	},10000)
       },
       onSuccess(response, file, fileList) {

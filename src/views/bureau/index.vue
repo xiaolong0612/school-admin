@@ -1,10 +1,10 @@
 <template>
-	<div>
+  <div>
     <div class="ui-search-wrap" id="ui-search-wrap">
         <el-button v-for='item in classList' @click="getList()" :type="item.type" :key="item" style="margin-bottom: 15px;width:90px;">{{item.label}}</el-button>
     </div>
-		<div class="echarts-wrap ui-echart-wrap">
-			<div class="chart" id="chart" style="height:600px;width:100%"></div>
+    <div class="echarts-wrap ui-echart-wrap">
+      <div class="chart" id="chart" style="height:600px;width:100%"></div>
       <div class="ui-course">
         <div class="clearfix ui-course_nr">
           <ul class="ui-course_nr2">
@@ -35,24 +35,30 @@
           </ul>
         </div>
       </div>
-		</div>
-	</div>
+    </div>
+  </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex';
-  import { fetchList, fetchPv } from 'api/data';// 引入 ECharts 主模块
+  import { headmaster } from 'api/index';
+
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
   export default {
-  	data() {
-  		return {
-  			data1: null,
-  			data2: null,
-  			data3: null,
-  			data4: null,
-  			name: '',
-  			classList: [{
+    data() {
+      return {
+        name: '',
+        list: {
+          right: [],
+          data: [],
+          xAxis: []
+        },
+        listQuery: {
+          period: 2017,
+          grade: '初一年级'
+        },
+        classList: [{
           value: '1',
           label: '七年级'
         }, {
@@ -92,7 +98,7 @@
         fromData: {
           selectedClass: ''
         },
-  			listQuery: {
+        listQuery: {
           page: 1,
           limit: 20,
           importance: undefined,
@@ -100,52 +106,33 @@
           type: undefined,
           sort: '+id'
         }
-  		}
-  	},
-  	created() {
-    	
+      }
+    },
+    created() {
+      
     },
     mounted() {
-    	this.getList();
+      this.initChart();
+      this.getList();
     },
-  	methods: {
-  		select(item) {
-  			this.getList();
-  			if(typeof item.type == 'undefined'){
-  				this.$set(item, 'type', 'primary');
-  			}else {
-  				if(item.type != 'primary'){
-  					item.type = 'primary'
-  				}else {
-  					this.classList.forEach(function(value, index) {
-  						value.type = ""
-  					})
-  					item.type = 'primary'
-  				}
-  			}
-  		},
-  		getList() {
-        fetchList(this.listQuery).then(response => {
-          this.data1 = response.data.list[0].array2;
-          this.data2 = response.data.list[1].array2;
-          this.data3 = response.data.list[2].array2;
-          this.data4 = response.data.list[3].array2;
-        	this.initChart();
+    methods: {
+      getList() {
+        headmaster(this.listQuery).then(response => {
+          console.log(response);
+          this.list.right = response.data.right;
+          this.list.data = response.data.data;
+          this.list.title = response.data.title;
+          this.setOption()
         });
       },
-  		initChart() {
+      initChart() {
         this.chart = echarts.init(document.getElementById('chart'), 'macarons');
-        this.setOption();
       },
       setOption() {
-        const data1 = this.data1;
-        const data2 = this.data2;
-        const data3 = this.data3;
-        const data4 = this.data4;
-        const color = this.color;
+        _that = this;
         this.chart.setOption({
           title: {
-            text: '同安区初中2018届七上市质检总分监控图（最近考试）',
+            text: '总分监控表',
             x: 'center',
             textStyle: {
               color: '#333',
@@ -170,8 +157,7 @@
           legend: {
             orient: 'vertical',
             bottom: '25%',
-            right: '2%',
-            data: ['得分率', '超均率', '位置', '进步值']
+            right: _that.list.right
           },
           calculable: true,
           xAxis: [{
@@ -197,7 +183,6 @@
               }
             },
             axisLabel: {
-              interval: 2,
               textStyle: {
                 color: '#333'
               }
@@ -208,6 +193,7 @@
             type: 'bar',
             itemStyle: {
               normal: {
+                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -217,12 +203,13 @@
                 }
               }
             },
-            data: data2,
+            data: _that.list.data[0],
           }, {
             name: '超均率',
             type: 'bar',
             itemStyle: {
               normal: {
+                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -232,12 +219,13 @@
                 }
               }
             },
-            data: data1,
+            data: _that.list.data[1],
           }, {
             name: '位置',
             type: 'bar',
             itemStyle: {
               normal: {
+                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -247,12 +235,13 @@
                 }
               }
             },
-            data: data3,
+            data: _that.list.data[2],
           }, {
             name: '进步值',
             type: 'bar',
             itemStyle: {
               normal: {
+                barBorderRadius: 0,
                 label: {
                   show: true,
                   position: 'top',
@@ -262,10 +251,10 @@
                 }
               }
             },
-            data: data4,
+            data: _that.list.data[3],
           }]
         })
-			}
-  	}
+      }
+    }
   }
 </script>

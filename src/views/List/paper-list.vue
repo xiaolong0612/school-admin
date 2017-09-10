@@ -155,8 +155,9 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
+          subject: '',
           name: '',
-          type: ''
+          grade: ''
         },
         fromData: {
         	name: '',

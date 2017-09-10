@@ -4,12 +4,21 @@
   </div>
 </template>
 <script>
+  import { getScore } from 'api/special'
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
   export default {
     data() {
       return {
         chart: '',
+        list: {
+          data: [],
+          right: [],
+          title: []
+        },
+        listQuery: {
+          paperId: 2
+        },
         link: {
         	语言积累: 'http://www.baidu.com',
         	语言运用: 'http://www.yuyan.com',
@@ -26,14 +35,25 @@
     },
     mounted() {
       this.initChart();
+      this.getList();
+      this.addEchartClick();
     },
     methods: {
+      getList() {
+        getScore(this.listQuery).then(res => {
+          var data = res.data.data;
+          this.list.right = data.right;
+          this.list.data = data.data;
+          this.list.title = data.title;
+          this.setOption();
+        })
+      },
       initChart() {
         this.chart = echarts.init(document.getElementById('chart'), 'macarons');
-        this.setOption();
-        this.addEchartClick();
       },
       setOption() {
+        var _that = this;
+        console.log(this.list)
         this.chart.setOption({
           title: {
             text: '所有考试市、区专题得分率监控图',
@@ -65,7 +85,7 @@
             textStyle: {
               color: '#90979c'
             },
-            data: ['市平均', '区平均', '市九上', '区九上']
+            data: _that.list.title
           },
           calculable: true,
           xAxis: [{
@@ -94,55 +114,7 @@
                 }
               }
             },
-            data: [ 1.2, 1, 0.9, 0.9, 0.9, 0.4, 0.4,1.2, 1, 0.9 ]
-          }, {
-            name: '区平均',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: [ 0.4, 0.4,1.2, 1, 0.9,1.2, 1, 0.9, 0.9, 0.9 ]
-          }, {
-            name: '市九上',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: [ 0.4, 0.4,1.2, 0.9, 0.9, 0.7, 1, 0.9,1.2, 1 ]
-          }, {
-            name: '区九上',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: [ 0.4,  1, 0.9, 0.9, 0.9,0.4,1.2, 1, 0.9,1.2 ]
+            data: _that.list.data
           }]
         })
       },

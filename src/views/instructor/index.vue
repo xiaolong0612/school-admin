@@ -187,7 +187,6 @@
       },
   		initChart() {
         this.chart = echarts.init(document.getElementById('chart'), 'macarons');
-        this.setOption();
       },
       setOption() {
         const data1 = this.data1;

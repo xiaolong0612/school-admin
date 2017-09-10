@@ -88,13 +88,12 @@ const user = {
           let setType = 0;  // 默认老师
           if(userInfo.type == 10) setType = 1; // 学生
           Cookies.set('xxkd-Token', data);
-          Cookies.set('xxkd-uid', data.teacher.id);
+          Cookies.set('xxkd-uid', data.userinfo.id);
           Cookies.set('xxkd-type', setType);
 
           commit('SET_APIGETTYPE', setType); // Get user information usage
           commit('SET_TOKEN', data);
-          commit('SET_UID', data.teacher.id);
-
+          commit('SET_UID', data.userinfo.id);
           resolve(data);
         }).catch(error => {
           console.log(error);
@@ -111,7 +110,7 @@ const user = {
           type: state.api_get_type 
         };
         getInfo(query).then(response => {
-          const user = response.data.teacher;
+          const user = response.data.userinfo;
           let roles = user.type.split(',');
           commit('SET_ROLES', roles);
 

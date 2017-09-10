@@ -6,33 +6,44 @@
 <script>
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
-  import { listSchoolLevel } from 'api/ability'
+  import { getSchoolSpecialTopicBySubjectAndPeriod } from 'api/ability'
   export default {
     data() {
       return {
         chart: '',
+        list: {
+          data: [],
+          title: [],
+          right: []
+        },
         listQuery: {
-          levelCode: '识记'
+          period: '2017',
+          subject: '语文'
         }
       }
     },
     mounted() {
       this.initChart();
+      this.getList()
     },
     methods: {
       getList() {
         this.listLoading = true;
-        listSchoolLevel(this.listQuery).then(response => {
-          console.log(response);
+        getSchoolSpecialTopicBySubjectAndPeriod(this.listQuery).then(res => {
+          var data = res.data.data;
+          this.list.data = data.data;
+          this.list.title = data.title;
+          this.list.right = data.right;
+          this.setOption();
           this.listLoading = false;
         })
       },
       initChart() {
         this.chart = echarts.init(document.getElementById('chart'),'macarons');
-        this.setOption();
-        this.addChartClick();
       },
       setOption() {
+        var _that = this;
+        console.log(_that.list)
         this.chart.setOption({
           title: {
             text: '所有和最近考试市、区学科能力发展监控表',
@@ -61,7 +72,7 @@
             orient: 'vertical',
             bottom: '25%',
             right: '0',
-            data: ['厦门市平均', '同安区平均', '厦门市七上', '同安区七上']
+            data: _that.list.right
           },
           calculable: true,
           xAxis: [{
@@ -77,7 +88,7 @@
                 color: '#333'
               }
             },
-            data: ['识记', '理解', '表达运用', '综合分析']
+            data: _that.list.title
           }],
           yAxis: [{
             type: 'value',
@@ -107,56 +118,10 @@
                 }
               }
             },
-            data: [ 0.5, 0.3, 0.6, 0.7 ],
+            data: _that.list.data,
             markLine: {
             	silent: false
             }
-          },
-          {
-            name: '同安区平均',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: [ 0.2, 0.4, 0.2, 0.5 ]
-          }, {
-            name: '厦门市七上',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: [0.6, 0.8, 0.4, 0.2]
-          }, {
-            name: '同安区七上',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: [ 0.7, 1, 0.4, 0.5]
           }]
         })
       },

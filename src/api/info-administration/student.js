@@ -9,18 +9,19 @@ export function addStudent(data) {
 }
 
 export function delStudent(id) {
+	var data = { id }
 	return fetch({
 		url: '/admin/student/del-student',
 		method: 'post',
-		params: id
+		params: data
 	})
 }
 
-export function modStudent(id) {
+export function modStudent(query) {
 	return fetch({
 		url: '/admin/student/mod-student',
 		method: 'post',
-		params: id
+		params: query
 	})
 }
 

@@ -74,7 +74,7 @@
 	</div>
 </template>
 <script>
-	import { fetchList, fetchPv } from 'api/data';
+	import { getPaperScore } from 'api/score';
 	export default {
 		data() {
 			return {
@@ -84,12 +84,7 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 4,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          id: 2
         },
         fromData: {
         	selectedSchool: '启悟中学',
@@ -106,9 +101,10 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.list;
-          this.total = response.data.total;
+        getPaperScore(this.listQuery).then(res => {
+        	console.log(res);
+          this.list = res.data.list;
+          this.total = res.data.total;
           this.listLoading = false;
         })
       },

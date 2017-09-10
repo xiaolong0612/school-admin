@@ -6,46 +6,20 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-					<el-table-column prop="school" label="单位" width="150" fixed>
-						<template scope="scope">
-							<router-link to="/fraction/administration">
-								{{scope.row.school}}
-							</router-link>
-						</template>
-					</el-table-column>
-					<el-table-column prop='number1' label="生数" width="90" fixed></el-table-column>
-					<el-table-column prop='name2' label='年段长' width="120"></el-table-column>
-					<el-table-column label='入学' header-align='center'>
-						<el-table-column prop="number1" label="总分" sortable width="100" style="color:red">
-						</el-table-column>
-						<el-table-column prop="float1" label="得分率" width="100" sortable></el-table-column>
-						<el-table-column prop="float2" label="超均率" width="100"></el-table-column>
-						<el-table-column label="区位置" width="100">
-							<template scope="scope">
-								<div :formatter="formatter(scope.row.number4)" :style="{color: formatter(scope.row.number4)}">{{scope.row.number4}}</div>
-							</template>
-						</el-table-column>
-					</el-table-column>
-					<el-table-column label='七上' header-align='center'>
-						<el-table-column prop="name4" label='年段长' width="100"></el-table-column>
-						<el-table-column prop="number1" label="总分" width="100"></el-table-column>
-						<el-table-column prop="float4" label="得分率" width="100"></el-table-column>
-						<el-table-column prop="float3" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number8" label="区位置" width="100"></el-table-column>
-						<el-table-column prop="number6" label="市位置" width="100"></el-table-column>
-						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-					<el-table-column label='七下' header-align='center'>
-						<el-table-column prop="name5" label="年段长" width="100"></el-table-column>
-						<el-table-column prop="number2" label="均分" width="100"></el-table-column>
-						<el-table-column prop="float8" label="得分率" width="100"></el-table-column>
-						<el-table-column prop="float4" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
-						<el-table-column prop="number2" label="市位置" width="100"></el-table-column>
-						<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-				</el-table>
+				<el-table :data="list.data" border style="width: 100%">
+	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name'>
+	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
+	            <template scope="scope">
+	              <div>{{scope.row[first.value][second.value]}}</div>
+	            </template>
+	          </el-table-column>
+
+	          <template scope="scope" v-if="first.children == undefined">
+	            <div>{{scope.row[first.value]}}</div>
+	          </template>
+	        
+	        </el-table-column>
+	    </el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
 		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
 		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
@@ -56,22 +30,24 @@
 	</div>
 </template>
 <script>
-	import { fetchList, fetchPv } from 'api/data';
+	import { getSchoolScoreRateByPaperNameAndPeriodAndGrade } from 'api/total_points';
 	export default {
 		data() {
 			return {
 				name: '历次质检全区总分监控表',
-				list: [],
+				list: {
+					data: [],
+					head: []
+				},
 				screenHeight: 0,
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          period: 2017,
+          pageNo: 1,
+          pageSize: 10,
+          grade: '初一年',
+          paperName: '七上考试',
         },
 			}
 		},
@@ -84,18 +60,21 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.list;
-          this.total = response.data.total;
+        getSchoolScoreRateByPaperNameAndPeriodAndGrade(this.listQuery).then(res => {
+        	var data = res.data.data;
+        	console.log(data);
+          this.list.data = data.data;
+          this.list.head = data.head;
+          this.total = data.total;
           this.listLoading = false;
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
       formatter(val) {

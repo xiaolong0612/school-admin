@@ -20,14 +20,14 @@
 			</h3>
 			<div class="ui-table-main">
 				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-					<el-table-column prop="school" label="学校" width="150" fixed>
+					<el-table-column prop="schoolName" label="学校" width="150" fixed>
 						<template scope="scope">
-							{{scope.row.school}}
+							{{scope.row.schoolName}}
 						</template>
 					</el-table-column>
-					<el-table-column prop='number1' label="生数" width="90" sortable></el-table-column>
-					<el-table-column prop='number2' label="考生数" width='100'></el-table-column>
-					<el-table-column prop='name2' label='年段长' width="120"></el-table-column>
+					<el-table-column prop='examineeCount' label="学生" width="90" sortable></el-table-column>
+					<el-table-column prop='className' label="班级" width='100'></el-table-column>
+					<el-table-column prop='chargeTearcherName' label='班主任' width="120"></el-table-column>
 					<el-table-column label='语文' header-align='center'>
 						<el-table-column prop="name3" label="组长" width="100"></el-table-column>
 						<el-table-column prop="number1" label="均分" width="100" sortable>
@@ -96,7 +96,7 @@
 <script>
 	import { mapGetters } from 'vuex';
 	import store from 'store';
-	import { getScore } from 'api/score';
+	import { getAllScore } from 'api/excellent';
 	export default {
 		data() {
 			return {
@@ -106,8 +106,11 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          // groupid: store.getters.uid
-          groupid: 1
+          period: 2017,
+          pageNo: 1,
+          pageSize: 10,
+          grade: '初一年',
+          paperName: '七上考试'
         },
         fromData: {
 					selectedSubject: '启悟中学',
@@ -130,8 +133,11 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        getScore(this.listQuery).then(response => {
-          console.log(response);
+        getAllScore(this.listQuery).then(res => {
+          var data = res.data;
+          this.list = data.list;
+          console.log(this.list)
+          this.total = data.total;
           this.listLoading = false;
         })
       },

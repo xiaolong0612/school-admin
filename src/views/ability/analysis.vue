@@ -58,7 +58,7 @@
 </template>
 
 <script>
-  import { fetchList, fetchPv } from 'api/data';
+  import { listAreaSummary } from 'api/ability';
   export default {
     data() {
       return {
@@ -68,12 +68,8 @@
         total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          paperId: 2,
+          testSitesId: 34
         },
         fromData: {
           selectedSubject: '启悟中学',
@@ -82,18 +78,19 @@
       }
     },
     created() {
-      this.getList();
     },
     mounted() {
       this.screenHeight = this.setTableHeight(false);
+      this.getList();
     },
     methods: {
       getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.list;
-          console.log(response.data);
-          this.total = response.data.total;
+        listAreaSummary(this.listQuery).then(res => {
+          var data = res.data;
+          console.log(data)
+          this.list = res.data.list;
+          this.total = res.data.total;
           this.listLoading = false;
         })
       },

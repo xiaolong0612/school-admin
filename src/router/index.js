@@ -53,6 +53,7 @@ const AnnualSplit = _import('achievement/annual-split');
 const StudentScore = _import('achievement/student-score');
 const TeachingAverage = _import('achievement/teaching-average');
 const SectionClass = _import('achievement/section-class');
+const AdministrationCom = _import('achievement/administration-com')
 // 考点管理
 const AddTest = _import('test-site/add-test');
 const IndexTest = _import('test-site/index');
@@ -74,6 +75,29 @@ const ExcellentClassSubject = _import('excellent/class-subject');
 const ExcellentSchool = _import('excellent/school');
 const ExcellentClass = _import('excellent/class');
 const ExcellentRegionAllSubject = _import('excellent/region-all-subject');
+
+const LowScoreRegion = _import('low-score/region');
+const LowScoreRegionSchool = _import('low-score/region-scholl');
+const LowScoreRegionTable = _import('low-score/region-table');
+const LowScoreRegionSchoolTable = _import('low-score/region-school-table');
+const LowScoreSubject = _import('low-score/subject');
+const LowScoreRegionSubject = _import('low-score/region-subject');
+const LowScoreClassSubject = _import('low-score/class-subject');
+const LowScoreSchool = _import('low-score/school');
+const LowScoreClass = _import('low-score/class');
+const LowScoreRegionAllSubject = _import('low-score/region-all-subject');
+
+const PassScoreRegion = _import('pass-score/region');
+const PassScoreRegionSchool = _import('pass-score/region-scholl');
+const PassScoreRegionTable = _import('pass-score/region-table');
+const PassScoreRegionSchoolTable = _import('pass-score/region-school-table');
+const PassScoreSubject = _import('pass-score/subject');
+const PassScoreRegionSubject = _import('pass-score/region-subject');
+const PassScoreClassSubject = _import('pass-score/class-subject');
+const PassScoreSchool = _import('pass-score/school');
+const PassScoreClass = _import('pass-score/class');
+const PassScoreRegionAllSubject = _import('pass-score/region-all-subject');
+
 // 能力
 const AbilityIndex = _import('ability/index');
 const AbilitySchool = _import('ability/school');
@@ -355,12 +379,13 @@ export const asyncRouterMap = [
       {
         path: 'total-score',
         component: TotalScore,
-        name: '单考全区各校总分',
+        name: '全区各校单考总分',
         meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
       }, {
         path: 'administration-com',
+        component: AdministrationCom,
         name: '行政班单考总表',
-        meta: { role: ['5', '6'] }
+        meta: { role: ['1', '5', '6'] }
       },{
         path: 'area-all-student-com',
         name: '区单考学生成绩总表',
@@ -369,7 +394,7 @@ export const asyncRouterMap = [
         path: 'section-class',
         component: SectionClass,
         name: '年段各班总分',
-        meta: { role: ['0'] }
+        meta: { role: ['0']}
       }, {
         path: 'discipline-hierarchy',
         component: DisciplineHierarchy,
@@ -394,7 +419,7 @@ export const asyncRouterMap = [
         path: 'administration-discipline-hierarchy',
         name: '行政班学科分层',
         component: AdministrationDisciplineHierarchy,
-        meta: { role: [ '1', '3', '7'] }
+        meta: { role: [ '3', '7'] }
       }, {
         path: 'teaching-discipline-hierarchy',
         component: TeachingDisciplineHierarchy,
@@ -414,11 +439,6 @@ export const asyncRouterMap = [
         path: 'annual-split',
         component: AnnualSplit,
         name: '年段学科均分',
-        meta: { role: ['0'] }
-      }, {
-        path: 'student-score',
-        component: StudentScore,
-        name: '学生得分',
         meta: { role: ['0'] }
       }, {
         path: 'administration-average',
@@ -567,35 +587,35 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'region',
-        component: ExcellentRegion,
+        component: LowScoreRegion,
         name: ' 区优良率图',
         meta: { role: ['7'] }
       }, {
         path: 'region-school',
-        component: ExcellentRegionSchool,
+        component: LowScoreRegionSchool,
         name: ' 区优良率表',
         meta: { role: ['1', '3', '7'] },
         hidden: true
       }, {
         path: 'region-table',
-        component: ExcellentRegionTable,
+        component: LowScoreRegionTable,
         name: ' 区优良率表',
         meta: { role: ['7'] },
       }, {
         path: 'region-school-table',
-        component: ExcellentRegionSchoolTable,
+        component: LowScoreRegionSchoolTable,
         name: ' 学校优良率表',
         meta: { role: ['7'] },
         hidden: true
       }, {
         path: 'subject',
-        component: ExcellentSubject,
+        component: LowScoreSubject,
         name: '学科优良率',
         meta: { role: ['7'] },
         hidden: true
       }, {
         path: 'region-subject',
-        component: ExcellentRegionSubject,
+        component: LowScoreRegionSubject,
         name: '全区单科',
         meta: { role: [ '8', '9'] }
       }, {
@@ -604,22 +624,22 @@ export const asyncRouterMap = [
         meta: { role: ['5','6'] }
       },{
         path: 'class-subject',
-        component: ExcellentClassSubject,
+        component: LowScoreClassSubject,
         name: '所有班级单科',
         meta: { role: ['1', '3','5','6', '8', '9'] }
       }, {
         path: 'region-all-subject',
         name: '全区各科',
-        component: ExcellentRegionAllSubject,
+        component: LowScoreRegionAllSubject,
         meta: { role: [ '8', '9'] }
       }, {
         path: 'school',
-        component: ExcellentSchool,
+        component: LowScoreSchool,
         name: '历考学校各科优良率',
         meta: { role: ['1', '3','5','6', '8', '9'] }
       }, {
         path: 'class',
-        component: ExcellentClass,
+        component: LowScoreClass,
         name: '班级历次各科优良率',
         meta: {role: [ '1', '3','5','6', '8', '9' ] }
       }
@@ -634,35 +654,35 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'region',
-        component: ExcellentRegion,
+        component: PassScoreRegion,
         name: ' 区优良率图',
         meta: { role: ['7'] }
       }, {
         path: 'region-school',
-        component: ExcellentRegionSchool,
+        component: PassScoreRegionSchool,
         name: ' 区优良率表',
         meta: { role: ['1', '3', '7'] },
         hidden: true
       }, {
         path: 'region-table',
-        component: ExcellentRegionTable,
+        component: PassScoreRegionTable,
         name: ' 区优良率表',
         meta: { role: ['7'] },
       }, {
         path: 'region-school-table',
-        component: ExcellentRegionSchoolTable,
+        component: PassScoreRegionSchoolTable,
         name: ' 学校优良率表',
         meta: { role: ['7'] },
         hidden: true
       }, {
         path: 'subject',
-        component: ExcellentSubject,
+        component: PassScoreSubject,
         name: '学科优良率',
         meta: { role: ['7'] },
         hidden: true
       }, {
         path: 'region-subject',
-        component: ExcellentRegionSubject,
+        component: PassScoreRegionSubject,
         name: '全区单科',
         meta: { role: [ '8', '9'] }
       }, {
@@ -671,22 +691,22 @@ export const asyncRouterMap = [
         meta: { role: ['5','6'] }
       },{
         path: 'class-subject',
-        component: ExcellentClassSubject,
+        component: PassScoreClassSubject,
         name: '所有班级单科',
         meta: { role: ['1', '3','5','6', '8', '9'] }
       }, {
         path: 'region-all-subject',
         name: '全区各科',
-        component: ExcellentRegionAllSubject,
+        component: PassScoreRegionAllSubject,
         meta: { role: [ '8', '9'] }
       }, {
         path: 'school',
-        component: ExcellentSchool,
+        component: PassScoreSchool,
         name: '历考学校各科优良率',
         meta: { role: ['1', '3','5','6', '8', '9'] }
       }, {
         path: 'class',
-        component: ExcellentClass,
+        component: PassScoreClass,
         name: '班级历次各科优良率',
         meta: {role: [ '1', '3','5','6', '8', '9' ] }
       }
@@ -731,10 +751,10 @@ export const asyncRouterMap = [
     name: '总分管理',
     component: Layout,
     icon: 'zongfen',
-    meta: { role: [ '1', '3','5','6', '8', '9'] },
+    meta: { role: [ '1', '3','5','6','7', '8', '9'] },
     children: [
-      { path: 'regoin', name: '历检全区总分', component: FractionRegion, meta: { role: [ '1', '3','5','6', '8', '9'] } },
-      { path: 'administration', name: '历检全区行政班', component: FractionAdministration, meta: { role: [ '1', '3','5','6', '8', '9'] } }
+      { path: 'regoin', name: '历检全区总分', component: FractionRegion, meta: { role: [ '1', '3','5','6','7', '8', '9'] } },
+      { path: 'administration', name: '历检全区行政班', component: FractionAdministration, meta: { role: [ '1', '3','5','6','7', '8', '9'] } }
     ]
   },
   {

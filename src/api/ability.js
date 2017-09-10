@@ -12,3 +12,20 @@ export function listSchoolLevel(query){
 		params: query
 	})
 }
+// 所有和最近考试市、区学科能力发展监控表
+export function getSchoolSpecialTopicBySubjectAndPeriod(query){
+	return fetch({
+		url: 'admin/schoo-basic/getSchoolSpecialTopicBySubjectAndPeriod',
+		method: 'post',
+		params: query
+	})
+}
+
+// 所有考试某中单项能力考点管理
+export function listAreaSummary(query){
+	return fetch({
+		url: '/admin/area-summary/list-area-summary',
+		method: 'post',
+		params: query
+	})
+}

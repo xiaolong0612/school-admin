@@ -9,10 +9,11 @@ export function addSchool(data) {
 }
 
 export function delSchool(id) {
+	var data = { id }
 	return fetch({
 		url: '/admin/school/del-school',
 		method: 'post',
-		params: id
+		params: data
 	})
 }
 

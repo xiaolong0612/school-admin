@@ -17,3 +17,21 @@ export function teacher() {
     method: 'post',
   });
 }
+
+// 年段长／班主任
+export function headmaster(query) {
+  return fetch({
+    url: '/admin/schoo-basic/getExaminationPaperByPeriodAndGrade',
+    method: 'post',
+    params: query
+  });
+}
+
+// 教育局
+// export function headmaster(query) {
+//   return fetch({
+//     url: '/admin/schoo-basic/getExaminationPaperByPeriodAndGrade',
+//     method: 'post',
+//     params: query
+//   });
+// }

@@ -15,10 +15,11 @@ export function getTaskRecord(query) {
 }
 
 // 计算
-export function calculation(query) {
+export function calculation(id) {
+  var data={id};
   return fetch({
     url: '/admin/calculation',
     method: 'post',
-    params: query
+    params: data
   })
 }

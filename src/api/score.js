@@ -29,9 +29,18 @@ export function getAllScore(query){
 	})
 }
 // 获取某次考试全区所有行政班学科数据分层表
-export function getClassScore(query){
+export function getEducationClassScore(query){
 	return fetch({
 		url: '/admin/education/get-class-score',
+  	method: 'post',
+		params: query
+	})
+}
+
+// 单次考试全区所有行政班学科分层监控表
+export function getClassScore(query){
+	return fetch({
+		url: '/admin/class-basic/get-class-score',
   	method: 'post',
 		params: query
 	})
