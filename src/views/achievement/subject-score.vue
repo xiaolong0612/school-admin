@@ -58,16 +58,15 @@
 				</el-table>
 			</div>
 			<div v-show="!listLoading" class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-	        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
 	  </div>
 	</div>
 </template>
 <script>
-	import { fetchList, fetchPv } from 'api/data';
-	import { setTableHeight } from '../../utils/tableHeight'
+	import { fetchList, fetchPv } from 'api/score';
 	export default {
 		data() {
 			return {
@@ -77,8 +76,8 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
+          pageNo: 1,
+          pageSize: 30,
           importance: undefined,
           title: undefined,
           type: undefined,
@@ -94,7 +93,7 @@
 		},
 		mounted() {
 			this.getList();
-			this.screenHeight = setTableHeight(false);
+			this.screenHeight = this.setTableHeight(false);
 		},
 		methods: {
 			getList() {
@@ -112,7 +111,7 @@
 				}
 			},
 			handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {

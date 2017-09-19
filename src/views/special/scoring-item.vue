@@ -4,52 +4,50 @@
   </div>
 </template>
 <script>
+  import { getPaperSchoolPassRateSpecialTopic } from 'api/special'
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
-  const rangeList = [
-    {value: '学校'},
-    {value: '行政班'},
-    {value: '教学班'}
-  ];
-  const schoolList = [
-    {value: '启悟中学'},
-    {value: '育才学校'}
-  ]
   export default {
     data() {
       return {
         chart: '',
-        link: {
-          语言积累: 'http://www.baidu.com',
-          语言运用: 'http://www.yuyan.com',
-          非连文本阅读: 'http://www.lal.com',
-          名著阅读: 'http://www.baidu.com',
-          诗歌阅读: 'http://www.baidu.com',
-          文言文阅读: 'http://www.baidu.com',
-          议论文阅读: 'http://www.baidu.com',
-          文学作品阅读: 'http://www.baidu.com',
-          作文: 'http://www.baidu.com',
-          全卷: 'http://www.baidu.com'
+        list: {
+          data: [],
+          right: [],
+          title: []
         },
-        formData: {
-          selectedRange: '学校',
-          selectedSchool: ''
-        },
-        showSchool: true,
-        rangeList: rangeList,
-        schoolList: schoolList
+        titleText: [],
+        listQuery: {
+          paperId: 2
+        }
       }
+    },
+    created() {
+      console.log(this.$route)
     },
     mounted() {
       this.initChart();
+      this.getList();
     },
     methods: {
+      getList() {
+        getPaperSchoolPassRateSpecialTopic(this.listQuery).then(res => {
+          var data = res.data.data;
+          this.list.right = data.right.split(',');
+          this.list.data = data.data;
+          for(var item in data.title){
+            this.titleText.push(item);
+          }
+          this.list.title = this.titleText;
+
+          this.setOption();
+        })
+      },
       initChart() {
         this.chart = echarts.init(document.getElementById('chart'), 'macarons');
-        this.setOption();
-        this.addEchartClick();
       },
       setOption() {
+        var _that = this;
         this.chart.setOption({
           title: {
             text: '优良率',
@@ -81,7 +79,7 @@
             textStyle: {
               color: '#90979c'
             },
-            data: ['市平均', '区平均', '市九上', '区九上']
+            data: _that.list.right
           },
           calculable: true,
           xAxis: [{
@@ -91,7 +89,7 @@
               alignWithLabel: true
             },
             nameRotate: 50,
-            data: ['内厝中学','新店中学','厦门市国祺中学','厦门市第二外国语学校','厦门市五显中学','厦门市东山中学','厦门市启悟中学','同安一中','巷西中学','刘五店中学','巷南中学','彭厝学校','巷东中学','厦门市竹坝学校','厦门市澳溪中学','厦门市城东中学','厦门华兴学校','厦门市美林中学','厦门市莲美中学']
+            data: _that.list.title
           }],
           yAxis: [{
             type: 'value'
@@ -107,6 +105,7 @@
           series: [{
             name: 'data',
             type: 'bar',
+            barMaxWidth: 60,
             itemStyle: {
               normal: {
                 label: {
@@ -118,18 +117,8 @@
                 }
               }
             },
-            data: [ 5, 3, 6, 7, 5, 0.4, 0.4,1.2, 1, 0.9,1.2, 1, 0.9, 0.9, 0.9,7, 5, 0.4 ]
+            data: _that.list.data
           }]
-        })
-      },
-      addEchartClick() {
-        this.chart.on('click', params => {
-          // console.log(params);
-          if(params.componentType === "xAxis") {
-            console.log('我点击 的x轴');
-          }
-          // console.log(this.link[params.seriesName])
-          this.$router.push({ path: '/special/scoring-test-item'});
         })
       },
       rangeChange(value) {

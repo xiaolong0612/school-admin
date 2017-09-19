@@ -13,54 +13,82 @@
 				{{name}}-试题列表
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight">
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'questionNumber'}">
 
 			    <el-table-column
 			      prop="questionNumber"
 			      label="题号"
-			      width="100">
+			      width="100"
+			      sortable>
+			      <template scope="scope">
+			      	<el-input v-show="scope.row.edit" placeholder="请输入内容" v-model="scope.row.questionNumber"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.questionNumber}}</span>
+						</template>
 			    </el-table-column>
 
 			    <el-table-column
 			      prop="title"
 			      label="题干"
-			      width="100">
+			      width="320">
+			      <template scope="scope">
+			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.title"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.title}}</span>
+						</template>
+			    </el-table-column>
+
+			    <el-table-column
+			      prop="content"
+			      label="题目"
+			      width="320">
+			      <template scope="scope">
+			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.title"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.content}}</span>
+						</template>
 			    </el-table-column>
 
 			    <el-table-column
 			      prop="score"
 			      label="分值"
-			      width="70">
-			    </el-table-column>
-
-			    <el-table-column
-			      prop="testLevelName"
-			      label="考题"
-			      width="140">
-			    </el-table-column>
-
-			    <el-table-column
-			      prop="testName"
-			      label="考点"
-			      width="140">
-			    </el-table-column>
-
-			    <el-table-column
-			      prop="analysis"
-			      label="试题解析"
-			      width="420">
+			      width="100">
 			      <template scope="scope">
-			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.analysis"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.analysis}}</span>
+			      	<el-input v-show="scope.row.edit" placeholder="请输入内容" v-model="scope.row.score"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.score}}</span>
 						</template>
 			    </el-table-column>
 
 			    <el-table-column
-			      prop="scoreCriterion"
-			      label="质量分析"
-			      width="140">
+			      label="专题／考点"
+			      width="250">
+
 			      <template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.scoreCriterion"></el-input>
+					    <el-cascader
+					    	v-show="scope.row.edit"
+					    	expand-trigger="hover"
+					    	v-model="scope.row.defaultTest"
+							  :options="testSpecialTopic"
+							  @active-item-change="getTestItem">
+							</el-cascader>
+          		<span v-show="!scope.row.edit">{{scope.row.testSpecialTopic}}/{{scope.row.testName}}</span>
+						</template>
+
+			    </el-table-column>
+
+			    <!-- <el-table-column
+			      prop="analysis"
+			      label="试题解析"
+			      width="400">
+			      <template scope="scope">
+			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.analysis"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.analysis}}</span>
+						</template>
+			    </el-table-column> -->
+
+			    <el-table-column
+			      prop="scoreCriterion"
+			      label="评分标准"
+			      width="400">
+			      <template scope="scope">
+							<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="scope.row.scoreCriterion"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.scoreCriterion}}</span>
 						</template>
 			    </el-table-column>
@@ -68,21 +96,35 @@
 			    <el-table-column
 			      prop="cases"
 			      label="典型案例"
-			      width="150">
+			      width="400">
 			      <template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.cases"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.cases}}</span>
+			      	<el-upload
+			      		v-show="scope.row.edit"
+							  class="upload-demo"
+							  :data="scope.row"
+							  :action="gpath.action" 
+							  :on-success='handleImgSuccess'
+							  :on-remove="handleImgRemove"
+							  :file-list="scope.row.cases">
+							  <el-button size="small" type="primary">点击上传</el-button>
+							</el-upload>
+							<div class='file-list' v-show="!scope.row.edit">
+								<a target="_blank" :href="item.url" v-for="item in scope.row.cases">
+									<el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+										<div class="file_item">
+											<img class="file_icon" :src='"/static/img/suffix/"+ item.suffix+".png"' />
+											<p class="file_name">{{item.name}}</p>
+										</div>
+									</el-tooltip>
+								</a>
+          		</div>
 						</template>
 			    </el-table-column>
-			    <el-table-column
-			      prop="typeStr"
-			      label="类型"
-			      width="120">
-			    </el-table-column>
+
 					<el-table-column prop="" label="操作" width="140" fixed="right">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
+								<el-button type="info" icon="edit" size="small" @click="handleEditRow(scope)"></el-button>
 								<el-button type="danger" icon="delete" size="small" @click="handleDel(scope.row.id)"></el-button>
 							</div>
 							<div v-show="scope.row.edit">
@@ -93,8 +135,8 @@
 					</el-table-column>
 				</el-table>
 				<div v-show="!listLoading" class="pagination-container fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
 		  </div>
@@ -105,56 +147,87 @@
 		  size="tiny">
 		  <el-form class="small-space ui-form" :model="fromData" label-position="right" :rules="rules" ref="fromData" label-width="80px" style="padding:0 30px;">
 
-        <el-form-item label="题号" prop="questionNumber">
+        <el-form-item label="题号">
           <el-input v-model="fromData.questionNumber"></el-input>
         </el-form-item>
 
-        <el-form-item label="题干" prop="title">
-          <el-input v-model="fromData.title"></el-input>
+        <el-form-item label="题干">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="fromData.title"></el-input>
+        </el-form-item>
+
+        <el-form-item label="题目">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.content">
+          </el-input>
         </el-form-item>
 
         <!-- <el-form-item label="内容" prop="content">
           <el-input v-model="fromData.content"></el-input>
         </el-form-item> -->
 
-        <el-form-item label="内容" prop="content">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.content">
-          </el-input>
+        <el-form-item label="分值">
+          <el-input v-model.number="fromData.score"></el-input>
         </el-form-item>
-
-        <el-form-item label="分数" prop="score">
-          <el-input v-model="fromData.score"></el-input>
-        </el-form-item>
-
-        <el-form-item label="专题" prop="testSpecialTopic">
-        	<el-select v-model="fromData.testSpecialTopic" placeholder="请选择专题" @change="getTest">
-			      <el-option label="专题1" value="shanghai"></el-option>
-			      <el-option label="专题2" value="beijing"></el-option>
+				
+				<el-form-item label="专题/考点">
+					<el-cascader
+			    	expand-trigger="hover"
+			    	v-model="fromDataDefaultTest"
+					  :options="testSpecialTopic"
+					  @active-item-change="getTestItem">
+					</el-cascader>
+				</el-form-item>
+        <!-- <el-form-item label="专题">
+        	<el-select v-model="fromData.testSpecialTopicId" placeholder="请选择专题" @change="getTestItem">
+			      <el-option 
+			      	v-for="item in testSpecialTopic"
+			      	:key='item.value'
+			      	:label="item.label"
+			      	:value="item.value">
+			      </el-option>
 			    </el-select>
-          <!-- <el-input v-model="fromData.province"></el-input> -->
+          <el-input v-model="fromData.province"></el-input>
         </el-form-item>
 
-        <el-form-item label="考点" prop="testName">
-        	<el-select v-model="fromData.testName" placeholder="请选择专题">
-			      <el-option label="专题1" value="shanghai"></el-option>
-			      <el-option label="专题2" value="beijing"></el-option>
+        <el-form-item label="考点">
+        	<el-select v-model.number="fromData.testSitesId" placeholder="请选择考点">
+			      <el-option 
+			      	v-for="item in testSpecialTopicItem"
+			      	:key='item.value'
+			      	:label="item.label"
+			      	:value="item.value">
+			      </el-option>
 			    </el-select>
-        </el-form-item>
-
-        <el-form-item label="参考答案" prop="answer">
+        </el-form-item> -->
+				
+        <!-- <el-form-item label="评分标准">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.answer">
+          </el-input>
+        </el-form-item> -->
+
+        <el-form-item label="评分标准">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.scoreCriterion">
           </el-input>
         </el-form-item>
 
         <el-form-item label="典型例题" prop="cases">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.cases">
-          </el-input>
+
+        	<el-upload
+					  class="upload-demo"
+					  :action="gpath.action" 
+					  :on-success='handleImgSuccess'
+					  :on-remove="handleImgRemove"
+					  :file-list="fromData.cases">
+					  <el-button size="small" type="primary">点击上传</el-button>
+					</el-upload>
+
+          <span v-show="false" v-model="fromData.cases">
+          </span>
         </el-form-item>
 				
       </el-form>
       <span slot="footer" class="dialog-footer">
-		  	<el-button @click="handleAdd('fromData')" type="primary">确定</el-button>
-      	<el-button @click="resetForm('fromData')">重置</el-button>
+		  	<el-button @click="handleAdd" type="primary">确定</el-button>
+      	<el-button @click="resetForm">重置</el-button>
       	<el-button @click="dialogVisible = false" :plain="true" type='warning'>取消</el-button>
 		  </span>
 		</el-dialog>
@@ -162,12 +235,13 @@
 </template>
 <script>
 	import { getExaminationPaperItemList, addExaminationPaperItem, modExaminationPaperItem, delExaminationPaperItem} from 'api/test/examination';
-	import { getTestSitesList } from 'api/test/test';
+	import { getUseTestSites } from 'api/test/test';
 	export default {
 		data() {
 			return {
 				name: '',
 				list: [],
+				casesList: [],
 				backList: [],
 				screenHeight: 0,
 				total: 0,
@@ -175,72 +249,49 @@
         dialogVisible: false,
         listQuery: {
           pageNo: 1,
-          pageSize: 10,
-          examinationPaperId: ''
+          pageSize: 30,
+          examinationPaperId: this.$route.params.id
+        },
+        testQuery: {
+        	subject: '',
+        	id: 0
         },
         testSpecialTopic: [],
+        testSpecialTopicItem: [],
+        testSpecialTopicOption: {
+        	value: 'value',
+        	label: 'label',
+        	children: 'childred'
+        },
         testName: [],
         fromData: {
-        	name: '',
         	subject: '',
         	questionNumber: '',
 					testSitesId: '',
-					testCode: '',
-					testName: '',
-					testSpecialTopic: '',
-					testLevelCode: '',
+					testCode: '1',
+					testSpecialTopicId: '',
 					title: '',
 					content: '',
 					score: '',
 					answer: '',
 					analysis: '',
-					scoreCriterion: '',
 					examinationPaperId: '',
-					cases: ''
+					cases: []
         },
-        rules: {
-        	questionNumber: [
-        		{ required: true, message: '必填项', trigger: 'blur' }
-        	],
-					testName: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					testSpecialTopic: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					title: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					content: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					score: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					answer: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					analysis: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					scoreCriterion: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					cases: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ]
-	      },
+        fromDataDefaultTest: [],
+        rules: {},
         dialogVisible: false
 			}
 		},
 		created() {
-			this.listQuery.examinationPaperId = this.$route.params.id;
-			this.fromData.id = this.$route.params.id;
 			this.name = this.$route.params.name;
+
+			this.testQuery.subject = this.$route.params.subject;
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(true);
       this.getList();
+      this.getTestSpecialTopic(0);
 		},
 		methods: {
 			getList() {
@@ -249,72 +300,131 @@
         	this.list = response.data.list;
         	for(let i=0; i<this.list.length; i++){
         		this.$set(this.list[i], 'edit', false);
+        		this.$set(this.list[i], 'defaultTest', []);
+        		if(this.list[i].cases == '' || this.list[i].cases == null){
+        			this.list[i].cases=[]
+        		}else{
+        			this.list[i].cases = JSON.parse(this.list[i].cases);
+        		}
         	}
         	this.backList = JSON.parse(JSON.stringify(this.list));
           this.total = response.data.total;
           this.listLoading = false;
         })
       },
-      getTestSpecialTopic() {
-      	alert('我要get考题');
-      	this.getTestSpecialTopic = '';
+      getTestList(id) {
+      	this.testQuery.parentId = id;
+      	getUseTestSites(this.testQuery).then(res => {
+      		if(typeof res == 'undefined') return;
+      		return res.data.list
+      	})
       },
-      getTest() {
-      	alert('我要get考点')
+      getTestSpecialTopic() {
+      	this.testQuery.id = 0;
+      	getUseTestSites(this.testQuery).then(res => {
+      		if(typeof res == 'undefined') return;
+      		for(let item in res.data.list){
+      			this.testSpecialTopic.push({
+      				label: res.data.list[item].name,
+      				value: res.data.list[item].id,
+      				children: []
+      			})
+      		}
+      	})
+      },
+      getTestItem(val) {
+      	this.testQuery.id = val[0];
+      	getUseTestSites(this.testQuery).then(res => {
+      		if(typeof res == 'undefined' || res.data.list.length == 0) return;
+      		let list = res.data.list;
+      		for(let i=0; i<this.testSpecialTopic.length; i++){
+      			if(this.testSpecialTopic[i].value == val[0]){;
+	      			for(let item=0; item<list.length; item++){
+		      			this.testSpecialTopic[i].children.push({
+		      				label: list[item].name,
+		      				value: list[item].id
+		      			})
+		      		}
+	      		}
+      		}
+      	})
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
         this.listQuery.page = val;
         this.getList();
       },
-      handleAdd(formName){
-      	this.$refs[formName].validate((valid) => {
-	        if (valid) {
-      			addExaminationPaperItem(this.fromData).then(response => {
-      				if(typeof response == 'undefined') return;
-	            this.$message({
-			          message: '添加成功',
-			          type: 'success'
-			        });
-			        this.dialogVisible = false;
-			        this.getList();
-	        	})
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
+      handleAdd(){
+      	let data ={
+        	subject: this.$route.params.subject,
+        	questionNumber: this.fromData.questionNumber,
+					testSitesId: this.fromDataDefaultTest[1],
+					testCode: '1',
+					testSpecialTopicId: this.fromDataDefaultTest[0],
+					title: this.fromData.title,
+					content: this.fromData.content,
+					score: this.fromData.score,
+					answer: this.fromData.answer,
+					analysis: this.fromData.analysis,
+					examinationPaperId: this.$route.params.id
+        };
+        if(this.fromData.cases.length == 0){
+        	data.cases = '';
+        }else{
+        	data.cases= JSON.stringify(this.fromData.cases)
+        }
+      	// this.fromData.cases = JSON.stringify(this.fromData.cases);
+      	// this.fromData.testSpecialTopicId = this.fromDataDefaultTest[0];
+      	// this.fromData.testSitesId = this.fromDataDefaultTest[1];
+  			addExaminationPaperItem(data).then(response => {
+  				if(typeof response == 'undefined') return;
+          this.$message({
+	          message: '添加成功',
+	          type: 'success'
+	        });
+	        this.dialogVisible = false;
+	        this.getList();
+		      this.resetForm();
       	})
       },
       handleMod(scope){
-      	modExaminationPaperItem(scope.row).then(response => {
+      	let data = {
+      		content: scope.row.content,
+      		analysis: scope.row.analysis,
+					answer: scope.row.answer,
+					cases: JSON.stringify(scope.row.cases),
+					content: scope.row.content,
+					examinationPaperId: scope.row.examinationPaperId,
+					id: scope.row.id,
+					name: scope.row.name,
+					questionNumber: scope.row.questionNumber,
+					score: scope.row.score,
+					subject: scope.row.subject,
+					testCode: scope.row.testCode,
+					testSitesId: scope.row.defaultTest[1],
+					testSpecialTopicId: scope.row.defaultTest[0],
+					title: scope.row.title
+      	}
+      	console.log(data)
+      	modExaminationPaperItem(data).then(response => {
       		if(typeof response == 'undefined') return;
       		this.$message({
 	          message: '修改成功',
 	          type: 'success'
 	        });
-	        let bridge = {
-	      		index: scope.$index
-	      	}
-
-      		this.backList[bridge.index].address = ''
-      		scope.row.edit = false
+	        this.getList();
       	})
       },
       handleCancel(scope){
       	let index = scope.$index;
       	let bridge = {
       		address: this.backList[index].address,
-      		introduce: this.backList[index].introduce,
-      		linkName: this.backList[index].linkName,
-      		telephone: this.backList[index].telephone
+      		cases: this.backList[index].cases
       	}
-      	scope.row.schoolName = bridge.schoolName;
-      	scope.row.entryTime = bridge.entryTime;
-      	scope.row.email = bridge.email;
-      	scope.row.telephone = bridge.telephone;
+      	scope.row.cases = bridge.cases;
       	scope.row.edit = false;
       },
       handleDel(id) {
@@ -324,11 +434,74 @@
 		          message: '删除成功',
 		          type: 'success'
 		        });
+		        this.getList();
       		}
       	})
       },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
+      resetForm() {
+      	this.fromData={
+        	subject: '',
+        	questionNumber: '',
+					testSitesId: '',
+					testCode: '1',
+					testSpecialTopicId: '',
+					title: '',
+					content: '',
+					score: '',
+					answer: '',
+					analysis: '',
+					examinationPaperId: '',
+					cases: []
+        }
+      },
+      handleImgSuccess(res, file, fileList){
+      	if(!res.success) return;
+      	if(typeof res.id != 'undefined'){
+      		for(let i=0; i<this.list.length; i++){
+      			if(this.list[i].id == res.id){
+
+      				this.list[i].cases.push({
+      					name: res.originalName,
+      					originalName: res.name,
+      					size: res.size,
+      					suffix: res.suffix,
+      					url: this.gpath.img+res.name
+      				})
+      			}
+      		}
+      		// console.log(this.list[res.index]);
+      	}else{
+  				this.fromData.cases.push({
+  					name: res.originalName,
+  					originalName: res.name,
+  					size: res.size,
+  					suffix: res.suffix,
+  					url: this.gpath.img+res.name
+  				})
+  			}
+      	
+      },
+      handleImgRemove(file, fileList) {
+      	for(let i=0; i<this.list.length; i++){
+      		for(let c=0; c<this.list[i].cases.length; c++){
+      			if(this.list[i].cases[c].url == file.url){
+      				this.list[i].cases = [];
+      				for(let f=0; f<fileList.length; f++){
+      					this.list[i].cases.push({
+      						name: fileList[f].name,
+	      					originalName: fileList[f].originalName,
+	      					size: fileList[f].size,
+	      					suffix: fileList[f].suffix,
+	      					url: fileList[f].url
+      					})
+      				}
+      			}
+      		}
+      	}
+      },
+      handleEditRow(scope) {
+      	scope.row.edit = true;
+      	scope.row.defaultTest = [scope.row.testSpecialTopicId, scope.row.testSitesId]
       }
 		}
 	}

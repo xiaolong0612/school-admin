@@ -118,7 +118,7 @@
             // type: 'admin'
             account: '',
             password: '',
-            code: '215217',
+            code: '',
             type: ''
           },
           loginRules: {
@@ -170,6 +170,7 @@
               this.loading = true;
               this.$store.dispatch('LoginByAccount', this.loginForm).then((res) => {
                 this.loading = false;
+                if( typeof res.userinfo.typeStr == 'undefined' ) this.$router.push({ path: this.pathList[10]});
                 this.$router.push({ path: this.pathList[res.userinfo.typeStr]});
               }).catch(err => {
                 this.loading = false;

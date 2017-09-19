@@ -117,7 +117,7 @@
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {

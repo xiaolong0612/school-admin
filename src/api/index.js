@@ -28,10 +28,20 @@ export function headmaster(query) {
 }
 
 // 教育局
-// export function headmaster(query) {
-//   return fetch({
-//     url: '/admin/schoo-basic/getExaminationPaperByPeriodAndGrade',
-//     method: 'post',
-//     params: query
-//   });
-// }
+export function bureau(data) {
+  return fetch({
+    url: '/admin/schoo-basic/getExaminationPaperByPeriodAndGrade',
+    method: 'post',
+    data
+  });
+}
+
+// 通用首页
+export function teacherTop(id) {
+  var data = { id }
+  return fetch({
+    url: '/admin/schoo-basic/teacherTop',
+    method: 'post',
+    params: data
+  });
+}

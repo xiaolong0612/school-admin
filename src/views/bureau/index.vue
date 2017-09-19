@@ -41,7 +41,7 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  import { headmaster } from 'api/index';
+  import { bureau } from 'api/index';
 
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
@@ -99,12 +99,8 @@
           selectedClass: ''
         },
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          period: 2017,
+          grade: '初一年'
         }
       }
     },
@@ -117,8 +113,7 @@
     },
     methods: {
       getList() {
-        headmaster(this.listQuery).then(response => {
-          console.log(response);
+        bureau(this.listQuery).then(response => {
           this.list.right = response.data.right;
           this.list.data = response.data.data;
           this.list.title = response.data.title;

@@ -15,31 +15,35 @@
 			<div class="ui-table-main">
 				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight">
 					<el-table-column
-			      prop="address"
+			      prop="name"
 			      label="学校"
 			      width="150"
 			      fixed>
 	      		<template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.address"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.address}}</span>
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.name"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.name}}</span>
 						</template>
 			    </el-table-column>
 			    <el-table-column
 			      prop="area"
-			      label="区"
+			      label="地址"
 			      width="100">
+			      <template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.area"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.name}}</span>
+						</template>
 			    </el-table-column>
-			    <el-table-column
+			    <!-- <el-table-column
 			      prop="city"
 			      label="城市"
 			      width="100">
-			    </el-table-column>
+			    </el-table-column> -->
 			    <el-table-column
 			      prop="createTime"
 			      label="创办时间"
 			      width="200">
 			    </el-table-column>
-			    <el-table-column
+			    <!-- <el-table-column
 			      prop="introduce"
 			      label="简介"
 			      width="420">
@@ -47,7 +51,7 @@
 			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.introduce"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.introduce}}</span>
 						</template>
-			    </el-table-column>
+			    </el-table-column> -->
 			    <el-table-column
 			      prop="linkName"
 			      label="联系人"
@@ -71,7 +75,7 @@
 			      label="类型"
 			      width="120">
 			    </el-table-column>
-					<el-table-column prop="" label="操作" width="140" fixed="right">
+					<el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
 								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
@@ -85,8 +89,8 @@
 					</el-table-column>
 				</el-table>
 				<div v-show="!listLoading" class="pagination-container fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
 		  </div>
@@ -95,35 +99,55 @@
 		  title="提示"
 		  :visible.sync="dialogVisible"
 		  size="tiny">
-		  <el-form class="small-space" :model="fromData" label-position="right" :rules="rules" ref="fromData" label-width="80px" style="padding:0 30px;">
+		  <el-form class="small-space ui-form" :model="fromData" label-position="right" :rules="rules" ref="fromData" label-width="80px" style="padding:0 30px;">
 
         <el-form-item label="学校名称" prop="name">
           <el-input v-model="fromData.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="省" prop="province">
+        <!-- <el-form-item label="省" prop="province">
           <el-input v-model="fromData.province"></el-input>
         </el-form-item>
 
         <el-form-item label="市" prop="city">
           <el-input v-model="fromData.city"></el-input>
-        </el-form-item>
+        </el-form-item> -->
 
-        <el-form-item label="区" prop="area">
+        <el-form-item label="地址" prop="area">
           <el-input v-model="fromData.area"></el-input>
+          <!-- <distpicker v-model="fromData.area" :data="area"></distpicker> -->
+          <!-- <region-picker
+          	v-model="fromData.area"
+          	:data="addressList">
+          </region-picker> -->
         </el-form-item>
 
 				<!-- <el-form-item label="班级名称" prop="name">
 					<region-picker :data="data"></region-picker>
 				</el-form-item> -->
 
-        <el-form-item label="详细地址" prop="address">
+        <!-- <el-form-item label="详细地址" prop="address">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.address">
           </el-input>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="类型" prop="type">
-          <el-input v-model="fromData.type"></el-input>
+          <el-select v-model="fromData.type" placeholder="请选择">
+				    <el-option
+				      label="小学"
+				      value="0">
+				    </el-option><el-option
+				      label="九年一贯制学校"
+				      value="1">
+				    </el-option><el-option
+				      label="初中校"
+				      value="2">
+				    </el-option><el-option
+				      label="完中校"
+				      value="3">
+				    </el-option>
+				  </el-select>
+
         </el-form-item>
 
         <el-form-item label="联系人" prop="linkName">
@@ -132,11 +156,6 @@
 
         <el-form-item label="联系电话" prop="telephone">
           <el-input v-model="fromData.telephone"></el-input>
-        </el-form-item>
-
-        <el-form-item label="简介" prop="introduce">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.introduce">
-          </el-input>
         </el-form-item>
 
       </el-form>
@@ -150,56 +169,35 @@
 </template>
 <script>
 	import { getSchoolList, modSchool, delSchool, addSchool} from 'api/info-administration/school';
-	import { validataPhone } from 'utils/validate';
-	const valiPhone = (rule, value, callback) => {
-		if (!validataPhone(value)) {
-      callback(new Error('请输入正确的手机号'));
-    } else {
-      callback();
-    }
-	};
+	import { getPlace } from 'utils/index';
+	import addressList from 'region-picker/dist/data.json';
 	export default {
 		data() {
 			return {
 				name: '学校管理',
 				list: [],
+				addressList: addressList,
 				screenHeight: 0,
 				total: 0,
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 10,
+          pageSize: 30,
           name: '',
           type: ''
         },
         fromData: {
-        	name: '',
-					province: '',
-					city: '',
-					area: '',
-					address: '',
+        	name: null,
+					area: null,
 					type: '',
-					linkName: '',
+					linkName: null,
 					telephone: '',
-					introduce: ''
         },
         rules: {
-	        name: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
 					name: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ],
-					province: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					city: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					area: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					address: [
+	        area: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ],
 					type: [
@@ -209,9 +207,6 @@
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ],
 					telephone: [
-	        	{ required: true, message: '必填项', trigger: 'blur', validator: valiPhone},
-	        ],
-					introduce: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ]
 	      },
@@ -227,22 +222,22 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        getSchoolList(this.listQuery).then(response => {
-        	this.list = response.data.list;
+        getSchoolList(this.listQuery).then(res => {
+        	this.list = res.data.list;
         	for(let i=0; i<this.list.length; i++){
         		this.$set(this.list[i], 'edit', false);
         	}
         	this.backList = JSON.parse(JSON.stringify(this.list));
-          this.total = response.data.total;
+          this.total = res.data.total;
           this.listLoading = false;
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
       handleAdd(formName){
@@ -255,6 +250,7 @@
 			          type: 'success'
 			        });
 			        this.dialogVisible = false;
+			        this.resetForm('fromData');
 			        this.getList();
 	        	})
           } else {
@@ -264,38 +260,46 @@
       	})
       },
       handleMod(scope){
-      	modSchool(scope.row).then(response => {
+      	let query = {
+      		name: scope.row.name,
+      		city: scope.row.city,
+      		area: scope.row.area,
+      		address: scope.row.address,
+      		linkName: scope.row.linkName,
+      		telephone: scope.row.telephone,
+      		introduce: scope.row.introduce,
+      		province: scope.row.province,
+      		id: scope.row.id,
+      	}
+      	modSchool(query).then(response => {
       		if(typeof response == 'undefined') return;
       		this.$message({
 	          message: '修改成功',
 	          type: 'success'
 	        });
-	        let bridge = {
-	      		address: scope.row.address,
-	      		introduce: scope.row.introduce,
-	      		linkName: scope.row.linkName,
-	      		telephone: scope.row.telephone,
-	      		index: scope.$index
-	      	}
+	        this.getList();
+	       //  let bridge = {
+	      	// 	area: scope.row.area,
+	      	// 	linkName: scope.row.linkName,
+	      	// 	telephone: scope.row.telephone,
+	      	// 	index: scope.$index
+	      	// }
 
-      		this.backList[bridge.index].address = bridge.address;
-      		this.backList[bridge.index].introduce = bridge.introduce;
-      		this.backList[bridge.index].linkName = bridge.linkName;
-      		this.backList[bridge.index].telephone = bridge.telephone;
-      		scope.row.edit = false
+      		// this.backList[bridge.index].area = bridge.area;
+      		// this.backList[bridge.index].linkName = bridge.linkName;
+      		// this.backList[bridge.index].telephone = bridge.telephone;
+      		// scope.row.edit = false
       	})
       },
       handleCancel(scope){
       	let index = scope.$index;
       	let bridge = {
-      		address: this.backList[index].address,
-      		introduce: this.backList[index].introduce,
+      		area: this.backList[index].area,
       		linkName: this.backList[index].linkName,
       		telephone: this.backList[index].telephone
       	}
-      	scope.row.schoolName = bridge.schoolName;
-      	scope.row.entryTime = bridge.entryTime;
-      	scope.row.email = bridge.email;
+      	scope.row.area = bridge.area;
+      	scope.row.linkName = bridge.linkName;
       	scope.row.telephone = bridge.telephone;
       	scope.row.edit = false;
       },
@@ -306,6 +310,7 @@
 		          message: '删除成功',
 		          type: 'success'
 		        });
+		        this.getList();
       		}
       	})
       },

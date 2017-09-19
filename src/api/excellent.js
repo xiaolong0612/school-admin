@@ -39,3 +39,12 @@ export function getClassScoreByPeriodAndPaperNameAndGrade(query){
 		params: query
 	})
 }
+
+// 单次考试全区各校优良率 监控图
+export function getPaperIdSchoolExcellentRate(query){
+	return fetch({
+		url: '/admin/schoo-basic/get-PaperIdSchoolExcellentRate',
+		method: 'post',
+		params: query
+	})
+}

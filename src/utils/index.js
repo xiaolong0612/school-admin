@@ -270,8 +270,10 @@ export function deepClone(source) {
 }
 
 export function getPlace(dataPlace, placeNumber){
+  if(isNaN(placeNumber)) return placeNumber;
+
   let data = {
-    province: parseInt(placeNumber.substr(0, 2))-11,
+    province: parseInt(placeNumber.substr(0, 2))-1,
     city: parseInt(placeNumber.substr(2, 2))-1,
     area: parseInt(placeNumber.substr(4, 2))-1,
   }
@@ -281,5 +283,8 @@ export function getPlace(dataPlace, placeNumber){
 
 export const gpath = {
   code: 'http://118.178.93.124/admin/code/',
-  img: 'http://xueqingkuaidi.oss-cn-shenzhen.aliyuncs.com/xueqingkuaidi/images'
+  // action: 'http://localhost:8080/sqms/ajaxfileupload',
+  action: 'http://118.178.93.124:8086/ajaxfileupload',
+  userInfoAction: 'http://118.178.93.124/admin/upload',
+  img: 'http://xqkd.oss-cn-beijing.aliyuncs.com/xqkd/images/'
 }

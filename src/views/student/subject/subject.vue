@@ -109,8 +109,8 @@
         data1: null,
         data2: null,
         listQuery: {
-          page: 1,
-          limit: 20,
+          pageNo: 1,
+          pageSize: 30,
           importance: undefined,
           title: undefined,
           type: undefined,

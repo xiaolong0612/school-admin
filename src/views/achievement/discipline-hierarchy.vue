@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="ui-search-wrap" id="ui-search-wrap">
+		<!-- <div class="ui-search-wrap" id="ui-search-wrap">
 			<el-form :inline="true" :model="fromData" class="form-inline">
 				<el-form-item label="学校">
 					<el-select v-model="fromData.selectedSchool" placeholder="请选择">
@@ -18,7 +18,7 @@
           <el-button type="primary" @click="onSearch">查询</el-button>
         </el-form-item>
 			</el-form>
-		</div>
+		</div> -->
 		<div class="ui-table-wrap clearfix">
 			<div class="ui-table-title-wrap">
 				<router-link class="fr" to="/achievement/teaching-discipline-hierarchy">
@@ -43,32 +43,35 @@
 						<el-table-column prop="tmpSchoolScoreRate.averageRate" label="平均分" width="100"></el-table-column>
 						<el-table-column prop="tmpSchoolScoreRate.scoreRate" label="得分率" width="100" sortable>
 						</el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.averageValue" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.ranking" label="名次" width="100"></el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.progressValue" label="进步值" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.averageValue" label="超均率" width="100" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.ranking" label="名次" width="100" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.progressValue" label="进步值" width="100" sortable></el-table-column>
 					</el-table-column>
 					<el-table-column label='优良率' header-align='center'>
-						<el-table-column prop="tmpSchoolExcellentRate.excellentCount" label="优良数" width="100"></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.excellentRate" label="优良率" width="100"></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.ranking" label="名次" width="100"></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.progressValue" label="进步值" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.excellentCount" label="优良数" width="100" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.excellentRate" label="优良率" width="100" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.ranking" label="名次" width="100" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.progressValue" label="进步值" width="100" sortable></el-table-column>
 					</el-table-column>
 					<el-table-column label='及格率' header-align='center'>
-						<el-table-column prop="passCount" label="及格数" width="100"></el-table-column>
-						<el-table-column prop="passRate" label="及格率" width="100"></el-table-column>
-						<el-table-column prop="progressValue" label="名次" width="100"></el-table-column>
-						<el-table-column prop="ranking" label="进步值" width="100"></el-table-column>
+						<el-table-column 
+							prop="tmpSchoolPassRate.passCount" label="及格数" width="100" sortable>
+						</el-table-column>
+						<el-table-column prop="tmpSchoolPassRate.passRate" label="及格率" width="100" sortable>
+						</el-table-column>
+						<el-table-column prop="tmpSchoolPassRate.ranking" label="名次" width="100" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolPassRate.progressValue" label="进步值" width="100" sortable></el-table-column>
 					</el-table-column>
 					<el-table-column label='低分率' header-align='center'>
-						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeCount" label="低分数" width="100"></el-table-column>
-						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeRate" label="低分率" width="100"></el-table-column>
-						<el-table-column prop="tmpSchoolLowGradeRate.progressValue" label="进步值" width="100"></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeCount" label="低分数" width="100" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeRate" label="低分率" width="100" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.progressValue" label="进步值" width="100" sortable></el-table-column>
 					</el-table-column>
 				</el-table>
 			</div>
 			<div v-show='false' class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-	        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
 	  </div>
@@ -117,7 +120,7 @@
 				}
 			},
 			handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {

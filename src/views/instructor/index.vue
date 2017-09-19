@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
-			 <el-button v-for='item in classList' @click="getList()" :type="item" :key="item" style="margin-bottom: 15px;width:90px;">{{item}}</el-button>
+			 <el-button v-for='item in classList' @click="getList()" :type="item.label" :key="item.label" style="margin-bottom: 15px;width:89px;">{{item.label}}</el-button>
 		</div>
 		<div>
 		<el-row :gutter="15">
@@ -12,12 +12,12 @@
               <el-row class="ui-sidebar">
                 <el-col :span="12">
                   <div class="ui-label">
-                    <router-link to="/">{{item.name}}</router-link>
+                    <router-link to="/">{{item.specialTopicName}}</router-link>
                   </div>
                 </el-col>
                 <el-col :span="12">
                   <div class="ui-number">
-                    <router-link to="/">{{item.number}}</router-link>
+                    <router-link to="/">{{item.scoreRate}}</router-link>
                   </div>
                 </el-col>
               </el-row>
@@ -28,7 +28,7 @@
 		  <el-col :span="16">
 		  	<div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
 					<div class="chart" id="chart" style="height:600px;width:100%"></div>
-          <div class="ui-course">
+          <!-- <div class="ui-course">
             <div class="clearfix ui-course_nr">
               <ul class="ui-course_nr2">
                 <li>2007
@@ -57,7 +57,7 @@
                 </li>
               </ul>
             </div>
-          </div>
+          </div> -->
 				</div>
 		  </el-col>
 		  <el-col :span="4">
@@ -79,7 +79,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="wrap">
+				<!-- <div class="wrap">
 					<ul>
 						<li v-for="item in testList">
 							<el-row class="ui-sidebar">
@@ -96,7 +96,7 @@
 							</el-row>
 						</li>
 					</ul>
-		  	</div>
+		  	</div> -->
 		  </el-col>
 		</el-row>
 		</div>
@@ -105,40 +105,23 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  import { fetchList, fetchPv } from 'api/data';
+  import { teacherTop } from 'api/index';
+  import { gradeList } from 'utils/data'
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
   export default {
   	data() {
   		return {
   			name: '',
-  			classList: ['七年级', '八年级', '九年级', '高一', '高二', '高三'],
-  			specialList: [
-    			{name: '语言积累', number: '0%'},
-    			{name: '语言运用', number: '0%'},
-    			{name: '非连阅读', number: '5%'},
-    			{name: '名著阅读', number: '0%'},
-    			{name: '诗歌阅读', number: '50%'},
-    			{name: '文言文阅读', number: '0%'},
-    			{name: '议论文阅读', number: '5%'},
-    			{name: '说明文阅读', number: '8%'},
-    			{name: '文学阅读', number: '50%'},
-    			{name: '写作', number: '60%'}
-  			],
-  			qualityList: [
-  				{name: '得分率', number: '60%'},
-  				{name: '超均率', number: '1%'},
-  				{name: '优良率', number: '20%'},
-  				{name: '及格率', number: '36%'},
-  				{name: '低分率', number: '77%'}],
-  			testList: [
-  				{name: '识记', number: '80%'},
-  				{name: '理解', number: '75%'},
-  				{name: '表达运用', number: '76%'},
-  				{name: '分析综合', number: '55%'},
-  				{name: '鉴赏评价', number: '50%'},
-  				{name: '探究创新', number: '50%'}
-  			],
+  			classList: [],
+        list: [{
+          data: [],
+          title: [],
+          right: []
+        }],
+  			specialList: [],
+  			qualityList: [],
+  			testList: [],
   			examinationList: [
   				{ name: '考试1' },
   				{ name: '考试2' },
@@ -161,36 +144,50 @@
               {"文言文阅读":5}
             ]
           }  
-        ],
-  			data1: null,
-  			data2: null,
-  			listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
-        }
+        ]
   		}
   	},
+    computed: {
+      ...mapGetters([
+        'uid'
+      ])
+    },
+    created() {
+      let grade_list = gradeList('all');
+      for(var i=0; i<grade_list.length; i++){
+        for(var o=0; o<grade_list[i].options.length; o++){
+          this.classList.push(grade_list[i].options[o])
+        }
+      };
+    },
   	mounted() {
+      this.initChart();
   		this.getList();
   	},
   	methods: {
   		getList() {
-        fetchList(this.listQuery).then(response => {
-          this.data1 = response.data.list[0].array1;
-          this.data2 = response.data.list[1].array1;
-        	this.initChart();
+        teacherTop(2).then(res => {
+          var data = res.data.data;
+          this.list.data = data.data;
+          this.list.title = data.title;
+        	this.setOption();
+
+          this.specialList = data.left;
+          this.qualityList = [];
+          for(var item in data.right){
+            this.qualityList.push({
+              name: data.right[item].split(':')[0],
+              number: data.right[item].split(':')[1]
+            })
+          };
+
         });
       },
   		initChart() {
         this.chart = echarts.init(document.getElementById('chart'), 'macarons');
       },
       setOption() {
-        const data1 = this.data1;
-        const data2 = this.data2;
+        var _that = this;
         this.chart.setOption({
           title: {
             text: '所有考试市、区专题得分率监控图',
@@ -215,12 +212,6 @@
               color: '#fff'
             }
           },
-          legend: {
-            orient: 'vertical',
-          	bottom: '25%',
-            right: '0',
-            data: ['厦门市', '同安区']
-          },
           calculable: true,
           xAxis: [{
             type: 'category',
@@ -235,7 +226,7 @@
                 color: '#333'
               }
             },
-            data: ['得分率', '超均率', '名次', '进步值', '优良率', '名次', '进步值', '及格率', '名次', '进步值', '低分率', '进步值']
+            data: _that.list.title
           }],
           yAxis: [{
             type: 'value',
@@ -251,40 +242,49 @@
               }
             }
           }],
-          series: [
-          {
-            name: '同安区',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
+          dataZoom: [{
+            show: true,
+            height: 30,
+            xAxisIndex: [
+              0
+            ],
+            bottom: 30,
+            start: 10,
+            end: 80,
+            handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+            handleSize: '110%',
+            handleStyle: {
+              color: '#d3dee5'
+
             },
-            data: data2
+            textStyle: {
+              color: '#fff' },
+            borderColor: '#90979c'
           }, {
-            name: '厦门市',
-            type: 'bar',
-            itemStyle: {
-              nor2al: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
+            type: 'inside',
+            show: true,
+            height: 15,
+            start: 1,
+            end: 35
+          }],
+          series: [
+            {
+              name: '同安区',
+              type: 'bar',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  label: {
+                    show: true,
+                    position: 'top',
+                    formatter(p) {
+                      return p.value > 0 ? p.value : '';
+                    }
                   }
                 }
-              }
-            },
-            data: data1
-          }
+              },
+              data: _that.list.data
+            }
           ]
         })
 		  }

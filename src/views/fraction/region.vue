@@ -21,8 +21,8 @@
 	        </el-table-column>
 	    </el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
 			</div>
@@ -62,7 +62,6 @@
         this.listLoading = true;
         getSchoolScoreRateByPaperNameAndPeriodAndGrade(this.listQuery).then(res => {
         	var data = res.data.data;
-        	console.log(data);
           this.list.data = data.data;
           this.list.head = data.head;
           this.total = data.total;

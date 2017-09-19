@@ -15,6 +15,7 @@ const getters = {
   schoolId: state => state.user.schoolId,
   gradeNo: state => state.user.gradeNo,
   classNo: state => state.user.classNo,
+  subject: state => state.user.subject,
   roles: state => state.user.roles,
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters

@@ -27,23 +27,67 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name'}">
+				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'teacherNo'}">
 
 					<el-table-column prop='teacherNo' label="教师编号" width="130" sortable fixed></el-table-column>
 
-					<el-table-column prop='name' label="姓名" width="110" sortable fixed></el-table-column>
+					<el-table-column prop='name' label="姓名" width="110" sortable fixed>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.name"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.name}}</span>
+						</template>
+					</el-table-column>
 
-					<el-table-column prop='age' label="年龄" width="90" sortable></el-table-column>
+					<el-table-column prop='age' label="年龄" width="90" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.age"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.age}}</span>
+						</template>
+					</el-table-column>
 
-					<el-table-column prop='sex' label="性别" width="90" sortable></el-table-column>
+					<el-table-column prop='sex' label="性别" width="100" sortable>
+						<template scope="scope">
+							<el-select v-show="scope.row.edit" v-model="scope.row.sex" placeholder="请选择">
+					    	<el-option label="男" value="0"></el-option>
+					    	<el-option label="女" value="1"></el-option>
+					    </el-select>
 
-					<el-table-column prop='birthdayStr' label="出身日期" width="150" sortable></el-table-column>
+          		<span v-show="!scope.row.edit">{{scope.row.sexStr}}</span>
+						</template>
+					</el-table-column>
 
-					<el-table-column prop='nativePlace' label="籍贯" width="90" sortable></el-table-column>
+					<el-table-column prop='birthdayStr' label="出身日期" width="150" sortable>
+						<template scope="scope">
+							<el-date-picker
+								v-show="scope.row.edit"
+					      v-model="scope.row.birthdayStr"
+					      type="date"
+					      placeholder="选择日期">
+					    </el-date-picker>
+          		<span v-show="!scope.row.edit">{{scope.row.birthdayStr}}</span>
+						</template>
+					</el-table-column>
 
-					<el-table-column prop='gradeNo' label="年级" width="90" sortable></el-table-column>
+					<el-table-column prop='nativePlace' label="籍贯" width="90" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.nativePlace"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.nativePlace}}</span>
+						</template>
+					</el-table-column>
 
-					<el-table-column prop='classNo' label="班级" width="90" sortable></el-table-column>
+					<el-table-column prop='gradeNo' label="年级" width="90" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.gradeNo"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.gradeNo}}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column prop='classNo' label="班级" width="90" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.classNo"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.classNo}}</span>
+						</template>
+					</el-table-column>
 
 					<el-table-column prop='schoolName' label="所属学校" width="140" sortable>
 						<template scope="scope">
@@ -54,12 +98,22 @@
 
 					<el-table-column prop='entryTime' label="入职时间" width="150" sortable>
 						<template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.entryTime"></el-input>
+							<el-date-picker
+								v-show="scope.row.edit"
+					      v-model="scope.row.entryTime"
+					      type="date"
+					      placeholder="选择日期">
+					    </el-date-picker>
           		<span v-show="!scope.row.edit">{{scope.row.entryTime}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='highestEducation' label="最高学历" width="120" sortable></el-table-column>
+					<el-table-column prop='highestEducation' label="最高学历" width="120" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.highestEducation"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.highestEducation}}</span>
+						</template>
+					</el-table-column>
 
 					<el-table-column prop='email' label="email" width="190" sortable>
 						<template scope="scope">
@@ -91,8 +145,8 @@
 				</el-table>
 			</div>
 			<div v-show="!listLoading" class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-	        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
 	  </div>
@@ -128,7 +182,7 @@
           <el-input v-model="fromData.nativePlace"></el-input>
         </el-form-item>
 
-		  	<el-form-item label="入职时间" prop="entryTime">
+		  	<el-form-item label="入职时间">
           <el-date-picker type="date" placeholder="选择日期" v-model="fromData.entryTime" style="width: 100%;"></el-date-picker>
         </el-form-item>
 
@@ -145,7 +199,19 @@
         </el-form-item>
 
 		  	<el-form-item label="年级" prop="gradeNo">
-          <el-input v-model="fromData.gradeNo"></el-input>
+          <el-select v-model="fromData.gradeNo" placeholder="请选择">
+				    <el-option-group
+				      v-for="group in gradeList"
+				      :key="group.label"
+				      :label="group.label">
+				      <el-option
+				        v-for="item in group.options"
+				        :key="item.label"
+				        :label="item.label"
+				        :value="item.label">
+				      </el-option>
+				    </el-option-group>
+				  </el-select>
         </el-form-item>
 
 		  	<el-form-item label="身份" prop="type">
@@ -172,6 +238,7 @@
 	import { mapGetters } from 'vuex';
 	import { getListTeacher, addTeacher, modTeacher, delTeacher} from 'api/info-administration/teacher';
 	import { validataPhone } from 'utils/validate';
+	import { gradeList } from 'utils/data';
 	export default {
 		data() {
 			const isPhone = (rule, value, callback) => {
@@ -183,9 +250,15 @@
       };
 			return {
 				name: '老师列表',
+				birthdayStrPickerOptions: {
+	      	disabledDate(time){
+	          return time.getTime() > Date.now();
+	        }
+	      },
 				screenHeight: 0,
 				list: [],
 				backList: [],
+				gradeList: gradeList('all'),
 				fileList:[],
 				total: 0,
         listLoading: true,
@@ -208,10 +281,10 @@
 					entryTime: '',
 					firstEducation: '',
 					highestEducation: '',
-					classNo: '1',
-					gradeNo: '1',
+					classNo: '',
+					gradeNo: '',
 					type: '',
-					schoolId: '1',
+					schoolId: '',
 					telephone: '',
 					email: ''
         },
@@ -232,9 +305,6 @@
 	        	{ required: true, message: '必填项', trigger: 'blur' }
 	        ],
 					nativePlace: [
-	        	{ required: true, message: '必填项', trigger: 'blur' }
-	        ],
-					entryTime: [
 	        	{ required: true, message: '必填项', trigger: 'blur' }
 	        ],
 					firstEducation: [
@@ -266,8 +336,12 @@
 		},
 		computed: {
       ...mapGetters([
-        'uid'
+        'uid',
+        'schoolId'
       ])
+    },
+    created() {
+    	this.fromData.schoolId = this.schoolId;
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(false);
@@ -287,23 +361,24 @@
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
       handleAdd(formName){
       	this.$refs[formName].validate((valid) => {
 	        if (valid) {
-      			addClss(this.fromData).then(response => {
+      			addTeacher(this.fromData).then(response => {
       				if(typeof response == 'undefined') return;
 	            this.$message({
 			          message: '添加成功',
 			          type: 'success'
 			        });
 			        this.dialogVisible = false;
+			        this.resetForm('fromData');
 			        this.getList();
 	        	})
           } else {
@@ -319,15 +394,16 @@
 	          message: '修改成功',
 	          type: 'success'
 	        });
-	        let bridge = {
-	      		gradeTeacherName: scope.row.gradeTeacherName,
-	      		chargeTeacherName: scope.row.chargeTeacherName,
-	      		index: scope.$index
-	      	}
+	        this.getList();
+	       //  let bridge = {
+	      	// 	gradeTeacherName: scope.row.gradeTeacherName,
+	      	// 	chargeTeacherName: scope.row.chargeTeacherName,
+	      	// 	index: scope.$index
+	      	// }
 
-      		this.backList[bridge.index].gradeTeacherName = bridge.gradeTeacherName;
-      		this.backList[bridge.index].chargeTeacherName = bridge.chargeTeacherName;
-      		scope.row.edit = false
+      		// this.backList[bridge.index].gradeTeacherName = bridge.gradeTeacherName;
+      		// this.backList[bridge.index].chargeTeacherName = bridge.chargeTeacherName;
+      		// scope.row.edit = false
       	})
       },
       handleCancel(scope){
@@ -351,6 +427,7 @@
 	          message: '删除成功',
 	          type: 'success'
 	        });
+	        this.getList();
       	})
       },
       onSuccess(response, file, fileList) {
@@ -365,6 +442,9 @@
           message: '文件上传失败',
           type: 'success'
         });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
       }
 		}
 	}

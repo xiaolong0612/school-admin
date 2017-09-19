@@ -25,11 +25,10 @@
 					<el-table-column
 			      prop="subject"
 			      label="科目"
-			      width="150"
+			      width="100"
 			      fixed>
 	      		<template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.subject"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.subject}}</span>
+          		<span >{{scope.row.subject}}</span>
 						</template>
 			    </el-table-column>
 			    <el-table-column
@@ -38,7 +37,7 @@
 			      width="250">
 			      <template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.name"></el-input>
-          		<router-link :to="'/paper/examination-list/'+scope.row.id+'/'+scope.row.name" v-show="!scope.row.edit">{{scope.row.name}}
+          		<router-link :to="'/paper/examination-list/'+scope.row.id+'/'+scope.row.name+'/'+scope.row.subject" v-show="!scope.row.edit">{{scope.row.name}}
                     </router-link>
 						</template>
 			    </el-table-column>
@@ -56,8 +55,7 @@
 			      label="教研员"
 			      width="150">
 			      <template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.teacherName"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.teacherName}}</span>
+          		<span>{{scope.row.teacherName}}</span>
 						</template>
 			    </el-table-column>
 			    <el-table-column
@@ -85,8 +83,8 @@
 			    
 				</el-table>
 				<div v-show="!listLoading" class="pagination-container fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSzie" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
 		  </div>
@@ -101,7 +99,7 @@
           <el-input v-model="fromData.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="科目" prop="subject">
+        <!-- <el-form-item label="科目" prop="subject">
         	<el-select v-model="fromData.subject" filterable placeholder="请选择">
 				    <el-option
 				      v-for="item in subject"
@@ -110,14 +108,26 @@
 				      :value="item">
 				    </el-option>
 				  </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="总分" prop="totalScore">
           <el-input v-model="fromData.totalScore"></el-input>
         </el-form-item>
 
         <el-form-item label="年级" prop="grade">
-          <el-input v-model="fromData.grade"></el-input>
+          <el-select v-model="fromData.grade" placeholder="请选择">
+				    <el-option-group
+				      v-for="group in classList"
+				      :key="group.label"
+				      :label="group.label">
+				      <el-option
+				        v-for="item in group.options"
+				        :key="item.label"
+				        :label="item.label"
+				        :value="item.label">
+				      </el-option>
+				    </el-option-group>
+				  </el-select>
         </el-form-item>
 
         <el-form-item label="届" prop="period">
@@ -134,8 +144,10 @@
 	</div>
 </template>
 <script>
+	import { mapGetters } from 'vuex';
 	import { getExaminationPaperList, addExaminationPaper, modExaminationPaper, delExaminationPaper} from 'api/test/paper';
 	import { validataPhone } from 'utils/validate';
+	import { gradeList } from 'utils/data'
 	const valiPhone = (rule, value, callback) => {
 		if (!validataPhone(value)) {
       callback(new Error('请输入正确的手机号'));
@@ -151,10 +163,11 @@
 				screenHeight: 0,
 				total: 0,
         listLoading: true,
-        subject: ['语文', '数学', '英语', '物理', '化学', '地理', '历史', '政治'],
+        classList: gradeList('all'),
+        // subject: ['语文', '数学', '英语', '物理', '化学', '地理', '历史', '政治'],
         listQuery: {
           pageNo: 1,
-          pageSize: 10,
+          pageSize: 30,
           subject: '',
           name: '',
           grade: ''
@@ -164,13 +177,11 @@
 					subject: '',
 					totalScore: '',
 					grade: '',
-					period: ''
+					period: '',
+					teacherId: ''
         },
         rules: {
 	        name: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					subject: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ],
 					totalScore: [
@@ -186,7 +197,15 @@
         dialogVisible: false
 			}
 		},
+		computed: {
+      ...mapGetters([
+        'uid',
+        'subject'
+      ])
+    },
 		created() {
+			this.fromData.teacherId = this.uid;
+			this.fromData.subject = this.subject;
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(true);
@@ -206,11 +225,11 @@
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
       handleAdd(formName){
@@ -223,6 +242,7 @@
 			          type: 'success'
 			        });
 			        this.dialogVisible = false;
+			        this.resetForm('fromData');
 			        this.getList();
 	        	})
           } else {
@@ -238,22 +258,22 @@
 	          message: '修改成功',
 	          type: 'success'
 	        });
-	        console.log(scope.row)
-	        let bridge = {
-	      		name: scope.row.name,
-	      		subject: scope.row.subject,
-	      		totalScore: scope.row.totalScore,
-	      		grade: scope.row.grade,
-	      		period: scope.row.period,
-	      		index: scope.$index
-	      	}
-	      	console.log(this.backList)
-      		this.backList[bridge.index].name = bridge.name;
-      		this.backList[bridge.index].subject = bridge.subject;
-      		this.backList[bridge.index].totalScore = bridge.totalScore;
-      		this.backList[bridge.index].grade = bridge.grade;
-      		this.backList[bridge.index].period = bridge.period;
-      		scope.row.edit = false
+	        this.getList();
+	       //  let bridge = {
+	      	// 	name: scope.row.name,
+	      	// 	subject: scope.row.subject,
+	      	// 	totalScore: scope.row.totalScore,
+	      	// 	grade: scope.row.grade,
+	      	// 	period: scope.row.period,
+	      	// 	index: scope.$index
+	      	// }
+	      	// console.log(this.backList)
+      		// this.backList[bridge.index].name = bridge.name;
+      		// this.backList[bridge.index].subject = bridge.subject;
+      		// this.backList[bridge.index].totalScore = bridge.totalScore;
+      		// this.backList[bridge.index].grade = bridge.grade;
+      		// this.backList[bridge.index].period = bridge.period;
+      		// scope.row.edit = false
       	})
       },
       handleCancel(scope){
@@ -262,8 +282,8 @@
       		name: this.backList[index].name,
       		subject: this.backList[index].subject,
       		totalScore: this.backList[index].totalScore,
-      		telephone: this.backList[index].telephone,
-      		telephone: this.backList[index].telephone
+      		grade: this.backList[index].grade,
+      		period: this.backList[index].period
       	}
       	scope.row.name = bridge.name;
       	scope.row.subject = bridge.subject;
@@ -279,6 +299,7 @@
 	          message: '删除成功',
 	          type: 'success'
 	        });
+    			this.getList();
       	})
       },
       resetForm(formName) {

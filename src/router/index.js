@@ -54,9 +54,10 @@ const StudentScore = _import('achievement/student-score');
 const TeachingAverage = _import('achievement/teaching-average');
 const SectionClass = _import('achievement/section-class');
 const AdministrationCom = _import('achievement/administration-com')
+const SingleSubjectStratification = _import('achievement/single-subject-stratification')
 // 考点管理
-const AddTest = _import('test-site/add-test');
 const IndexTest = _import('test-site/index');
+const TestItem = _import('test-site/test-item');
 // 专题管理
 const ScoringMonitoring = _import('special/scoring-monitoring');
 const ScoringItem = _import('special/scoring-item');
@@ -360,13 +361,27 @@ export const asyncRouterMap = [
   {
     path: '/test',
     component: Layout,
-    name: '考点',
+    name: '专题列表',
     redirect: '/test/index',
-    icon: 'shouye-shouye',
+    icon: 'zhuanti1',
     meta: { role: ['7'] },
     noDropdown: true,
     children: [
-      {path: 'index', name: '考点', component: IndexTest, meta: { role: ['7'] } }
+      {path: 'index', name: '专题列表', component: IndexTest, meta: { role: ['7'] } },
+      {path: 'item/:name/:id/:subject', name: '考点列表', component: TestItem, meta: { role: ['7'] } },
+    ]
+  },
+  {
+    path: '/paper',
+    redirect: '/paper/list',
+    component: Layout,
+    name: '试卷管理',
+    icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
+    noDropdown: true,
+    meta: { role: ['7'] },
+    children: [
+      {path: 'list', component: PaperList, name: '试卷管理', meta: { role: ['7'] } },
+      {path: 'examination-list/:id/:name/:subject', component: ExaminationList, name: '试题列表', meta: { role: ['7'] } }
     ]
   },
   {
@@ -401,9 +416,14 @@ export const asyncRouterMap = [
         name: '学科分层',
         meta: { role: ['7'] }
       }, {
+        path: 'singl-subject-stratification',
+        component: SingleSubjectStratification,
+        name: '单考学科分层',
+        meta: { role: ['0'] }
+      }, {
         path: 'section-class-discipline-hierarchy',
         component: SectionClassDisciplineHierarchy,
-        name: '年段学科分层',
+        name: '年段各班学科分层',
         meta: { role: ['0'] }
       }, {
         path: 'subject-score',
@@ -452,27 +472,11 @@ export const asyncRouterMap = [
         meta: { role: ['7'] }
       }
     ]
-  }, {
-    path: '/test-site',
-    redirect: '/test-site/add-test',
-    component: Layout,
-    name: '考点管理',
-    icon: 'zhuantiguanli',
-    noDropdown: true,
-    meta: { role: ['admin'] },
-    children: [
-      {
-        path: 'add-test',
-        component: AddTest,
-        name: '设置考点',
-        meta: { role: ['7'] }
-      }
-    ]
-  }, {
+  },{
     path: '/special',
     component: Layout,
     name: '专题管理',
-    icon: 'kaoshi',
+    icon: 'guanli',
     meta: { role: ['0', '7'] },
     children: [
       {
@@ -487,7 +491,7 @@ export const asyncRouterMap = [
         meta: { role: ['0', '7'] },
         hidden: true
       }, {
-        path: 'scoring-test-item',
+        path: 'scoring-test-item/:id',
         component: ScoringTestItem,
         name: '考点管理',
         hidden: true,
@@ -515,7 +519,7 @@ export const asyncRouterMap = [
     path: '/excellent',
     component: Layout,
     name: '优良率',
-    icon: 'kaoshi',
+    icon: 'zizhiyouliang',
     meta: { role: [ '1', '3','5','6', '7', '8', '9'] },
     children: [
       {
@@ -582,7 +586,7 @@ export const asyncRouterMap = [
     path: '/low-score',
     component: Layout,
     name: '低分率',
-    icon: 'kaoshi',
+    icon: 'bujige',
     meta: { role: [ '1', '3', '7', '8', '9'] },
     children: [
       {
@@ -649,7 +653,7 @@ export const asyncRouterMap = [
     path: '/pass-score',
     component: Layout,
     name: '及格率',
-    icon: 'kaoshi',
+    icon: 'jige',
     meta: { role: [ '1', '3', '7', '8', '9'] },
     children: [
       {
@@ -713,10 +717,21 @@ export const asyncRouterMap = [
     ]
   }, 
   {
+    path: '/fraction',
+    name: '总分管理',
+    component: Layout,
+    icon: 'zongfen',
+    meta: { role: [ '1', '3','5','6','7', '8', '9'] },
+    children: [
+      { path: 'regoin', name: '历检全区总分', component: FractionRegion, meta: { role: [ '1', '3','5','6','7', '8', '9'] } },
+      { path: 'administration', name: '历检全区行政班', component: FractionAdministration, meta: { role: [ '1', '3','5','6','7', '8', '9'] } }
+    ]
+  },
+  {
     path: '/ability',
     component: Layout,
     name: '能力发展',
-    icon: 'kaoshi',
+    icon: 'nenglizhi',
     noDropdown: true,
     meta: { role: ['7'] },
     children: [
@@ -744,17 +759,6 @@ export const asyncRouterMap = [
         name: '分析',
         meta: { role: ['7'] }
       }
-    ]
-  },
-  {
-    path: '/fraction',
-    name: '总分管理',
-    component: Layout,
-    icon: 'zongfen',
-    meta: { role: [ '1', '3','5','6','7', '8', '9'] },
-    children: [
-      { path: 'regoin', name: '历检全区总分', component: FractionRegion, meta: { role: [ '1', '3','5','6','7', '8', '9'] } },
-      { path: 'administration', name: '历检全区行政班', component: FractionAdministration, meta: { role: [ '1', '3','5','6','7', '8', '9'] } }
     ]
   },
   {
@@ -890,19 +894,6 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/paper',
-    redirect: '/paper/list',
-    component: Layout,
-    name: '试卷管理',
-    icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
-    noDropdown: true,
-    meta: { role: ['7'] },
-    children: [
-      {path: 'list', component: PaperList, name: '试卷管理', meta: { role: ['7'] } },
-      {path: 'examination-list/:id/:name', component: ExaminationList, name: '试题列表', meta: { role: ['7'] } }
-    ]
-  },
-  {
     path: '/class',
     component: Layout,
     name: '班级列表',
@@ -929,10 +920,10 @@ export const asyncRouterMap = [
     component: Layout,
     name: '任务列表',
     icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
-    meta: { role: ['7'] },
+    meta: { role: ['5', '6', '7'] },
     hidden: true,
     children: [
-      {path: 'list', component: TaskList, name: '任务列表', meta: { role: ['7'] } }
+      {path: 'list', component: TaskList, name: '任务列表', meta: { role: ['5', '6', '7'] } }
     ]
   },
   {

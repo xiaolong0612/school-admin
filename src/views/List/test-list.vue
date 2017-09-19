@@ -75,7 +75,20 @@
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
 								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
-								<el-button type="danger" icon="delete" size="small" @click="handleDel(scope.row.id)"></el-button>
+
+								<el-popover
+								  ref="scope.$index"
+								  placement="top"
+								  width="160"
+								  v-model="scope.row.del">
+								  <p>确定要删除这条信息吗？</p>
+								  <div style="text-align: right; margin: 0">
+								    <el-button size="mini" type="text" @click="scope.row.del = false">取消</el-button>
+								    <el-button type="primary" size="mini" @click="handleDel(scope.row.id)">确定</el-button>
+								  </div>
+								</el-popover>
+
+								<el-button type="danger" icon="delete" size="small" v-popover:scope.$index></el-button>
 							</div>
 							<div v-show="scope.row.edit">
 								<el-button type="success" icon="circle-check" size="small" @click="handleMod(scope)"></el-button>
@@ -85,8 +98,8 @@
 					</el-table-column>
 				</el-table>
 				<div v-show="!listLoading" class="pagination-container fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
 		  </div>
@@ -231,6 +244,8 @@
         	this.list = response.data.list;
         	for(let i=0; i<this.list.length; i++){
         		this.$set(this.list[i], 'edit', false);
+        		this.$set(this.list[i], 'popover', list[i].id);
+        		this.$set(this.list[i], 'del', false);
         	}
         	this.backList = JSON.parse(JSON.stringify(this.list));
           this.total = response.data.total;
@@ -238,11 +253,11 @@
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
       handleAdd(formName){
@@ -255,6 +270,7 @@
 			          type: 'success'
 			        });
 			        this.dialogVisible = false;
+			        this.resetForm('fromData');
 			        this.getList();
 	        	})
           } else {
@@ -270,19 +286,20 @@
 	          message: '修改成功',
 	          type: 'success'
 	        });
-	        let bridge = {
-	      		address: scope.row.address,
-	      		introduce: scope.row.introduce,
-	      		linkName: scope.row.linkName,
-	      		telephone: scope.row.telephone,
-	      		index: scope.$index
-	      	}
+	        this.getList();
+	       //  let bridge = {
+	      	// 	address: scope.row.address,
+	      	// 	introduce: scope.row.introduce,
+	      	// 	linkName: scope.row.linkName,
+	      	// 	telephone: scope.row.telephone,
+	      	// 	index: scope.$index
+	      	// }
 
-      		this.backList[bridge.index].address = bridge.address;
-      		this.backList[bridge.index].introduce = bridge.introduce;
-      		this.backList[bridge.index].linkName = bridge.linkName;
-      		this.backList[bridge.index].telephone = bridge.telephone;
-      		scope.row.edit = false
+      		// this.backList[bridge.index].address = bridge.address;
+      		// this.backList[bridge.index].introduce = bridge.introduce;
+      		// this.backList[bridge.index].linkName = bridge.linkName;
+      		// this.backList[bridge.index].telephone = bridge.telephone;
+      		// scope.row.edit = false
       	})
       },
       handleCancel(scope){
@@ -306,6 +323,7 @@
 		          message: '删除成功',
 		          type: 'success'
 		        });
+		        this.getList();
       		}
       	})
       },

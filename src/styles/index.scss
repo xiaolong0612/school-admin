@@ -382,6 +382,9 @@ code {
       margin: 4px 15px 0 0;
     }
   }
+  a{
+    color: #20a0ff;
+  }
   .ui-table-title{
     line-height: 35px;
     color: #fff;
@@ -413,7 +416,7 @@ code {
   border-radius: 5px;
   box-sizing: border-box;
 }
-.ui-form .el-select, .ui-form .el-date-editor {
+.ui-form .el-select, .ui-form .el-date-editor, .ui-form .el-cascader {
   width: 100%;
 }
 .ui-course{background:#FFF;min-height: 89px;}
@@ -424,4 +427,22 @@ code {
 .ui-course_nr li{cursor: pointer;display: inline-block;vertical-align: top;*display: inline;*zoom:1; background:url(http://www.jq22.com/demo/time-141118185149/images/ico10.gif) no-repeat center 21px; padding-top:50px; width:140px; text-align:center; position:relative;}
 .ui-once{transition: height .3s;-moz-transition: height .3s;-webkit-transition: height .3s;-o-transition: height .3s;position:absolute; width:100%; left:0; top:0px;height: 0;overflow: hidden;}
 .ui-once h1{margin:0;height:67px; line-height:67px; color:#518dbb; font-weight:bold; background:url(http://www.jq22.com/demo/time-141118185149/images/ico11.gif) no-repeat center top; margin-bottom:8px;font-size:14px;}
+// filelist
+.file-list{
+  .file_item{
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 5px;
+  }
+  .file_icon{
+    width: 38px;
+  }
+  .file_name{
+    width: 40px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+}
+
 .ui-once p{word-wrap:break-word;line-height:14px;font-size: 16px;}

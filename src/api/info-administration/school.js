@@ -1,10 +1,11 @@
 import fetch from 'utils/fetch';
 
-export function addSchool(data) {
+export function addSchool(query) {
+	console.log(query)
   return fetch({
     url: '/admin/school/save-school',
     method: 'post',
-    params: data
+    params: query
   })
 }
 
@@ -26,10 +27,10 @@ export function modSchool(data) {
 	})
 }
 
-export function getSchoolList(data) {
-		return fetch({
+export function getSchoolList(query) {
+	return fetch({
 		url: '/admin/school/list-school',
 		method: 'post',
-		params: data
+		params: query
 	})
 }

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="ui-search-wrap" id="ui-search-wrap">
+		<!-- <div class="ui-search-wrap" id="ui-search-wrap">
 			<el-form :inline="true" :model="fromData" class="form-inline">
 				<el-form-item label="学校">
 					<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择">
@@ -12,105 +12,53 @@
           <el-button type="primary" @click="onSearch">查询</el-button>
         </el-form-item>
 			</el-form>
-		</div>
+		</div> -->
 		<div class="ui-table-wrap clearfix">
 			<h3 class="ui-table-title">
 				<wscn-icon-svg icon-class="shuxian"/>
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-					<el-table-column prop="school" label="学校" width="150" fixed>
-						<template scope="scope">
-							<router-link to='/achievement/all-class'>{{scope.row.school}}</router-link>
-						</template>
-					</el-table-column>
-					<el-table-column prop='number1' label="生数" width="90" sortable></el-table-column>
-					<el-table-column prop='number2' label="考生数" width='100'></el-table-column>
-					<el-table-column prop='name2' label='年段长' width="120"></el-table-column>
-					<el-table-column label='语文' header-align='center'>
-						<el-table-column prop="name3" label="组长" width="100"></el-table-column>
-						<el-table-column prop="number1" label="均分" width="100" sortable>
-							<template scope="scope">
-								<div :formatter="formatter(scope.row.number1)" :style="{color: formatter(scope.row.number1)}">{{scope.row.number1}}</div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="float1" label="得分率" width="100" sortable></el-table-column>
-						<el-table-column prop="float2" label="超均率" width="100"></el-table-column>
-						<el-table-column label="区位置" width="100">
-							<template scope="scope">
-								<div :formatter="formatter(scope.row.number4)" :style="{color: formatter(scope.row.number4)}">{{scope.row.number4}}</div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="number5" label="市位置" width="100">
-							<template scope="scope">
-								<div :formatter="formatter(scope.row.number5)" :style="{color: formatter(scope.row.number5)}">{{scope.row.number5}}</div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="number6" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-					<el-table-column label='数学' header-align='center'>
-						<el-table-column prop="name4" label="组长" width="100"></el-table-column>
-						<el-table-column prop="number1" label="均分" width="100"></el-table-column>
-						<el-table-column prop="float4" label="得分率" width="100"></el-table-column>
-						<el-table-column prop="float3" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number8" label="区位置" width="100"></el-table-column>
-						<el-table-column prop="number6" label="市位置" width="100"></el-table-column>
-						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-					<el-table-column label='英语' header-align='center'>
-						<el-table-column prop="name5" label="组长" width="100"></el-table-column>
-						<el-table-column prop="number2" label="均分" width="100"></el-table-column>
-						<el-table-column prop="float8" label="得分率" width="100"></el-table-column>
-						<el-table-column prop="float4" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
-						<el-table-column prop="number2" label="市位置" width="100"></el-table-column>
-						<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-					<el-table-column label='总分' header-align='center'>
-						<el-table-column prop="number1" label="均分" width="100"></el-table-column>
-						<el-table-column prop="float3" label="得分率" width="100"></el-table-column>
-						<el-table-column prop="float4" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
-						<el-table-column prop="number2" label="市位置" width="100"></el-table-column>
-						<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-					<el-table-column label='折合总分' header-align='center'>
-						<el-table-column prop="number1" label="均分" width="100"></el-table-column>
-						<el-table-column prop="number3" label="得分率" width="100"></el-table-column>
-						<el-table-column prop="float7" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
-						<el-table-column prop="number5" label="市位置" width="100"></el-table-column>
-						<el-table-column prop="number2" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-				</el-table>
+				<el-table :data="list.data" border style="width: 100%">
+        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
+          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable>
+            <template scope="scope">
+              <div>{{scope.row[first.value][second.value]}}</div>
+            </template>
+          </el-table-column>
+
+          <template scope="scope" v-if="first.children == undefined">
+            <div>{{scope.row[first.value]}}</div>
+          </template>
+        
+        </el-table-column>
+    </el-table>
 			</div>
 			<div v-show="!listLoading" class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-	        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
 	  </div>
 	</div>
 </template>
 <script>
-	import { fetchList } from 'api/data';
-	import { setTableHeight } from '../../utils/tableHeight';
+	import { mapGetters } from 'vuex';
+	import { getClassScoreRateByPaperIdAndGradeAndSchoolId } from 'api/score';
 	export default {
 		data() {
 			return {
 				name: '全区各校单次考试成绩总表',
 				screenHeight: 0,
-				list: [],
+				list: {},
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          pageNo: 1,
+          pageSize: 30,
+          period: 2017,
+          grade: '',
+          schoolId: ''
         },
         fromData: {
 					selectedSubject: '启悟中学',
@@ -118,42 +66,37 @@
         }
 			}
 		},
+		computed: {
+      ...mapGetters([
+        'schoolId'
+      ])
+    },
 		created() {
-      
+      this.listQuery.schoolId = this.schoolId;
     },
 		mounted() {
 			this.getList();
-			this.screenHeight = setTableHeight(false);
+			this.screenHeight = this.setTableHeight(false);
 		},
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.list;
-          console.log(response.data);
-          this.total = response.data.total;
+        getClassScoreRateByPaperIdAndGradeAndSchoolId(this.listQuery).then(res => {
+        	var data = res.data.data;
+          this.list.data = data.data;
+          this.list.head = data.head;
+          console.log(this.list.head)
+          this.total = data.total;
           this.listLoading = false;
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
-      },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
-      },
-      onSearch() {
-      	console.log('111');
       }
 		}
 	}

@@ -24,7 +24,7 @@
     "mockjs": "1.0.1-beta3",
     "normalize.css": "3.0.2",
     "nprogress": "0.2.0",
-    "region-picker": "^0.0.17",
+    "region-picker": "0.0.17",
     "screenfull": "3.2.2",
     "showdown": "1.7.1",
     "simplemde": "1.11.2",

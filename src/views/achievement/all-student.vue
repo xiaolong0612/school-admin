@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="ui-search-wrap" id="ui-search-wrap">
+		<!-- <div class="ui-search-wrap" id="ui-search-wrap">
 			<el-form :inline="true" :model="fromData">
 				<el-form-item label="学校">
 					<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择">
@@ -18,7 +18,7 @@
 		          <el-button type="primary" @click="onSearch">查询</el-button>
 		        </el-form-item>
 			</el-form>
-		</div>
+		</div> -->
 		<div class="ui-table-wrap clearfix">
 			<h3 class="ui-table-title">
 				<wscn-icon-svg icon-class="shuxian"/>
@@ -84,8 +84,8 @@
 					</el-table-column>
 				</el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
 		  </div>
@@ -93,7 +93,7 @@
 	</div>
 </template>
 <script>
-	import { getAllScore } from 'api/score';
+	import { getAllStudentScore } from 'api/score';
 	export default {
 		data() {
 			return {
@@ -104,9 +104,11 @@
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 10,
-          paperName: 5,
-          period: 2017
+          pageSize: 30,
+          paperName: '七上考试',
+          paperId: 2,
+          period: 2017,
+          grade: ''
         },
         fromData: {
 					selectedSubject: '启悟中学',
@@ -123,17 +125,17 @@
 		methods: {
 			getList() {
         this.listLoading = true;
-        getAllScore(this.listQuery).then(response => {
+        getAllStudentScore(this.listQuery).then(response => {
         	console.log(response);
           this.listLoading = false;
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
       onSearch() {

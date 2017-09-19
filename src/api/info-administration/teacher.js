@@ -17,16 +17,26 @@ export function modTeacher(data) {
 }
 
 export function delTeacher(id) {
+	var data = { id }
 	return fetch({
 		url: '/admin/teacher/del-teacher',
 		method: 'post',
-		params: id
+		params: data
 	})
 }
 
 export function getListTeacher(data) {
 	return fetch({
 		url: '/admin/teacher/list-teacher',
+		method: 'post',
+		params: data
+	})
+}
+
+// 下拉使用
+export function getAllTeacher(data) {
+	return fetch({
+		url: '/admin/teacher/get-all-teacher',
 		method: 'post',
 		params: data
 	})

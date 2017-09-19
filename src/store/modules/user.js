@@ -66,6 +66,9 @@ const user = {
     SET_GRADENO: (state, gradeNo) => {
       state.gradeNo = gradeNo;
     },
+    SET_SUBJECT: (state, subject) => {
+      state.subject = subject;
+    },
     SET_CLASSNO: (state, classNo) => {
       state.classNo = classNo;
     },
@@ -112,6 +115,9 @@ const user = {
         getInfo(query).then(response => {
           const user = response.data.userinfo;
           let roles = user.type.split(',');
+
+          // roles = 'admin';
+
           commit('SET_ROLES', roles);
 
           commit('SET_NAME', user.name);
@@ -125,7 +131,9 @@ const user = {
           commit('SET_SCHOOLID', user.schoolId);
           commit('SET_GRADENO', user.gradeNo);
           commit('SET_CLASSNO', user.classNo);
-
+          if(typeof user.subject != 'undefined'){
+            commit('SET_SUBJECT', user.subject);
+          }
           resolve(response);
         }).catch(error => {
           reject(error);

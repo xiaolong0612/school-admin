@@ -13,22 +13,47 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" :key="tableKey" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
+				<el-table :data="list" :key="tableKey" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'schoolName'}">
 					<el-table-column prop='schoolName' label="学校" width="150" sortable></el-table-column>
-					<el-table-column prop='grade' label="年级" width="90" sortable></el-table-column>
-					<el-table-column prop='name' label="班级" width="90" sortable></el-table-column>
-					<el-table-column prop='chargeTeacherName' label="班主任" width="120" sortable>
+					
+					<el-table-column prop='grade' label="年级" width="90" sortable>
 						<template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.chargeTeacherName"></el-input>
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.grade"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.grade}}</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop='name' label="班级" width="90" sortable>
+						<template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.name"></el-input>
+          		<span v-show="!scope.row.edit">{{scope.row.name}}</span>
+						</template>
+					</el-table-column>
+					<!-- <el-table-column prop='chargeTeacherName' label="班主任" width="120" sortable>
+						<template scope="scope">
+							<el-select v-show="scope.row.edit" v-model.number="scope.row.chargeTeacherName" placeholder="请选择班主任">
+					      <el-option 
+					      	v-for="item in headmaster"
+					      	:key='item.id'
+					      	:label="item.name"
+					      	:value="item.id">
+					      </el-option>
+					    </el-select>
           		<span v-show="!scope.row.edit">{{scope.row.chargeTeacherName}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop='gradeTeacherName' label="年段长" width="120" sortable>
 						<template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.gradeTeacherName"></el-input>
+							<el-select v-show="scope.row.edit" v-model.number="scope.row.gradeTeacherName" placeholder="请选择年段长">
+					      <el-option 
+					      	v-for="item in grades"
+					      	:key='item.id'
+					      	:label="item.name"
+					      	:value="item.id">
+					      </el-option>
+					    </el-select>
           		<span v-show="!scope.row.edit">{{scope.row.gradeTeacherName}}</span>
 						</template>
-					</el-table-column>
+					</el-table-column> -->
 					<el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
@@ -42,9 +67,9 @@
 					</el-table-column>
 				</el-table>
 			</div>
-			<div v-show="!listLoading" class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-	        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+			<div v-show="!listLoading" class="page-wrap">
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
 	  </div>
@@ -73,13 +98,27 @@
 				  </el-select>
         </el-form-item>
         
-		  	<el-form-item label="班主任名字" prop="chargeTeacherName">
-          <el-input v-model="fromData.chargeTeacherName"></el-input>
+		  	<!-- <el-form-item label="班主任" prop="chargeTeacherName">
+          <el-select v-model.number="fromData.chargeTeacherName" placeholder="请选择班主任">
+			      <el-option 
+			      	v-for="item in headmaster"
+			      	:key='item.id'
+			      	:label="item.name"
+			      	:value="item.id">
+			      </el-option>
+			    </el-select>
         </el-form-item>
         
 		  	<el-form-item label="年段长名字" prop="gradeTeacherName">
-          <el-input v-model="fromData.gradeTeacherName"></el-input>
-        </el-form-item>
+          <el-select v-model.number="fromData.gradeTeacherName" placeholder="请选择年段长">
+			      <el-option 
+			      	v-for="item in grades"
+			      	:key='item.id'
+			      	:label="item.name"
+			      	:value="item.id">
+			      </el-option>
+			    </el-select>
+        </el-form-item> -->
 		  </el-form>
 		  <span slot="footer" class="dialog-footer">
 		  	<el-button @click="handleAdd('fromData')" type="primary">确定</el-button>
@@ -90,7 +129,9 @@
 	</div>
 </template>
 <script>
+	import { mapGetters } from 'vuex';
 	import { getListClass, addClss, modClass } from 'api/info-administration/class';
+	import { getAllTeacher } from 'api/info-administration/teacher';
 	import { gradeList } from 'utils/data';
 	export default {
 		data() {
@@ -109,15 +150,22 @@
           pageSize: 20,
           name: ''
         },
+        headmaster: [],
+        grades: [],
         fromData: {
         	name: '',
 					grade: '',
 					schoolId: '1',
-					chargeTeacherId: '',
-					chargeTeacherName: '',
-					gradeTeacherId: '',
-					gradeTeacherName: '',
+					// chargeTeacherId: '',
+					// chargeTeacherName: '',
+					// gradeTeacherId: '',
+					// gradeTeacherName: '',
+					teacherId: '',
 					type: '0'
+        },
+        teacherFrom: {
+        	type: '',
+        	schoolId: ''
         },
         rules: {
         	name: [
@@ -128,28 +176,25 @@
 	        ],
 					schoolId: [
 	        	{ required: true, message: '必填项', trigger: 'blur' }
-	        ],
-					chargeTeacherId: [
-	        	{ required: true, message: '必填项', trigger: 'blur' }
-	        ],
-					chargeTeacherName: [
-	        	{ required: true, message: '必填项', trigger: 'blur' }
-	        ],
-					gradeTeacherId: [
-	        	{ required: true, message: '必填项', trigger: 'blur' }
-	        ],
-					gradeTeacherName: [
-	        	{ required: true, message: '必填项', trigger: 'blur' }
-	        ],
-					type: [
-	        	{ required: true, message: '必填项', trigger: 'blur' }
 	        ]
         },
 			}
 		},
+		computed: {
+      ...mapGetters([
+        'schoolId',
+        'uid'
+      ])
+    },
+    created() {
+    	this.fromData.teacherId = this.uid;
+    	this.teacherFrom.schoolId = this.schoolId;
+    },
 		mounted() {
 			this.screenHeight = this.setTableHeight(false);
 			this.getList();
+			// this.getTeacherList(this.headmaster, 1);
+			// this.getTeacherList(this.grades, 3);
 		},
 		methods: {
 			getList() {
@@ -164,12 +209,18 @@
           this.listLoading = false;
         })
       },
+      getTeacherList(people, type) {
+      	this.teacherFrom.type = type;
+      	getAllTeacher(this.teacherFrom).then(res => {
+      		people = res;
+      	})
+      },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
       handleMod(scope){
@@ -178,15 +229,16 @@
 	          message: '修改成功',
 	          type: 'success'
 	        });
-	        let bridge = {
-	      		gradeTeacherName: scope.row.gradeTeacherName,
-	      		chargeTeacherName: scope.row.chargeTeacherName,
-	      		index: scope.$index
-	      	}
+	        this.getList();
+	       //  let bridge = {
+	      	// 	gradeTeacherName: scope.row.gradeTeacherName,
+	      	// 	chargeTeacherName: scope.row.chargeTeacherName,
+	      	// 	index: scope.$index
+	      	// }
 
-      		this.backList[bridge.index].gradeTeacherName = bridge.gradeTeacherName;
-      		this.backList[bridge.index].chargeTeacherName = bridge.chargeTeacherName;
-      		scope.row.edit = false
+      		// this.backList[bridge.index].gradeTeacherName = bridge.gradeTeacherName;
+      		// this.backList[bridge.index].chargeTeacherName = bridge.chargeTeacherName;
+      		// scope.row.edit = false
       	})
       },
       handleCancel(scope){
@@ -202,6 +254,7 @@
       handleAdd(formName){
       	this.$refs[formName].validate((valid) => {
 	        if (valid) {
+	        	console.log(this.fromData)
       			addClss(this.fromData).then(response => {
       				if(typeof response == 'undefined') return;
 	            this.$message({
@@ -213,6 +266,7 @@
 			        // this.list[0].id = this.list[1].id++;
 			        // this.tableKey++;
 			        this.dialogVisible = false;
+			        this.resetForm('fromData');
 			        this.getList();
 	        	})
           } else {
@@ -220,7 +274,10 @@
             return false;
           }
       	})
-      }
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
 		}
 	}
 </script>

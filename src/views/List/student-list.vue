@@ -12,8 +12,11 @@
 				    type="file"
 				    accept=".xlsx, .xls"
 				    :file-list="fileList">
-				    <el-button slot="trigger" size="small" type="primary">导入学生列表</el-button>
+				    <el-button slot="trigger" type="primary">导入学生列表</el-button>
 				  </el-upload>
+	      </el-form-item>
+	      <el-form-item>
+	        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
 	      </el-form-item>
 			</el-form>
 		</div>
@@ -23,18 +26,26 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name', order: 'descending'}">
+				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name'}">
 
 					<el-table-column prop='name' label="姓名" width="90" sortable>
 						<template scope="scope">
-			      	<el-input v-show="scope.row.edit" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.name"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.name}}</span>
+          		<span>{{scope.row.name}}</span>
 						</template>
 					</el-table-column>
 
 					<el-table-column prop='sexStr' label="性别" width="90" sortable>
 						<template scope="scope">
-			      	<el-input v-show="scope.row.edit" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.sexStr"></el-input>
+			      	<el-select  v-show="scope.row.edit" v-model="scope.row.sex" placeholder="请选择">
+		          	<el-option
+						      label="男"
+						      value="0">
+						    </el-option>
+		          	<el-option
+						      label="女"
+						      value="1">
+				   		  </el-option>
+						  </el-select>
           		<span v-show="!scope.row.edit">{{scope.row.sexStr}}</span>
 						</template>
 					</el-table-column>
@@ -88,13 +99,6 @@
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='email' label="联系方式" width="130" sortable>
-						<template scope="scope">
-			      	<el-input v-show="scope.row.edit" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.email"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.email}}</span>
-						</template>
-					</el-table-column>
-
 					<el-table-column prop="" label="操作" width="140" fixed="right">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
@@ -111,8 +115,8 @@
 				</el-table>
 			</div>
 			<div v-show="!listLoading" class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-	        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
 	  </div>
@@ -131,9 +135,15 @@
         </el-form-item>
 
         <el-form-item label="性别" prop="sex">
-          <el-select v-model="fromData.sex" multiple placeholder="请选择">
-				    <el-option label="男"></el-option>
-				    <el-option label="女"></el-option>
+          <el-select v-model="fromData.sexStr" multiple placeholder="请选择">
+          	<el-option
+				      label="男"
+				      value="0">
+				    </el-option>
+          	<el-option
+				      label="女"
+				      value="1">
+				    </el-option>
 				  </el-select>
         </el-form-item>
 
@@ -169,9 +179,9 @@
           <el-input v-model="fromData.address"></el-input>
         </el-form-item>
 
-        <el-form-item label="联系电话" prop="telephone">
+       <!--  <el-form-item label="联系电话" prop="telephone">
           <el-input v-model="fromData.telephone"></el-input>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="fromData.email"></el-input>
@@ -200,6 +210,19 @@
 				total: 0,
         listLoading: true,
         dialogVisible: false,
+        sexOptions: [
+	        {
+	          value: '0',
+	          label: '男'
+	        }, {
+	          value: '1',
+	          label: '女'
+	        }
+	      ],
+	      sex_val_to_str: {
+	      	0: '男',
+	      	1: '女'
+	      },
         listQuery: {
           pageNo: 1,
           pageSize: 20,
@@ -217,7 +240,7 @@
         	seatNum: '',
         	classNo: '',
         	address: '',
-        	telephone: '',
+        	// telephone: '',
         	email: ''
         },
         rules: {
@@ -251,9 +274,9 @@
         	address: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ],
-        	telephone: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
+        	// telephone: [
+	        // 	{ required: true, message: '必填项', trigger: 'blur' },
+	        // ],
         	email: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ]
@@ -301,6 +324,7 @@
           message: '文件上传成功',
           type: 'success'
         });
+        this.$router.push('/task/list');
       },
       onErroe(err, file, fileList) {
       	this.$message({
@@ -318,6 +342,7 @@
 			          type: 'success'
 			        });
 			        this.dialogVisible = false;
+			        this.resetForm('fromData');
 			        this.getList();
 	        	})
           } else {
@@ -327,37 +352,40 @@
       	})
       },
       handleMod(scope){
+      	scope.row.sexStr = this.sex_val_to_str[scope.row.sex];
+      	console.log(scope.row.sex)
       	modStudent(scope.row).then(response => {
       		if(typeof response == 'undefined') return;
       		this.$message({
 	          message: '修改成功',
 	          type: 'success'
 	        });
-	        let bridge = {
-	      		name: scope.row.name,
-	      		sexStr: scope.row.sexStr,
-	      		studentNo: scope.row.studentNo,
-	      		studentSecondNo: scope.row.studentSecondNo,
-	      		grade: scope.row.grade,
-	      		classNo: scope.row.classNo,
-	      		birthdayStr: scope.row.birthdayStr,
-	      		startSchoolTime: scope.row.startSchoolTime,
-	      		telephone: scope.row.telephone,
-	      		email: scope.row.email,
-	      		index: scope.$index
-	      	}
+      		this.getList();
+	       //  let bridge = {
+	      	// 	name: scope.row.name,
+	      	// 	sexStr: scope.row.sexStr,
+	      	// 	studentNo: scope.row.studentNo,
+	      	// 	studentSecondNo: scope.row.studentSecondNo,
+	      	// 	grade: scope.row.grade,
+	      	// 	classNo: scope.row.classNo,
+	      	// 	birthdayStr: scope.row.birthdayStr,
+	      	// 	startSchoolTime: scope.row.startSchoolTime,
+	      	// 	// telephone: scope.row.telephone,
+	      	// 	email: scope.row.email,
+	      	// 	index: scope.$index
+	      	// }
 
-      		this.backList[bridge.index].name = bridge.name;
-      		this.backList[bridge.index].sexStr = bridge.sexStr;
-      		this.backList[bridge.index].studentNo = bridge.studentNo;
-      		this.backList[bridge.index].studentSecondNo = bridge.studentSecondNo;
-      		this.backList[bridge.index].grade = bridge.grade;
-      		this.backList[bridge.index].classNo = bridge.classNo;
-      		this.backList[bridge.index].birthdayStr = bridge.birthdayStr;
-      		this.backList[bridge.index].startSchoolTime = bridge.startSchoolTime;
-      		this.backList[bridge.index].telephone = bridge.telephone;
-      		this.backList[bridge.index].email = bridge.email;
-      		scope.row.edit = false
+      		// this.backList[bridge.index].name = bridge.name;
+      		// this.backList[bridge.index].sexStr = bridge.sexStr;
+      		// this.backList[bridge.index].studentNo = bridge.studentNo;
+      		// this.backList[bridge.index].studentSecondNo = bridge.studentSecondNo;
+      		// this.backList[bridge.index].grade = bridge.grade;
+      		// this.backList[bridge.index].classNo = bridge.classNo;
+      		// this.backList[bridge.index].birthdayStr = bridge.birthdayStr;
+      		// this.backList[bridge.index].startSchoolTime = bridge.startSchoolTime;
+      		// // this.backList[bridge.index].telephone = bridge.telephone;
+      		// this.backList[bridge.index].email = bridge.email;
+      		// scope.row.edit = false;
       	})
       },
       handleCancel(scope){
@@ -371,7 +399,7 @@
       		classNo: this.backList[index].classNo,
       		birthdayStr: this.backList[index].birthdayStr,
       		startSchoolTime: this.backList[index].startSchoolTime,
-      		telephone: this.backList[index].telephone,
+      		// telephone: this.backList[index].telephone,
       		email: this.backList[index].email
       	}
       	scope.row.name = bridge.name;
@@ -382,7 +410,7 @@
       	scope.row.classNo = bridge.classNo;
       	scope.row.birthdayStr = bridge.birthdayStr;
       	scope.row.startSchoolTime = bridge.startSchoolTime;
-      	scope.row.telephone = bridge.telephone;
+      	// scope.row.telephone = bridge.telephone;
       	scope.row.email = bridge.email;
       	scope.row.edit = false;
       },
@@ -393,11 +421,15 @@
 		          message: '删除成功',
 		          type: 'success'
 		        });
+		        this.getList();
       		}
       	})
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+      sexChange(val) {
+
       }
 		}
 	}

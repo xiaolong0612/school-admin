@@ -34,9 +34,10 @@ export function modExaminationPaperItem(query) {
 
 // 删除试卷
 export function delExaminationPaperItem(id) {
+  var data = { id }
   return fetch({
     url: '/admin/examination-paper-item/del-examination-paper-item',
     method: 'post',
-    params: id
+    params: data
   });
 }

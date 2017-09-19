@@ -3,20 +3,24 @@
 		<div class="ui-search-wrap" id="ui-search-wrap">
 			<el-form :inline="true" :model="fromData">
 				<el-form-item label="专题">
-					<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择">
-					  <el-option value="专题1"></el-option>
-					  <el-option value="专题2"></el-option>
-					  <el-option value="专题3"></el-option>
-					  </el-option>
-					</el-select>
+					<el-select v-model="fromData.testSpecialTopicId" placeholder="请选择专题" @change="getTestItem">
+			      <el-option 
+			      	v-for="item in testSpecialTopic"
+			      	:key='item.id'
+			      	:label="item.name"
+			      	:value="item.id">
+			      </el-option>
+			    </el-select>
 				</el-form-item>
 				<el-form-item label="考点">
-					<el-select v-model="fromData.selectedClass" filterable placeholder="请选择">
-					  <el-option value="考点1"></el-option>
-					  <el-option value="考点2"></el-option>
-					  <el-option value="考点3"></el-option>
-					  </el-option>
-					</el-select>
+					<el-select v-model.number="fromData.testSitesId" placeholder="请选择考点">
+			      <el-option 
+			      	v-for="item in testSpecialTopicItem"
+			      	:key='item.id'
+			      	:label="item.name"
+			      	:value="item.id">
+			      </el-option>
+			    </el-select>
 				</el-form-item>
 				<el-form-item>
 	        <el-button type="primary" @click="onSearch">查询</el-button>
@@ -29,47 +33,23 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
-					<el-table-column prop="school" label="学校" width="150" fixed>
-						<template scope="scope">
-							<router-link to="/special/quality-school">{{scope.row.school}}</router-link>
-						</template>
-					</el-table-column>
-					<el-table-column prop='number1' label="生数" width="90" fixed></el-table-column>
-					<el-table-column pro
-					<el-table-column label='入学' header-align='center'>
-						<el-table-column prop="number1" label="总分" sortable width="100" style="color:red">
-						</el-table-column>
-						<el-table-column prop="float1" label="得分率" width="100" sortable></el-table-column>
-						<el-table-column prop="float2" label="超均率" width="100"></el-table-column>
-						<el-table-column label="区位置" width="100">
-							<template scope="scope">
-								<div :formatter="formatter(scope.row.number4)" :style="{color: formatter(scope.row.number4)}">{{scope.row.number4}}</div>
-							</template>
-						</el-table-column>
-					</el-table-column>
-					<el-table-column label='七上' header-align='center'>
-						<el-table-column prop="name4" label='班主任' width="100"></el-table-column>
-						<el-table-column prop="number1" label="总分" width="100"></el-table-column>
-						<el-table-column prop="float4" label="得分率" width="100"></el-table-column>
-						<el-table-column prop="float3" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number8" label="区位置" width="100"></el-table-column>
-						<el-table-column prop="number6" label="市位置" width="100"></el-table-column>
-						<el-table-column prop="number1" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-					<el-table-column label='七下' header-align='center'>
-						<el-table-column prop="name5" label="班主任" width="100"></el-table-column>
-						<el-table-column prop="number2" label="均分" width="100"></el-table-column>
-						<el-table-column prop="float8" label="得分率" width="100"></el-table-column>
-						<el-table-column prop="float4" label="超均率" width="100"></el-table-column>
-						<el-table-column prop="number3" label="区位置" width="100"></el-table-column>
-						<el-table-column prop="number2" label="市位置" width="100"></el-table-column>
-						<el-table-column prop="number5" label="进步值" width="100"></el-table-column>
-					</el-table-column>
-				</el-table>
+				<el-table :data="list.data" border style="width: 100%">
+        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
+          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable>
+            <template scope="scope">
+              <div>{{scope.row[first.value][second.value]}}</div>
+            </template>
+          </el-table-column>
+
+          <template scope="scope" v-if="first.children == undefined">
+            <div>{{scope.row[first.value]}}</div>
+          </template>
+        
+        </el-table-column>
+    </el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
 			</div>
@@ -77,64 +57,91 @@
 	</div>
 </template>
 <script>
-	import { fetchList, fetchPv } from 'api/data';
+	import { mapGetters } from 'vuex';
+	import { specialTopic } from 'api/special';
+	import { getUseTestSites } from 'api/test/test';
 	export default {
 		data() {
 			return {
 				name: '专题值监控表',
-				list: [],
+				list: {
+					data: [],
+					head: []
+				},
 				screenHeight: 0,
 				total: null,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          pageNo: 1,
+          pageSize: 30,
+          period: 2017,
+          grade: '',
+          specialTopicId: ''
+        },
+        testQuery: {
+        	subject: '',
+        	id: 0
         },
         fromData: {
-					selectedSubject: '专题1',
-					selectedClass: ''
-        }
+					testSpecialTopicId: '',
+					testSitesId: ''
+        },
+        testSpecialTopic: [],
+        testSpecialTopicItem: [],
 			}
 		},
+		computed: {
+      ...mapGetters([
+        'subject',
+        'gradeNo'
+      ])
+    },
 		created() {
-      this.getList();
+			this.testQuery.subject = this.subject;
+			this.listQuery.grade = this.gradeNo;
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(false);
+      this.getList();
+      this.getTestSpecialTopic(0);
 		},
 		methods: {
 			getList() {
         this.listLoading = true;
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.list;
-          this.total = response.data.total;
+        specialTopic(this.listQuery).then(res => {
+          var data = res.data.data;
+          this.list.data = data.data;
+          this.list.head = data.head;
           this.listLoading = false;
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
-      },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
       },
       onSearch() {
 
-      }
+      },
+      getTestSpecialTopic() {
+      	this.testQuery.id = 0;
+      	getUseTestSites(this.testQuery).then(res => {
+      		console.log(res)
+      		if(typeof res == 'undefined') return;
+      		this.testSpecialTopic = res.data.list
+
+      	})
+      },
+      getTestItem(val) {
+      	this.testQuery.id = val;
+      	getUseTestSites(this.testQuery).then(res => {
+      		if(typeof res == 'undefined') return;
+      		this.testSpecialTopicItem = res.data.list
+      	})
+      },
 		}
 	}
 </script>

@@ -4,23 +4,19 @@
   </div>
 </template>
 <script>
-  import { getClassExcellentRatePaperId } from 'api/excellent'
+  import { getPaperIdSchoolExcellentRate } from 'api/excellent'
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
-  const rangeList = [
-    {value: '学校'},
-    {value: '行政班'},
-    {value: '教学班'}
-  ];
-  const schoolList = [
-    {value: '启悟中学'},
-    {value: '育才学校'}
-  ]
   export default {
     data() {
       return {
         chart: '',
-        list: [],
+        list: {
+          data: [],
+          right: [],
+          title: []
+        },
+        titleText: {},
         link: {
         	语言积累: 'http://www.baidu.com',
         	语言运用: 'http://www.yuyan.com',
@@ -35,29 +31,30 @@
         },
         listQuery: {
           paperId: 2,
-          state: 0
-        },
-        showSchool: true,
-        rangeList: rangeList,
-        schoolList: schoolList
+        }
       }
     },
     mounted() {
       this.initChart();
       this.getList();
+      this.addChartClick();
     },
     methods: {
       getList() {
-        getClassExcellentRatePaperId(this.listQuery).then(response => {
-          var data = response.data;
-            this.list = data[0];
-            this.setOption();
+        getPaperIdSchoolExcellentRate(this.listQuery).then(res => {
+          var data = res.data.data;
+          this.list.right = data.right;
+          this.list.data = data.data;
+          var titleText = [];
+          for(var item in data.title){
+            titleText.push(item);
+          }
+          this.list.title = titleText;
+          this.setOption();
         })
       },
       initChart() {
         this.chart = echarts.init(document.getElementById('chart'), 'macarons');
-        this.setOption();
-        this.addChartClick();
       },
       setOption() {
         var _that = this;
@@ -134,19 +131,6 @@
           // console.log(this.link[params.seriesName])
           this.$router.push({ path: '/excellent/region-school'});
         })
-      },
-      rangeChange(value) {
-        if(value == '学校') {
-          this.showSchool = false
-        }else {
-          this.showSchool = true
-        }
-      },
-      schoolChange(value) {
-        console.log(value)
-      },
-      onSearch() {
-
       }
     }
   }

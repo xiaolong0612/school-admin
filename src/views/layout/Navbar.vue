@@ -34,10 +34,10 @@
                         </el-dropdown-item>
                     </router-link>
                 </div>
-                <div v-if="roles[1] == 7">
+                <div v-if="roles[1] == 5 || roles[1] == 6 || roles[1] == 7">
                     <router-link to="/task/list">
                         <el-dropdown-item>
-                            任务列表
+                            成绩列表
                         </el-dropdown-item>
                     </router-link>
                    <!--  <router-link to="/paper/list">

@@ -13,59 +13,42 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight">
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight"
+				:default-sort = "{prop: 'nameCode'}">
 					<el-table-column
 			      prop="nameCode"
-			      label="编号"
-			      width="150"
-			      fixed>
+			      label="专题编号"
+			      width="120"
+			      fixed
+			      sortable>
 	      		<template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.address"></el-input>
+	      			<el-input v-show="scope.row.edit" size="small" v-model="scope.row.nameCode"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.nameCode}}</span>
 						</template>
 			    </el-table-column>
 
 			    <el-table-column
 			      prop="name"
-			      label="考点名称"
-			      width="100">
-			    </el-table-column>
-
-			    <el-table-column
-			      prop="parentName"
 			      label="专题名称"
-			      width="100">
+			      width="150">
+			      <template scope="scope">
+							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.name"></el-input>
+							<router-link :to='"item/"+scope.row.name+"/"+scope.row.id+"/"+scope.row.subject'>
+          			<span v-show="!scope.row.edit">{{scope.row.name}}</span>
+          		</router-link>
+						</template>
 			    </el-table-column>
 
 			    <el-table-column
 			      prop="subject"
 			      label="科目"
-			      width="120">
-			    </el-table-column>
-
-			    <el-table-column
-			      prop="teacherName"
-			      label="录入人"
-			      width="120">
-			    </el-table-column>
-
-			    <el-table-column
-			      prop="analysis"
-			      label="题目分析"
 			      width="150">
-			    </el-table-column>
-			    <el-table-column
-			      prop="scoreCriterion"
-			      label="评分标准"
-			      width="120">
+			      <template scope="scope">
+          		<span>{{scope.row.subject}}</span>
+						</template>
 			    </el-table-column>
 
-			    <el-table-column
-			      prop="cases"
-			      label="典型案例"
-			      width="120">
-			    </el-table-column>
-					<el-table-column prop="" label="操作" width="140" fixed="right">
+					<el-table-column prop="" label="操作" width="150">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
 								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
@@ -78,9 +61,9 @@
 						</template>
 					</el-table-column>
 				</el-table>
-				<div v-show="!listLoading" class="pagination-container fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]"
-		        :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+				<div v-show="!listLoading" class="pagination-container">
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
 		  </div>
@@ -91,47 +74,28 @@
 		  size="tiny">
 		  <el-form class="small-space ui-form" :model="fromData" label-position="right" :rules="rules" ref="fromData" label-width="80px" style="padding:0 30px;">
 
-        <el-form-item label="班级名称" prop="name">
+        <!-- <el-form-item label="班级名称" prop="name">
+          <el-input v-model="fromData.name"></el-input>
+        </el-form-item> -->
+
+        <el-form-item label="专题名称" prop="name">
           <el-input v-model="fromData.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="专题名称" prop="parentName">
-          <el-input v-model="fromData.parentName"></el-input>
+        <el-form-item label="专题编号" prop="nameCode">
+          <el-input v-model="fromData.nameCode"></el-input>
         </el-form-item>
 
-        <el-form-item label="层级名称" prop="levelName">
-          <el-input v-model="fromData.levelName"></el-input>
-        </el-form-item>
-
-        <el-form-item label="科目" prop="subject">
+<!--         <el-form-item label="科目" prop="subject">
           <el-select v-model="fromData.subject" filterable placeholder="请选择">
 				    <el-option
-				      v-for="item in subject"
+				      v-for="item in subjectList"
 				      :key="item"
 				      :label="item"
 				      :value="item">
 				    </el-option>
 				  </el-select>
-        </el-form-item>
-
-				<!-- <el-form-item label="班级名称" prop="name">
-					<region-picker :data="data"></region-picker>
-				</el-form-item> -->
-
-        <el-form-item label="试卷分析" prop="analysis">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.analysis">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="评分标准" prop="scoreCriterion">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.scoreCriterion">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="典型案例" prop="cases">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.cases">
-          </el-input>
-        </el-form-item>
+        </el-form-item> -->
 
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -143,7 +107,8 @@
 	</div>
 </template>
 <script>
-	import { getTestSitesList, addTestSites, modTestSites, delTestSites} from 'api/test/test';
+	import { mapGetters } from 'vuex';
+	import { getTestSitesList, addTestsites, modTestSites, delTestSites} from 'api/test/test';
 	import { validataPhone } from 'utils/validate';
 	const valiPhone = (rule, value, callback) => {
 		if (!validataPhone(value)) {
@@ -155,39 +120,29 @@
 	export default {
 		data() {
 			return {
-				name: '考点管理',
+				name: '专题列表',
 				list: [],
 				screenHeight: 0,
 				total: 0,
-				subject: ['语文', '数学', '英语', '物理', '化学', '地理', '历史', '政治'],
+				subjectList: ['语文', '数学', '英语', '物理', '化学', '地理', '历史', '政治'],
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 10,
+          pageSize: 30,
           name: '',
-          type: ''
+          subject: '',
+          parentId: '0'
         },
         fromData: {
         	name: '',
 					nameCode: '',
-					parentId: '',
-					parentName: '',
-					levelCode: '',
-					levelName: '',
-					subject: '',
-					schoolId: '',
-					analysis: '',
-					scoreCriterion: '',
-					cases: ''
+					teacherId: '',
         },
         rules: {
 	        name: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ],
 					nameCode: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					parentId: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ],
 					parentName: [
@@ -198,27 +153,19 @@
 	        ],
 					levelName: [
 	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					subject: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					schoolId: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					analysis: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					scoreCriterion: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
-	        ],
-					cases: [
-	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ]
 	      },
         dialogVisible: false
 			}
 		},
+		computed: {
+      ...mapGetters([
+        'subject',
+        'uid'
+      ])
+    },
 		created() {
+			this.fromData.teacherId = this.uid;
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(true);
@@ -227,6 +174,7 @@
 		methods: {
 			getList() {
         this.listLoading = true;
+        this.listQuery.subject = this.subject;
         getTestSitesList(this.listQuery).then(res => {
         	this.list = res.data.list;
         	for(let i=0; i<this.list.length; i++){
@@ -238,23 +186,25 @@
         })
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
+        this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
       handleAdd(formName){
       	this.$refs[formName].validate((valid) => {
 	        if (valid) {
-      			addTestSites(this.fromData).then(res => {
+	        	console.log(this.fromData)
+      			addTestsites(this.fromData).then(res => {
       				if(typeof res == 'undefined') return;
 	            this.$message({
 			          message: '添加成功',
 			          type: 'success'
 			        });
 			        this.dialogVisible = false;
+			        this.resetForm('fromData');
 			        this.getList();
 	        	})
           } else {
@@ -264,49 +214,47 @@
       	})
       },
       handleMod(scope){
-      	modTestSites(scope.row).then(res => {
+    		var data = {
+    			id: scope.row.id,
+    			name: scope.row.name,
+    			nameCode: scope.row.nameCode
+    		};
+      	modTestSites(data).then(res => {
       		if(typeof res == 'undefined') return;
       		this.$message({
 	          message: '修改成功',
 	          type: 'success'
 	        });
-	        let bridge = {
-	      		address: scope.row.address,
-	      		introduce: scope.row.introduce,
-	      		linkName: scope.row.linkName,
-	      		telephone: scope.row.telephone,
-	      		index: scope.$index
-	      	}
+	        this.getList();
+	       //  let bridge = {
+	      	// 	name: scope.row.name,
+	      	// 	nameCode: scope.row.nameCode,
+	      	// 	index: scope.$index
+	      	// }
 
-      		this.backList[bridge.index].address = bridge.address;
-      		this.backList[bridge.index].introduce = bridge.introduce;
-      		this.backList[bridge.index].linkName = bridge.linkName;
-      		this.backList[bridge.index].telephone = bridge.telephone;
-      		scope.row.edit = false
+      		// this.backList[bridge.index].name = bridge.name;
+      		// this.backList[bridge.index].nameCode = bridge.nameCode;
+      		// scope.row.edit = false
       	})
       },
       handleCancel(scope){
       	let index = scope.$index;
       	let bridge = {
-      		address: this.backList[index].address,
-      		introduce: this.backList[index].introduce,
-      		linkName: this.backList[index].linkName,
-      		telephone: this.backList[index].telephone
+      		name: this.backList[index].name,
+      		nameCode: this.backList[index].nameCode,
       	}
-      	scope.row.schoolName = bridge.schoolName;
-      	scope.row.entryTime = bridge.entryTime;
-      	scope.row.email = bridge.email;
-      	scope.row.telephone = bridge.telephone;
+      	scope.row.name = bridge.name;
+      	scope.row.nameCode = bridge.nameCode;
       	scope.row.edit = false;
       },
       handleDel(id) {
       	delTestSites(id).then(res => {
-      		if(typeof res != 'undefined'){
-      			this.$message({
-		          message: '删除成功',
-		          type: 'success'
-		        });
-      		}
+      		if(typeof res == 'undefined') return;
+    			this.$message({
+	          message: '删除成功',
+	          type: 'success'
+	        });
+		      this.getList();
       	})
       },
       resetForm(formName) {

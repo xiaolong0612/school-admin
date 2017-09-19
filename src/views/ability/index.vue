@@ -31,9 +31,12 @@
         this.listLoading = true;
         getSchoolSpecialTopicBySubjectAndPeriod(this.listQuery).then(res => {
           var data = res.data.data;
-          this.list.data = data.data;
-          this.list.title = data.title;
+          this.list.data = data.data[0].split(',');
           this.list.right = data.right;
+          for(var item in data.title){
+            this.list.title.push(item);
+          }
+          // this.list.right = data.right;
           this.setOption();
           this.listLoading = false;
         })
