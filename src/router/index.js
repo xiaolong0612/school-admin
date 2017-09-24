@@ -11,25 +11,9 @@ import Layout from '../views/layout/Layout';
 /* dashboard */
 const dashboard = _import('dashboard/index');
 
-/* error page */
-const Err404 = _import('error/404');
-const Err401 = _import('error/401');
-
-/* error log */
-const ErrorLog = _import('errlog/index');
-
-/* login */
-const Login = _import('login/index');
-const authRedirect = _import('login/authredirect');
-const sendPWD = _import('login/sendpwd');
-const reset = _import('login/reset');
-
 /* permission */
 const Permission = _import('permission/index');
 
-/* demo */
-const Upload = _import('demo/Upload');
-const Data = _import('demo/data');
 /* 首页 */
 const TeacherIndex = _import('teacher/index');        //学科教师0 
 const DirectorIndex = _import('director/index');     // 班主任1、年段长3
@@ -126,15 +110,6 @@ const StudentTest = _import('student/subject/test');
 const StudentQuestions = _import('student/subject/questions');
 const StudentSummary = _import('student/subject/summary');
 const StudentMark = _import('student/mark');
-// const StudentChinese = () => import('../views/student/subject/Chinese');
-// const StudentEnglish = () => import('../views/student/subject/English');
-// const StudentMathematics = () => import('../views/student/subject/Mathematics');
-// const StudentHistory = () => import('../views/student/subject/History');
-// const StudentMoral = () => import('../views/student/subject/Moral'); // 思品
-// const StudentGeography = () => import('../views/student/subject/Geography'); // 地理
-// const StudentChemistry = () => import('../views/student/subject/Chemistry'); // 化学
-// const StudentPhysics = () => import('../views/student/subject/Physics'); // 物理
-// const StudentBiology = () => import('../views/student/subject/Biology'); // 生物
 
 const ClassList = _import('List/class-list');
 const StudentList = _import('List/student-list');
@@ -144,13 +119,65 @@ const SchoolList = _import('List/school-list');
 const PaperList = _import('List/paper-list');
 const ExaminationList = _import('List/examination-list');
 
-const getSchoolList = _import('info-administration/school/get-school-list');
-const addSchool = _import('info-administration/school/add-school');
+/**
+ * 项目重构
+ * 避免命名重复
+ * 模块命名都以文件夹名称开始
+ * 每个模块下都新建.md文件，说明当前文件（目录结构）
+ */
+// 成绩管理
+const gradesSubjectTotalScores = _import('grades/subject-total-scores');
+const gradesClassTotalScores = _import('grades/class-total-scores');
+const gradesSubjectLayering = _import('grades/subject-layering/index');
+const gradesSubjectLayering_admin = _import('grades/subject-layering/admin');
+const gradesSubjectLayering_teaching = _import('grades/subject-layering/teaching');
+const gradesStudentGradesLayering = _import('grades/student-grades-layering');
+const gradesSubjectAverage = _import('grades/subject-average/index');
+const gradesSubjectAverage_admin = _import('grades/subject-average/admin');
+const gradesSubjectAverage_teaching = _import('grades/subject-average/teaching');
+const gradesTotalAcoresTrack = _import('grades/total-scores-track');
 
-// form
-const formExamination = _import('form/examination');
-const formTest = _import('form/test');
+const gradesExcellentRote_echart = _import('grades/excellent-rate/echart');
+const gradesExcellentRote_table = _import('grades/excellent-rate/table');
+const gradesExcellentRote_class = _import('grades/excellent-rate/class');
 
+const gradesLowRote_echart = _import('grades/low-rate/echart');
+const gradesLowRote_table = _import('grades/low-rate/table');
+const gradesLowRote_class = _import('grades/low-rate/class');
+
+const gradesPassRote_echart = _import('grades/pass-rate/echart');
+const gradesPassRote_table = _import('grades/pass-rate/table');
+const gradesPassRote_class = _import('grades/pass-rate/class');
+
+// 专题管理
+const specialScoreRate = _import('special/score-rate');
+const specialQualitManage = _import('special/qualit-manage');
+const specialQualitAnalysis = _import('special/qualit-analysis');
+
+// 优良率
+const excellentSubject = _import('excellent/subject');
+const excellentClassSubject = _import('excellent/class-subject');
+const excellentAeraSubjectCompare = _import('excellent/aera-subject-compare');
+const excellentSchoolSubjectCompare = _import('excellent/school-subject-compare');
+const excellentClassSubiectCompare = _import('excellent/class-subiect-compare');
+// 及格率
+const pass_rateSubject = _import('pass-rate/subject');
+const pass_rateClassSubject = _import('pass-rate/class-subject');
+const pass_rateAeraSubjectCompare = _import('pass-rate/aera-subject-compare');
+const pass_rateSchoolSubjectCompare = _import('pass-rate/school-subject-compare');
+const pass_rateClassSubiectCompare = _import('pass-rate/class-subiect-compare');
+// 低分率
+const low_rateSubject = _import('low-rate/subject');
+const low_rateClassSubject = _import('low-rate/class-subject');
+const low_rateAeraSubjectCompare = _import('low-rate/aera-subject-compare');
+const low_rateSchoolSubjectCompare = _import('low-rate/school-subject-compare');
+const low_rateClassSubiectCompare = _import('low-rate/class-subiect-compare');
+// 总分管理
+const total_scoreTotalScoresTrack = _import('total-score/total-scores-track');
+// 学科管理
+const subjectSubjectAverage = _import('subject/subject-average');
+const subjectSchoolSubject = _import('subject/school-subject');
+const subjectClassSubject = _import('subject/class-subject');
 Vue.use(Router);
 
  /**
@@ -162,12 +189,9 @@ Vue.use(Router);
   */
 
 export const constantRouterMap = [
-    { path: '/login', component: Login, hidden: true },
-    { path: '/authredirect', component: authRedirect, hidden: true },
-    { path: '/sendpwd', component: sendPWD, hidden: true },
-    { path: '/reset', component: reset, hidden: true },
-    { path: '/404', component: Err404, hidden: true },
-    { path: '/401', component: Err401, hidden: true },
+    { path: '/login', component: _import('login/index'), hidden: true },
+    { path: '/404', component: _import('error/401'), hidden: true },
+    { path: '/401', component: _import('error/404'), hidden: true },
   {
     path: '/',
     component: Layout,
@@ -204,8 +228,8 @@ export const asyncRouterMap = [
     icon: '404',
     hidden: true,
     children: [
-      { path: '401', component: Err401, name: '401' },
-      { path: '404', component: Err404, name: '404' }
+      { path: '401', component: _import('error/401'), name: '401' },
+      { path: '404', component: _import('error/404'), name: '404' }
     ]
   },
   {
@@ -216,27 +240,7 @@ export const asyncRouterMap = [
     icon: 'bug',
     hidden: true,
     noDropdown: true,
-    children: [{ path: 'log', component: ErrorLog, name: '错误日志' }]
-  },
-  {
-    path: '/demo',
-    component: Layout,
-    name: 'demo',
-    hidden: true,
-    children: [
-      {path: 'upload', component: Upload, name: '图片上传'},
-      {path: 'data', component: Data, name: 'data'}
-    ]
-  },
-  {
-    path: '/form',
-    component: Layout,
-    name: 'form',
-    hidden: true,
-    children: [
-      {path: 'examination', component: formExamination, name: '新增试题', meta: { role: ['7'] } },
-      {path: 'test', component: formTest, name: '新增考点', meta: { role: ['7'] } }
-    ]
+    children: [{ path: 'log', component: _import('errlog/index'), name: '错误日志' }]
   },
   { // 学科教师
     path: '/teacher',
@@ -339,26 +343,6 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/info',
-    component: Layout,
-    name: '增删改查',
-    hidden: true,
-    meta: { role: ['7'] },
-    children: [
-      {
-        path: 'get-school-list',
-        component: getSchoolList,
-        name: '学校列表',
-        meta: { role: ['7'] }
-      },{
-        path: 'add-school',
-        component: addSchool,
-        name: '添加学校',
-        meta: { role: ['7'] }
-      }
-    ]
-  },
-  {
     path: '/test',
     component: Layout,
     name: '专题列表',
@@ -383,6 +367,303 @@ export const asyncRouterMap = [
       {path: 'list', component: PaperList, name: '试卷管理', meta: { role: ['7'] } },
       {path: 'examination-list/:id/:name/:subject', component: ExaminationList, name: '试题列表', meta: { role: ['7'] } }
     ]
+  },
+  {
+    path: '/grades',
+    component: Layout,
+    name: '成绩管理',
+    icon: 'chengjiguanli',
+    meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] },
+    children: [
+      {
+        path: 'subject-total-scores',
+        component: gradesSubjectTotalScores,
+        name: '各科总分监控',
+        meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
+      },
+      {
+        path: 'class-total-scores',
+        component: gradesClassTotalScores,
+        name: '班级总分',
+        meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
+      },
+      {
+        path: 'subject-layering',
+        component: gradesSubjectLayering,
+        name: '学科分层监控',
+        meta: { role: ['9','0'] }
+      },
+      {
+        path: 'subject-layering/admin',
+        component: gradesSubjectLayering_admin,
+        name: '行政班',
+        hidden: true,
+        meta: { role: ['9','0'] }
+      },
+      {
+        path: 'subject-layering/teaching',
+        component: gradesSubjectLayering_teaching,
+        name: '教学班',
+        hidden: true,
+        meta: { role: ['9','0'] }
+      },
+      {
+        path: 'student-grades-layering',
+        component: gradesStudentGradesLayering,
+        name: '学生成绩监控',
+        meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
+      },
+      {
+        path: 'subject-average',
+        component: gradesSubjectAverage,
+        name: ' 学科均分监控',
+        meta: { role: ['9','0'] }
+      },
+      {
+        path: 'subject-average/admin',
+        component: gradesSubjectAverage_admin,
+        name: '行政班',
+        hidden: true,
+        meta: { role: ['9','0'] }
+      },
+      {
+        path: 'subject-average/teaching',
+        component: gradesSubjectAverage_teaching,
+        name: '教学班',
+        hidden: true,
+        meta: { role: ['9','0'] }
+      },
+      {
+        path: 'total-scores-track',
+        component: gradesTotalAcoresTrack,
+        name: '总分跟踪管理',
+        meta: { role: ['7'] }
+      },
+      {
+        path: 'excellent-rate/echart',
+        component: gradesExcellentRote_echart,
+        name: '优良率',
+        meta: { role: ['9', '0'] }
+      },
+      {
+        path: 'excellent-rate/table',
+        component: gradesExcellentRote_table,
+        name: '优良率',
+        meta: { role: ['9', '0'] }
+      },
+      {
+        path: 'excellent-rate/class',
+        component: gradesExcellentRote_class,
+        name: '优良率',
+        meta: { role: ['9', '0'] }
+      },
+      {
+        path: 'pass-rate/echart',
+        component: gradesPassRote_echart,
+        name: '及格率',
+        meta: { role: ['9', '0'] }
+      },
+      {
+        path: 'pass-rate/table',
+        component: gradesPassRote_table,
+        name: '及格率',
+        meta: { role: ['9', '0'] }
+      },
+      {
+        path: 'pass-rate/class',
+        component: gradesPassRote_class,
+        name: '及格率',
+        meta: { role: ['9', '0'] }
+      },
+      {
+        path: 'low-rate/echart',
+        component: gradesLowRote_echart,
+        name: '低分率',
+        meta: { role: ['9', '0'] }
+      },
+      {
+        path: 'low-rate/table',
+        component: gradesLowRote_table,
+        name: '低分率',
+        meta: { role: ['9', '0'] }
+      },
+      {
+        path: 'low-rate/class',
+        component: gradesLowRote_class,
+        name: '低分率',
+        meta: { role: ['9', '0'] }
+      }
+    ]
+  },
+  {
+    path: '/special',
+    component: Layout,
+    name: '专题管理',
+    icon: 'guanli',
+    meta: { role: ['7', '0'] },
+    children: [
+      {
+        path: 'score-rate',
+        component: specialScoreRate,
+        name: '得分率'
+      },
+      {
+        path: 'qualit-manage',
+        component: specialQualitManage,
+        name: '质量管理'
+      },
+      {
+        path: 'qualit-analysis',
+        component: specialQualitAnalysis,
+        name: '质量分析'
+      }
+    ]
+  },
+  {
+    path: '/excellent',
+    component: Layout,
+    name: '优良率',
+    icon: 'guanli',
+    meta: { role: ['1', '3', '5', '6', '8', '9'] },
+    children: [
+      {
+        path: 'subject',
+        component: excellentSubject,
+        name: '各学科优良率' 
+      },
+      {
+        path: 'class-subject',
+        component: excellentClassSubject,
+        name: '班级各学科' 
+      },
+      {
+        path: 'aera-subject-compare',
+        component: excellentAeraSubjectCompare,
+        name: '全区各科优良率比较' 
+      },
+      {
+        path: 'school-subject-compare',
+        component: excellentSchoolSubjectCompare,
+        name: '学校各科优良率比较' 
+      },
+      {
+        path: 'class-subiect-compare',
+        component: excellentClassSubiectCompare,
+        name: '班级各科优良率比较' 
+      },
+    ]
+  },
+  {
+    path: '/pass-rate',
+    component: Layout,
+    name: '及格率',
+    icon: 'guanli',
+    meta: { role: ['1', '3', '5', '6', '8', '9'] },
+    children: [
+      {
+        path: 'subject',
+        component: pass_rateSubject,
+        name: '各学科及格率' 
+      },
+      {
+        path: 'class-subject',
+        component: pass_rateClassSubject,
+        name: '班级各学科' 
+      },
+      {
+        path: 'aera-subject-compare',
+        component: pass_rateAeraSubjectCompare,
+        name: '全区各科及格率比较' 
+      },
+      {
+        path: 'school-subject-compare',
+        component: pass_rateSchoolSubjectCompare,
+        name: '学校各科及格率比较' 
+      },
+      {
+        path: 'class-subiect-compare',
+        component: pass_rateClassSubiectCompare,
+        name: '班级各科及格率比较' 
+      },
+    ]
+  },
+  {
+    path: '/low-rate',
+    component: Layout,
+    name: '低分率',
+    icon: 'guanli',
+    meta: { role: ['1', '3', '5', '6', '8', '9'] },
+    children: [
+      {
+        path: 'subject',
+        component: low_rateSubject,
+        name: '各学科低分率' 
+      },
+      {
+        path: 'class-subject',
+        component: low_rateClassSubject,
+        name: '班级各学科' 
+      },
+      {
+        path: 'aera-subject-compare',
+        component: low_rateAeraSubjectCompare,
+        name: '全区各科低分率比较' 
+      },
+      {
+        path: 'school-subject-compare',
+        component: low_rateSchoolSubjectCompare,
+        name: '学校各科低分率比较' 
+      },
+      {
+        path: 'class-subiect-compare',
+        component: low_rateClassSubiectCompare,
+        name: '班级各科低分率比较' 
+      },
+    ]
+  },
+  {
+    path: '/total-score',
+    redirect: '/total-score/index',
+    component: Layout,
+    name: '总分跟踪管理',
+    icon: 'guanli',
+    meta: { role: [ '5', '6', '8' ] },
+    children: [
+      {
+        path: 'index',
+        component: total_scoreTotalScoresTrack,
+        name: '总分跟踪管理',
+      }
+    ]
+  },
+  {
+    path: '/special',
+    component: Layout,
+    name: '学科管理',
+    icon: 'guanli',
+    meta: { role: ['1', '3', '5', '6', '8', '9' ] },
+    children: [
+      {
+        path: 'score-rate',
+        component: specialScoreRate,
+        name: '学科均分监控表',
+      },
+      {
+        path: 'qualit-manage',
+        component: specialQualitManage,
+        name: '学校各科均分',
+      },
+      {
+        path: 'qualit-analysis',
+        component: specialQualitAnalysis,
+        name: '班级各科均分',
+      },
+    ]
+  },
+  {
+    path: '/fenjiexian',
+    component: Layout,
+    name: '****分界线****',
   },
   {
     path: '/achievement',
@@ -822,15 +1103,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-  // {
-  //   path: 'personnel-man',
-  //   name: '人员管理',
-  //   component: PAllClass,
-  //   meta: { role: ['5', '6'] },
-  //   children: [
-
-  //   ]
-  // },
   {
     path: '/student-mark',
     name: '历次质检表',
@@ -948,28 +1220,6 @@ export const asyncRouterMap = [
       {path: 'list', component: SchoolList, name: '学校列表', meta: { role: ['9'] } }
     ]
   },
-  // {
-  //   path: '/paper',
-  //   component: Layout,
-  //   name: '试卷',
-  //   icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
-  //   meta: { role: ['7'] },
-  //   hidden: true,
-  //   children: [
-  //     {path: 'list', component: PaperList, name: '试卷列表', meta: { role: ['7'] } }
-  //   ]
-  // },
-  // {
-  //   path: '/examination',
-  //   component: Layout,
-  //   name: '试题列表',
-  //   icon: 'caigoutonggerenbangaobaozhengerenzhongxin265',
-  //   meta: { role: ['7'] },
-  //   hidden: true,
-  //   children: [
-      
-  //   ]
-  // },
   { path: '*', redirect: '/404', hidden: true }
 ];
 

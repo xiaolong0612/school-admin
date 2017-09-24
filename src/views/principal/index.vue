@@ -105,7 +105,7 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  import { teacherTop } from 'api/index';
+  import { principalIndex } from 'api/index';
   import { gradeList } from 'utils/data'
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
@@ -144,7 +144,11 @@
               {"文言文阅读":5}
             ]
           }  
-        ]
+        ],
+        lsitQuery: {
+          period: 2017,
+          grade: '初三'
+        }
   		}
   	},
     computed: {
@@ -166,20 +170,12 @@
   	},
   	methods: {
   		getList() {
-        teacherTop(2).then(res => {
+        principalIndex(this.uid).then(res => {
           var data = res.data.data;
           this.list.data = data.data;
+          this.list.right = data.right;
           this.list.title = data.title;
         	this.setOption();
-
-          this.specialList = data.left;
-          this.qualityList = [];
-          for(var item in data.right){
-            this.qualityList.push({
-              name: data.right[item].split(':')[0],
-              number: data.right[item].split(':')[1]
-            })
-          };
 
         });
       },
@@ -188,6 +184,26 @@
       },
       setOption() {
         var _that = this;
+        var seriesOption = []
+        for(let item in _that.list.data){
+          seriesOption.push({
+            name: item,
+              type: 'bar',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  label: {
+                    show: true,
+                    position: 'top',
+                    formatter(p) {
+                      return p.value > 0 ? p.value : '';
+                    }
+                  }
+                }
+              },
+              data: _that.list.data[item]
+          })
+        }
         this.chart.setOption({
           title: {
             text: '所有考试市、区专题得分率监控图',
@@ -211,6 +227,12 @@
             textStyle: {
               color: '#fff'
             }
+          },
+          legend: {
+            orient: 'vertical',
+            bottom: '25%',
+            right: '2%',
+            data: _that.list.right
           },
           calculable: true,
           xAxis: [{
@@ -267,25 +289,7 @@
             start: 1,
             end: 35
           }],
-          series: [
-            {
-              name: '同安区',
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  barBorderRadius: 0,
-                  label: {
-                    show: true,
-                    position: 'top',
-                    formatter(p) {
-                      return p.value > 0 ? p.value : '';
-                    }
-                  }
-                }
-              },
-              data: _that.list.data
-            }
-          ]
+          series: seriesOption
         })
 		  }
   	}

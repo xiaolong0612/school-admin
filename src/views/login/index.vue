@@ -28,11 +28,6 @@
               <el-input name="password" type="password" v-model="loginForm.password"
                         autoComplete="on" placeholder="密码"></el-input>
           </el-form-item>
-          <el-form-item prop="code" label="验证码">
-              <el-input name="code" type="text" @keyup.enter.native="handleLogin" v-model="loginForm.code"
-                        autoComplete="on" placeholder="验证码" style="width:55%"></el-input>
-              <img :src="codeImg" class="fr" @click="setCodeImg" style="vertical-align: top;height: 36px;width: 43%">
-          </el-form-item>
           <el-form-item prop="type" label="角色">
             <el-radio-group v-show="cardList[0].type" v-model="loginForm.type" style="vertical-align: top;padding-top: 7px;line-height: 20px;">
               <el-radio label="9">教育局</el-radio>
@@ -124,9 +119,6 @@
           loginRules: {
             password: [
                 { required: true, trigger: 'blur', validator: validatePass }
-            ],
-            code: [
-                { required: true, trigger: 'blur', validator: validataCode }
             ],
             type: [
                 { required: true, trigger: 'change', message: '请至少选择一个' }
