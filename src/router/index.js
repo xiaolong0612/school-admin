@@ -384,14 +384,14 @@ export const asyncRouterMap = [
       {
         path: 'class-total-scores',
         component: gradesClassTotalScores,
-        name: '班级总分',
-        meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
+        name: '班级总分监控',
+        meta: { role: ['0', '1', '3', '5', '6', '8', '9'] }
       },
       {
         path: 'subject-layering',
         component: gradesSubjectLayering,
         name: '学科分层监控',
-        meta: { role: ['9','0'] }
+        meta: { role: [ '7', '0'] }
       },
       {
         path: 'subject-layering/admin',
@@ -411,13 +411,13 @@ export const asyncRouterMap = [
         path: 'student-grades-layering',
         component: gradesStudentGradesLayering,
         name: '学生成绩监控',
-        meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
+        meta: { role: ['0', '1', '3'] }
       },
       {
         path: 'subject-average',
         component: gradesSubjectAverage,
         name: ' 学科均分监控',
-        meta: { role: ['9','0'] }
+        meta: { role: ['7','0'] }
       },
       {
         path: 'subject-average/admin',
@@ -443,55 +443,61 @@ export const asyncRouterMap = [
         path: 'excellent-rate/echart',
         component: gradesExcellentRote_echart,
         name: '优良率',
-        meta: { role: ['9', '0'] }
+        meta: { role: ['7', '0'] }
       },
       {
         path: 'excellent-rate/table',
         component: gradesExcellentRote_table,
+        hidden: true,
         name: '优良率',
-        meta: { role: ['9', '0'] }
+        meta: { role: ['7', '0'] }
       },
       {
         path: 'excellent-rate/class',
         component: gradesExcellentRote_class,
-        name: '优良率',
-        meta: { role: ['9', '0'] }
+        hidden: true,
+        name: '优良率-班级',
+        meta: { role: [ '7', '0'] }
       },
       {
         path: 'pass-rate/echart',
         component: gradesPassRote_echart,
         name: '及格率',
-        meta: { role: ['9', '0'] }
+        meta: { role: [ '7', '0'] }
       },
       {
         path: 'pass-rate/table',
         component: gradesPassRote_table,
+        hidden: true,
         name: '及格率',
-        meta: { role: ['9', '0'] }
+        meta: { role: [ '7', '0'] }
       },
       {
         path: 'pass-rate/class',
         component: gradesPassRote_class,
-        name: '及格率',
-        meta: { role: ['9', '0'] }
+        hidden: true,
+        name: '及格率-班级',
+        meta: { role: [ '7', '0'] }
       },
       {
         path: 'low-rate/echart',
         component: gradesLowRote_echart,
         name: '低分率',
-        meta: { role: ['9', '0'] }
+        meta: { role: [ '7', '0'] }
       },
       {
         path: 'low-rate/table',
         component: gradesLowRote_table,
+        hidden: true,
         name: '低分率',
-        meta: { role: ['9', '0'] }
+        meta: { role: [ '7', '0'] }
       },
       {
         path: 'low-rate/class',
         component: gradesLowRote_class,
-        name: '低分率',
-        meta: { role: ['9', '0'] }
+        hidden: true,
+        name: '低分率-班级',
+        meta: { role: [ '7', '0'] }
       }
     ]
   },
@@ -625,9 +631,10 @@ export const asyncRouterMap = [
     path: '/total-score',
     redirect: '/total-score/index',
     component: Layout,
-    name: '总分跟踪管理',
+    name: '总分管理',
     icon: 'guanli',
-    meta: { role: [ '5', '6', '8' ] },
+    meta: { role: [ '1', '3', '5', '6', '8' ] },
+    noDropdown: true,
     children: [
       {
         path: 'index',

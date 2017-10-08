@@ -113,18 +113,7 @@
 							<div v-show="!scope.row.edit">
 								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
 
-								<el-popover
-								  placement="left"
-								  width="100"
-								  v-model="scope.row.popover">
-								  <p>确定要删除吗？</p>
-								  <div>
-								    <el-button size="mini" type="text" @click="scope.row.popover = false">取消</el-button>
-								    <el-button type="primary" size="mini" @click="handleDel(scope.row.id)">确定</el-button>
-								  </div>
-								</el-popover>
-
-								<el-button type="danger" icon="delete" size="small" @click="scope.row.popover = true"></el-button>
+								<el-button type="danger" icon="delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
 
 							</div>
 							<div v-show="scope.row.edit">
@@ -186,6 +175,18 @@
       	<el-button @click="dialogVisible = false" :plain="true" type='warning'>取消</el-button>
 		  </span>
 		</el-dialog>
+		<el-dialog
+		  title="提示"
+		  :visible.sync="dialogDel"
+		  size="tiny">
+		  <span>确定要删除</span>
+		  <span style="color: red">{{del_content.nameCode}}{{del_content.name}}</span>
+		  <span>吗？</span>
+		  <span slot="footer" class="dialog-footer">
+		    <el-button @click="dialogDel = false">取 消</el-button>
+		    <el-button type="primary" @click="handleDel()">确 定</el-button>
+		  </span>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -243,7 +244,9 @@
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ]
 	      },
-        dialogVisible: false
+        dialogVisible: false,
+        dialogDel: false,
+        del_content: {}
 			}
 		},
 		computed: {
@@ -356,8 +359,8 @@
       	scope.row.levelName = bridge.levelName;
       	scope.row.edit = false;
       },
-      handleDel(id) {
-      	delTestSites(id).then(res => {
+      handleDel() {
+      	delTestSites(this.del_content.id).then(res => {
       		if(typeof res == 'undefined') return;
     			this.$message({
 	          message: '删除成功',
@@ -365,6 +368,10 @@
 	        });
 		      this.getList();
       	})
+      },
+      showDiallogDel(row){
+      	this.del_content = row;
+      	this.dialogDel = true;
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();

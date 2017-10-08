@@ -114,11 +114,13 @@
   		return {
   			name: '',
   			classList: [],
-        list: [{
+        list: {
+          name: '',
           data: [],
           title: [],
           right: []
-        }],
+        },
+        series: [],
   			specialList: [],
   			qualityList: [],
   			testList: [],
@@ -168,8 +170,29 @@
   		getList() {
         teacherTop(2).then(res => {
           var data = res.data.data;
+          this.list.name = data.name;
           this.list.data = data.data;
           this.list.title = data.title;
+          this.list.right = data.right;
+          for(let index in this.list.right){
+            this.series.push({
+              name: '',
+              type: 'bar',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  label: {
+                    show: true,
+                    position: 'top',
+                    formatter(p) {
+                      return p.value > 0 ? p.value : '';
+                    }
+                  }
+                }
+              },
+              data: this.list.data
+            })
+          }
         	this.setOption();
 
           this.specialList = data.left;
@@ -190,7 +213,7 @@
         var _that = this;
         this.chart.setOption({
           title: {
-            text: '所有考试市、区专题得分率监控图',
+            text: _that.list.name,
             x: 'center',
             textStyle: {
               color: '#333',
@@ -267,25 +290,7 @@
             start: 1,
             end: 35
           }],
-          series: [
-            {
-              name: '同安区',
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  barBorderRadius: 0,
-                  label: {
-                    show: true,
-                    position: 'top',
-                    formatter(p) {
-                      return p.value > 0 ? p.value : '';
-                    }
-                  }
-                }
-              },
-              data: _that.list.data
-            }
-          ]
+          series: _that.series
         })
 		  }
   	}

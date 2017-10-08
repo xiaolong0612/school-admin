@@ -20,7 +20,7 @@ const app = {
     },
     ADD_VISITED_VIEWS: (state, view) => {
       if (state.visitedViews.some(v => v.path === view.path)) return
-      state.visitedViews.push({ name: view.name, path: view.path })
+      state.visitedViews.push({ name: view.info.name, path: view.path })
     },
     DEL_VISITED_VIEWS: (state, view) => {
       let index

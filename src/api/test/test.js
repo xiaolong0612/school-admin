@@ -23,11 +23,11 @@ export function addTestSites(query) {
 }
 
 // 新增专题
-export function addTestsites(query) {
+export function addTestsites(data) {
   return fetch({
     url: '/admin/test-sites/new-testSites',
     method: 'post',
-    params: query
+    data
   })
 }
 

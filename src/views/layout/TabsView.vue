@@ -21,7 +21,11 @@
           $event.preventDefault()
         },
         addViewTabs() {
-          this.$store.dispatch('addVisitedViews', this.$route.matched[this.$route.matched.length - 1])
+          let data = {
+            path: this.$route.path,
+            info: this.$route.matched[this.$route.matched.length - 1]
+          }
+          this.$store.dispatch('addVisitedViews', data)
         }
       },
       watch: {

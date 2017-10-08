@@ -41,7 +41,7 @@
 			      label="题目"
 			      width="320">
 			      <template scope="scope">
-			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.title"></el-input>
+			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.content"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.content}}</span>
 						</template>
 			    </el-table-column>
@@ -125,7 +125,7 @@
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
 								<el-button type="info" icon="edit" size="small" @click="handleEditRow(scope)"></el-button>
-								<el-button type="danger" icon="delete" size="small" @click="handleDel(scope.row.id)"></el-button>
+								<el-button type="danger" icon="delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
 							</div>
 							<div v-show="scope.row.edit">
 								<el-button type="success" icon="circle-check" size="small" @click="handleMod(scope)"></el-button>
@@ -231,6 +231,18 @@
       	<el-button @click="dialogVisible = false" :plain="true" type='warning'>取消</el-button>
 		  </span>
 		</el-dialog>
+		<el-dialog
+		  title="提示"
+		  :visible.sync="dialogDel"
+		  size="tiny">
+		  <span>确定要删除</span>
+		  <span style="color: red">{{del_content.questionNumber}}{{del_content.title}}</span>
+		  <span>吗？</span>
+		  <span slot="footer" class="dialog-footer">
+		    <el-button @click="dialogDel = false">取 消</el-button>
+		    <el-button type="primary" @click="handleDel()">确 定</el-button>
+		  </span>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -280,7 +292,9 @@
         },
         fromDataDefaultTest: [],
         rules: {},
-        dialogVisible: false
+        dialogVisible: false,
+        dialogDel: false,
+        del_content: {}
 			}
 		},
 		created() {
@@ -409,7 +423,7 @@
 					title: scope.row.title
       	}
       	console.log(data)
-      	modExaminationPaperItem(data).then(response => {
+      	modExaminationPaperItem(qs.stringify(data)).then(response => {
       		if(typeof response == 'undefined') return;
       		this.$message({
 	          message: '修改成功',
@@ -427,8 +441,8 @@
       	scope.row.cases = bridge.cases;
       	scope.row.edit = false;
       },
-      handleDel(id) {
-      	delExaminationPaperItem(id).then(response => {
+      handleDel() {
+      	delExaminationPaperItem(this.del_content.id).then(response => {
       		if(typeof response != 'undefined'){
       			this.$message({
 		          message: '删除成功',
@@ -437,6 +451,10 @@
 		        this.getList();
       		}
       	})
+      },
+      showDiallogDel(row){
+      	this.del_content = row;
+      	this.dialogDel = true;
       },
       resetForm() {
       	this.fromData={

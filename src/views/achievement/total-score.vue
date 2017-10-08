@@ -6,8 +6,8 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="data.data" border style="width: 100%">
-	        <el-table-column v-for='(first,index) in data.head' :label="first.name" :key='first.name' sortable>
+				<el-table :data="list.data" border style="width: 100%">
+	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable>
 		            <template scope="scope">
 		              <div>{{scope.row[first.value][second.value]}}</div>
@@ -36,9 +36,9 @@
 	export default {
 		data() {
 			return {
-				name: '全区各校单次考试成绩总表',
+				name: '总分跟踪管理',
 				screenHeight: 0,
-				data: {
+				list: {
 					data: [],
 					head: []
 				},
@@ -74,8 +74,8 @@
         console.log(this.listQuery)
         getSchoolScoreRateByPaperNameAndPeriodAndGrade(this.listQuery).then(res => {
           var data = res.data.data;
-          this.data.data = data.data;
-          this.data.head = data.head;
+          this.list.data = data.data;
+          this.list.head = data.head;
           this.total = data.total;
           this.listLoading = false;
         })

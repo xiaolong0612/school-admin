@@ -15,11 +15,11 @@ export function getExaminationPaperItemList(query) {
 }
 
 // 新增试题
-export function addExaminationPaperItem(query) {
+export function addExaminationPaperItem(data) {
   return fetch({
     url: '/admin/examination-paper-item/save-examination-paper-item',
     method: 'post',
-    params: query
+    data
   });
 }
 

@@ -78,7 +78,7 @@
 	</div>
 </template>
 <script>
-	import { getPaperScore } from 'api/score';
+	import { getPaperScore } from 'api/grades';
 	export default {
 		data() {
 			return {
@@ -88,9 +88,9 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          id: 2,
+          id: 7,
           pageNo: 1,
-          pageSize: 15
+          pageSize: 30
         },
         fromData: {
 					selectedSubject: '语文',
@@ -124,7 +124,7 @@
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
+        this.listQuery.pageNo = val;
         this.getList();
       },
 			onSearch() {
