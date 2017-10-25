@@ -9,11 +9,12 @@ export function loginByAccount(account, password, code, type) {
   });
 }
 
-export function getInfo(query) {
+export function getInfo(data) {
+  console.log(data)
   return fetch({
     url: '/admin/get-login-info',
     method: 'post',
-    params: query
+    data
   });
 }
 

@@ -16,11 +16,35 @@ import fetch from 'utils/fetch';
  *            	paperId: 1,
  *            	specialTopicId: 1
  *            }
- * @static 		不可用，获取数据有问题
+ * @static 		
  */
+export function getAllSpecialTopic(data){
+	return fetch({
+		url: '/admin/schoo-basic/get-all-special-topic',
+		method: 'post',
+		data
+	})
+}
+// 单次考试学校
+export function getSpecialTopic(data){
+	return fetch({
+		url: '/admin/schoo-basic/special-topic',
+		method: 'post',
+		data
+	})
+}
+// 所有考试学校
 export function getPaperSchoolPassRateSpecialTopic(data){
 	return fetch({
 		url: '/admin/schoo-basic/getPaperSchoolPassRateSpecialTopic',
+		method: 'post',
+		data
+	})
+}
+// 考点
+export function queryschoolCheckPoints(data){
+	return fetch({
+		url: '/admin/schoo-basic/queryschoolCheckPoints',
 		method: 'post',
 		data
 	})
@@ -29,35 +53,48 @@ export function getPaperSchoolPassRateSpecialTopic(data){
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-28
- * @namespace 质量管理
+ * @namespace 质量分析
  * @param     {
  *            	
  *            }
- * @static 		暂无
+ * @static 		
  */
+export function listInstructorQualityAnalysis(data){
+	return fetch({
+		url: '/admin/quality-analysis/list-instructor-quality-analysis',
+		method: 'post',
+		data
+	})
+}
 
 
 
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-28
- * @namespace 质量分析
+ * @namespace 质量分析编辑
  * @param     {
  *            	
  *            }
- * @static 		暂无
+ * @static 		
  */
-
-
-
-
-export function getAllSpecialTopic(query){
+export function modTeachAdvice(data){
 	return fetch({
-		url: '/admin/schoo-basic/get-all-special-topic',
+		url: '/admin/quality-analysis/mod-teach-advice',
 		method: 'post',
-		params: query
+		data
 	})
 }
+
+
+
+// export function getAllSpecialTopic(query){
+// 	return fetch({
+// 		url: '/admin/schoo-basic/get-all-special-topic',
+// 		method: 'post',
+// 		params: query
+// 	})
+// }
 
 // 单次考试某专题各校得分率监控图
 

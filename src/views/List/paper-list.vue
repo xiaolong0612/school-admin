@@ -214,12 +214,11 @@
 		computed: {
       ...mapGetters([
         'uid',
-        'subject'
+        'subject',
+        'gradeNo'
       ])
     },
 		created() {
-			this.fromData.teacherId = this.uid;
-			this.fromData.subject = this.subject;
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(true);
@@ -228,6 +227,9 @@
 		methods: {
 			getList() {
         this.listLoading = true;
+				this.fromData.teacherId = this.uid;
+				this.fromData.subject = this.subject;
+				this.fromData.grade = this.gradeNo;
         getExaminationPaperList(this.listQuery).then(response => {
         	this.list = response.data.list;
         	for(let i=0; i<this.list.length; i++){

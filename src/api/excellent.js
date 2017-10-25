@@ -9,15 +9,14 @@ import fetch from 'utils/fetch';
  * @DateTime  2017-09-29
  * @namespace 各学科优良率
  * @param     {
- *            	pageNo: 1,
- *            	pageSize: 10,
- *            	period: 2017,
- *            	subject: '语文'
+ *            	paperId: 1
  *            }
+ *
+ * @remark		需要数据
  */
-export function getSchoolScoreExcellent(data){
+export function getPaperIdSchoolExcellentRate(data){
 	return fetch({
-		url: '/admin/education/get-school-score-excellent',
+		url: '/admin/schoo-basic/get-PaperIdSchoolExcellentRate',
 		method: 'post',
 		data
 	})
@@ -28,13 +27,16 @@ export function getSchoolScoreExcellent(data){
  * @DateTime  2017-09-29
  * @namespace 班级各学科
  * @param     {
+ *            	pageNo=1&pageSize=10&period=2017&subject=%E8%AF%AD%E6%96%87&grade=%E4%B8%83%E5%B9%B4%E7%BA%A7&state=0
  *            	pageNo: 1,
  *            	pageSize: 10,
  *            	period: 2017,
- *            	grade: '初一年',
- *            	subject: 1
+ *            	grade: '七年级',
+ *            	subject: '语文',
+ *            	state: 0
  *            }
- * @static    无法使用
+ * @static    可用
+ * http://localhost:8080/sqms/admin/class-basic/getClassExcellentRateByPeriodAndSubjectAndGrade?pageNo=1&pageSize=10&period=2017&subject=%E8%AF%AD%E6%96%87&grade=%E4%B8%83%E5%B9%B4%E7%BA%A7&state=0
  */
 export function getClassExcellentRateByPeriodAndSubjectAndGrade(data){
 	return fetch({
@@ -63,8 +65,16 @@ export function getClassExcellentRateByPeriodAndSubjectAndGrade(data){
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
  * @namespace 学校各科优良率比较
- * @param     {}
- * @static    暂无
+ * @param     {
+ *            	pageNo=1&pageSize=10&schoolId=23&period=2017&grade=七年级
+ *            	pageNo: 1,
+ *            	pageSize: 30,
+ *            	schoolId: '',
+ *            	period: 2017,
+ *            	grade: 七年级
+ * 						}
+ * @static    可用
+ * localhost:8080/sqms/admin/schoo-basic/getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade?pageNo=1&pageSize=10&schoolId=23&period=2017&grade=%E4%B8%83%E5%B9%B4%E7%BA%A7
  */
 export function getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
 	return fetch({
@@ -82,15 +92,27 @@ export function getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade(data
  *            	pageNo: 1,
  *            	pageSize: 10,
  *            	period: 2017,
- *            	grade: '初一年',
+ *            	grade: '七年级',
  *            	pageSize: 10,
  *            	classId: 1
  *            }
- * @static    无法使用
+ * @static    可用
+ *            问题，classId用户信息中没有，只有班级名称
+ *            
+ * localhost:8080/sqms/admin/class-basic/getClassExcellentRateByPeriodAndClassIdAndGrade?pageNo=1&pageSize=10&period=2017&grade=%E4%B8%83%E5%B9%B4%E7%BA%A7&classId=65
  */
 export function getClassExcellentRateByPeriodAndClassIdAndGrade(data){
 	return fetch({
 		url: '/admin/class-basic/getClassExcellentRateByPeriodAndClassIdAndGrade',
+		method: 'post',
+		data
+	})
+}
+
+// 总分跟踪管理
+export function quaryAllScoreRataByPeriodForPage(data){
+	return fetch({
+		url: '/admin/schoo-basic/quaryAllScoreRataByPeriodForPage',
 		method: 'post',
 		data
 	})
@@ -117,14 +139,6 @@ export function getClassExcellentRateByPeriodAndClassIdAndGrade(data){
 // 	})
 // }
 
-// // 全区各校单次考试成绩总表
-// export function getSchoolScoreRateByPaperNameAndPeriodAndGrade(query){
-// 	return fetch({
-// 		url: '/admin/schoo-basic/getSchoolScoreRateByPaperNameAndPeriodAndGrade',
-// 		method: 'post',
-// 		params: query
-// 	})
-// }
 
 // // 全区所有行政班单次考试成绩总表
 // export function getClassScoreByPeriodAndPaperNameAndGrade(query){

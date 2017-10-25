@@ -422,8 +422,7 @@
 					testSpecialTopicId: scope.row.defaultTest[0],
 					title: scope.row.title
       	}
-      	console.log(data)
-      	modExaminationPaperItem(qs.stringify(data)).then(response => {
+      	modExaminationPaperItem(data).then(response => {
       		if(typeof response == 'undefined') return;
       		this.$message({
 	          message: '修改成功',

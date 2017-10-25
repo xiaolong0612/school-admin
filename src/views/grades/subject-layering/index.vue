@@ -61,6 +61,7 @@
 	</div>
 </template>
 <script>
+  import { getLatestTest } from 'utils/auth';
 	import { getPaperScore } from 'api/grades';
 	export default {
 		data() {
@@ -71,7 +72,7 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          id: 7,
+          id: '',
           pageNo: 1,
           pageSize: 30
         },
@@ -90,8 +91,10 @@
 		methods: {
 			getList() {
         this.listLoading = true;
+        let paper = JSON.parse(getLatestTest());
+        this.listQuery.id = paper.id;
+        console.log(this.listQuery);
         getPaperScore(this.listQuery).then(response => {
-        	console.log(response)
           this.list = response.data.list;
           this.total = response.data.total;
           this.name = this.list[0].paperName;

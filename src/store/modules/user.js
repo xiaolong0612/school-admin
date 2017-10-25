@@ -1,4 +1,6 @@
 import { loginByAccount, logout, getInfo } from 'api/login';
+import { setLatestTest, setLatestTestName } from 'utils/auth';
+import { getExaminationPaperList} from 'api/test/paper';
 import Cookies from 'js-cookie';
 
 const user = {
@@ -17,7 +19,7 @@ const user = {
     nativePlace: '',
     introduction: '',
     // 权限and接口使用
-    roles: [],
+    roles: typeof Cookies.get('xxkd-roles') != 'undefined' ? Cookies.get('xxkd-roles').split(',') : [],
     schoolId: '',
     gradeNo: '',
     classNo: ''
@@ -93,7 +95,9 @@ const user = {
           Cookies.set('xxkd-Token', data);
           Cookies.set('xxkd-uid', data.userinfo.id);
           Cookies.set('xxkd-type', setType);
+          Cookies.set('xxkd-roles', userInfo.type);
 
+          commit('SET_ROLES', Cookies.get('xxkd-roles').split(','));
           commit('SET_APIGETTYPE', setType); // Get user information usage
           commit('SET_TOKEN', data);
           commit('SET_UID', data.userinfo.id);
@@ -114,11 +118,11 @@ const user = {
         };
         getInfo(query).then(response => {
           const user = response.data.userinfo;
-          let roles = user.type.split(',');
+          // let roles = user.type.split(',');
 
           // roles = 'admin';
 
-          commit('SET_ROLES', roles);
+          // commit('SET_ROLES', roles);
 
           commit('SET_NAME', user.name);
           commit('SET_AGE', user.age);
@@ -133,7 +137,27 @@ const user = {
           commit('SET_CLASSNO', user.classNo);
           if(typeof user.subject != 'undefined'){
             commit('SET_SUBJECT', user.subject);
+
+            
           }
+          let query = {
+              pageNo: 1,
+              pageSize: 30,
+              subject: user.subject = user.subject == 'undefined' ? '语文' : user.subject,
+              name: '',
+              period: '',
+              grade: '七年级'
+            };
+
+          getExaminationPaperList(query).then(res => {
+            if(res.data.list.length == 0){
+              setLatestTest('');
+            }
+            else{
+              setLatestTest(JSON.stringify(res.data.list[0]));
+            }
+          })
+
           resolve(response);
         }).catch(error => {
           reject(error);
@@ -168,6 +192,7 @@ const user = {
           commit('SET_TOKEN', '');
           commit('SET_ROLES', []);
 
+          Cookies.remove('xxkd-roles');
           Cookies.remove('xxkd-Token');
           Cookies.remove('xxkd-uid');
           Cookies.remove('xxkd-type');

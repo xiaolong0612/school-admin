@@ -150,7 +150,8 @@ const gradesPassRote_table = _import('grades/pass-rate/table');
 const gradesPassRote_class = _import('grades/pass-rate/class');
 
 // 专题管理
-const specialScoreRate = _import('special/score-rate');
+const specialScoreRate = _import('special/score-rate/score-rate');
+const specialScoreRate_school = _import('special/score-rate/school');
 const specialQualitManage = _import('special/qualit-manage');
 const specialQualitAnalysis = _import('special/qualit-analysis');
 
@@ -442,63 +443,109 @@ export const asyncRouterMap = [
       {
         path: 'excellent-rate/echart',
         component: gradesExcellentRote_echart,
+        hidden: true,
         name: '优良率',
-        meta: { role: ['7', '0'] }
+        meta: { role: ['7'] }
       },
       {
         path: 'excellent-rate/table',
         component: gradesExcellentRote_table,
-        hidden: true,
         name: '优良率',
-        meta: { role: ['7', '0'] }
+        meta: { role: ['7'] }
       },
       {
         path: 'excellent-rate/class',
         component: gradesExcellentRote_class,
         hidden: true,
         name: '优良率-班级',
-        meta: { role: [ '7', '0'] }
+        meta: { role: [ '7'] }
       },
       {
         path: 'pass-rate/echart',
         component: gradesPassRote_echart,
+        hidden: true,
         name: '及格率',
-        meta: { role: [ '7', '0'] }
+        meta: { role: [ '7'] }
       },
       {
         path: 'pass-rate/table',
         component: gradesPassRote_table,
-        hidden: true,
         name: '及格率',
-        meta: { role: [ '7', '0'] }
+        meta: { role: [ '7'] }
       },
       {
         path: 'pass-rate/class',
         component: gradesPassRote_class,
         hidden: true,
         name: '及格率-班级',
-        meta: { role: [ '7', '0'] }
+        meta: { role: [ '7'] }
       },
       {
         path: 'low-rate/echart',
         component: gradesLowRote_echart,
+        hidden: true,
         name: '低分率',
-        meta: { role: [ '7', '0'] }
+        meta: { role: [ '7'] }
       },
       {
         path: 'low-rate/table',
         component: gradesLowRote_table,
-        hidden: true,
         name: '低分率',
-        meta: { role: [ '7', '0'] }
+        meta: { role: [ '7'] }
       },
       {
         path: 'low-rate/class',
         component: gradesLowRote_class,
         hidden: true,
         name: '低分率-班级',
-        meta: { role: [ '7', '0'] }
-      }
+        meta: { role: [ '7'] }
+      },
+      // 学科教师使用
+      {
+        path: '/teacher/excellent-rate',
+        component: _import('grades/teacher/index'),
+        name: '优良率',
+        meta: { role: [ '0'] },
+        children: [
+          { path: 'echart', component: _import('grades/teacher/excellent-rate/echart'), name: '区优良率监控图' },
+          { path: 'class-echart', component: _import('grades/teacher/excellent-rate/class-echart'), name: '区行政班／教学班优良率监控图',hidden: true },
+          { path: 'table', component: _import('grades/teacher/excellent-rate/table'), name: '区优良率监控表',hidden: true },
+          { path: 'class-table', component: _import('grades/teacher/excellent-rate/class-echart'), name: '班优良率监控表',hidden: true },
+          { path: 'subject', component: _import('grades/teacher/excellent-rate/subject'), name: '学科质量跟踪' },
+          { path: 'student-special', component: _import('grades/teacher/excellent-rate/student'), name: '学生考点监控图',hidden: true },
+          { path: 'student-special-test', component: _import('grades/teacher/excellent-rate/student-test'), name: '学生考点监控图',hidden: true },
+        ]
+      },
+      {
+        path: '/teacher/low-rate',
+        component: _import('grades/teacher/index'),
+        name: '低分率',
+        meta: { role: [ '0'] },
+        children: [
+          { path: 'echart', component: _import('grades/teacher/low-rate/echart'), name: '区低分率监控图' },
+          { path: 'class-echart', component: _import('grades/teacher/low-rate/class-echart'), name: '区行政班／教学班低分率监控图',hidden: true },
+          { path: 'table', component: _import('grades/teacher/low-rate/table'), name: '区低分率监控表',hidden: true },
+          { path: 'class-table', component: _import('grades/teacher/low-rate/class-echart'), name: '班低分率监控表',hidden: true },
+          { path: 'subject', component: _import('grades/teacher/low-rate/subject'), name: '学科质量跟踪' },
+          { path: 'student-special', component: _import('grades/teacher/low-rate/student'), name: '学生考点监控图',hidden: true },
+          { path: 'student-special-test', component: _import('grades/teacher/low-rate/student-test'), name: '学生考点监控图',hidden: true },
+        ]
+      },
+      {
+        path: '/teacher/pass-rate',
+        component: _import('grades/teacher/index'),
+        name: '得分率',
+        meta: { role: [ '0'] },
+        children: [
+          { path: 'echart', component: _import('grades/teacher/pass-rate/echart'), name: '区得分率监控图' },
+          { path: 'class-echart', component: _import('grades/teacher/pass-rate/class-echart'), name: '区行政班／教学班得分率监控图',hidden: true },
+          { path: 'table', component: _import('grades/teacher/pass-rate/table'), name: '区得分率监控表',hidden: true },
+          { path: 'class-table', component: _import('grades/teacher/pass-rate/class-echart'), name: '班得分率监控表',hidden: true },
+          { path: 'subject', component: _import('grades/teacher/pass-rate/subject'), name: '学科质量跟踪' },
+          { path: 'student-special', component: _import('grades/teacher/pass-rate/student'), name: '学生考点监控图',hidden: true },
+          { path: 'student-special-test', component: _import('grades/teacher/pass-rate/student-test'), name: '学生考点监控图',hidden: true },
+        ]
+      },
     ]
   },
   {
@@ -514,9 +561,16 @@ export const asyncRouterMap = [
         name: '得分率'
       },
       {
+        path: 'score-rate/school',
+        component: specialScoreRate_school,
+        hidden: true,
+        name: '得分率-某专题各学校得分率'
+      },
+      {
         path: 'qualit-manage',
         component: specialQualitManage,
-        name: '质量管理'
+        name: '质量管理',
+        hidden: true,
       },
       {
         path: 'qualit-analysis',
@@ -633,7 +687,7 @@ export const asyncRouterMap = [
     component: Layout,
     name: '总分管理',
     icon: 'guanli',
-    meta: { role: [ '1', '3', '5', '6', '8' ] },
+    meta: { role: [ '1', '3', '5', '6', '8', '9'] },
     noDropdown: true,
     children: [
       {
@@ -644,494 +698,532 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/special',
+    path: '/subject',
     component: Layout,
     name: '学科管理',
     icon: 'guanli',
     meta: { role: ['1', '3', '5', '6', '8', '9' ] },
     children: [
       {
-        path: 'score-rate',
-        component: specialScoreRate,
+        path: 'subject-average',
+        component: subjectSubjectAverage,
         name: '学科均分监控表',
       },
       {
-        path: 'qualit-manage',
-        component: specialQualitManage,
+        path: 'school-subject',
+        component: subjectSchoolSubject,
         name: '学校各科均分',
       },
       {
-        path: 'qualit-analysis',
-        component: specialQualitAnalysis,
+        path: 'class-subject',
+        component: subjectClassSubject,
         name: '班级各科均分',
       },
     ]
   },
   {
-    path: '/fenjiexian',
-    component: Layout,
-    name: '****分界线****',
-  },
-  {
-    path: '/achievement',
-    component: Layout,
-    name: '成绩管理',
-    icon: 'chengjiguanli',
-    meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] },
-    children: [
-      {
-        path: 'total-score',
-        component: TotalScore,
-        name: '全区各校单考总分',
-        meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
-      }, {
-        path: 'administration-com',
-        component: AdministrationCom,
-        name: '行政班单考总表',
-        meta: { role: ['1', '5', '6'] }
-      },{
-        path: 'area-all-student-com',
-        name: '区单考学生成绩总表',
-        meta: { role: ['5', '6'] }
-      },{
-        path: 'section-class',
-        component: SectionClass,
-        name: '年段各班总分',
-        meta: { role: ['0']}
-      }, {
-        path: 'discipline-hierarchy',
-        component: DisciplineHierarchy,
-        name: '学科分层',
-        meta: { role: ['7'] }
-      }, {
-        path: 'singl-subject-stratification',
-        component: SingleSubjectStratification,
-        name: '单考学科分层',
-        meta: { role: ['0'] }
-      }, {
-        path: 'section-class-discipline-hierarchy',
-        component: SectionClassDisciplineHierarchy,
-        name: '年段各班学科分层',
-        meta: { role: ['0'] }
-      }, {
-        path: 'subject-score',
-        component: SubjectScore,
-        name: '单试学科学生总分',
-        meta: { role: ['0'] }
-      }, {
-        path: 'all-class',
-        name: '班级单次考试',
-        component: AllClass,
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'administration-discipline-hierarchy',
-        name: '行政班学科分层',
-        component: AdministrationDisciplineHierarchy,
-        meta: { role: [ '3', '7'] }
-      }, {
-        path: 'teaching-discipline-hierarchy',
-        component: TeachingDisciplineHierarchy,
-        name: "教学班学科分层",
-        meta: { role: ['7'] }
-      }, {
-        path: 'all-student',
-        name: '学生单考',
-        component: AllStudent,
-        meta: { role: [ '1', '3', '8', '9'] }
-      }, {
-        path: 'discipline-average',
-        component: DisciplineAverage,
-        name: '学科均分',
-        meta: { role: ['7'] }
-      }, {
-        path: 'annual-split',
-        component: AnnualSplit,
-        name: '年段学科均分',
-        meta: { role: ['0'] }
-      }, {
-        path: 'administration-average',
-        component: AdministrationAverage,
-        name: '行政班均分',
-        meta: { role: ['7'] }
-      }, {
-        path: 'teaching-average',
-        component: TeachingAverage,
-        name: '教学班均分',
-        meta: { role: ['7'] }
-      }
-    ]
-  },{
-    path: '/special',
-    component: Layout,
-    name: '专题管理',
-    icon: 'guanli',
-    meta: { role: ['0', '7'] },
-    children: [
-      {
-        path: 'scoring-monitoring',
-        component: ScoringMonitoring,
-        name: '得分率',
-        meta: { role: ['0', '7'] },
-      }, {
-        path: 'scoring-item',
-        component: ScoringItem,
-        name: '专题得分率',
-        meta: { role: ['0', '7'] },
-        hidden: true
-      }, {
-        path: 'scoring-test-item/:id',
-        component: ScoringTestItem,
-        name: '考点管理',
-        hidden: true,
-        meta: { role: ['0', '7'] }
-      }, {
-        path: 'quality',
-        component: Quality,
-        name: '质量管理',
-        meta: { role: ['0', '7'] }
-      }, {
-        path: 'quality-school',
-        component: SpecialQualitySchool,
-        name: '质量管理',
-        meta: { role: ['0', '7'] },
-        hidden: true
-      }, {
-        path: 'analysis',
-        component: Analysis,
-        name: '质量分析',
-        meta: { role: ['0', '7'] }
-      }
-    ]
-  }, 
-  {
-    path: '/excellent',
-    component: Layout,
-    name: '优良率',
-    icon: 'zizhiyouliang',
-    meta: { role: [ '1', '3','5','6', '7', '8', '9'] },
-    children: [
-      {
-        path: 'region',
-        component: ExcellentRegion,
-        name: ' 区优良率图',
-        meta: { role: ['7'] }
-      }, {
-        path: 'region-school',
-        component: ExcellentRegionSchool,
-        name: ' 区优良率表',
-        meta: { role: ['1', '3', '7'] },
-        hidden: true
-      }, {
-        path: 'region-table',
-        component: ExcellentRegionTable,
-        name: ' 区优良率表',
-        meta: { role: ['7'] },
-      }, {
-        path: 'region-school-table',
-        component: ExcellentRegionSchoolTable,
-        name: ' 学校优良率表',
-        meta: { role: ['7'] },
-        hidden: true
-      }, {
-        path: 'subject',
-        component: ExcellentSubject,
-        name: '学科优良率',
-        meta: { role: ['7'] },
-        hidden: true
-      }, {
-        path: 'region-subject',
-        component: ExcellentRegionSubject,
-        name: '全区单科',
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'area-class-subjest',
-        name: '区各班级单科',
-        meta: { role: ['5','6'] }
-      },{
-        path: 'class-subject',
-        component: ExcellentClassSubject,
-        name: '所有班级单科',
-        meta: { role: ['1', '3','5','6', '8', '9'] }
-      }, {
-        path: 'region-all-subject',
-        name: '全区各科',
-        component: ExcellentRegionAllSubject,
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'school',
-        component: ExcellentSchool,
-        name: '历考学校各科优良率',
-        meta: { role: ['1', '3','5','6', '8', '9'] }
-      }, {
-        path: 'class',
-        component: ExcellentClass,
-        name: '班级历次各科优良率',
-        meta: {role: [ '1', '3','5','6', '8', '9' ] }
-      }
-    ]
-  },
-  {
-    path: '/low-score',
-    component: Layout,
-    name: '低分率',
-    icon: 'bujige',
-    meta: { role: [ '1', '3', '7', '8', '9'] },
-    children: [
-      {
-        path: 'region',
-        component: LowScoreRegion,
-        name: ' 区优良率图',
-        meta: { role: ['7'] }
-      }, {
-        path: 'region-school',
-        component: LowScoreRegionSchool,
-        name: ' 区优良率表',
-        meta: { role: ['1', '3', '7'] },
-        hidden: true
-      }, {
-        path: 'region-table',
-        component: LowScoreRegionTable,
-        name: ' 区优良率表',
-        meta: { role: ['7'] },
-      }, {
-        path: 'region-school-table',
-        component: LowScoreRegionSchoolTable,
-        name: ' 学校优良率表',
-        meta: { role: ['7'] },
-        hidden: true
-      }, {
-        path: 'subject',
-        component: LowScoreSubject,
-        name: '学科优良率',
-        meta: { role: ['7'] },
-        hidden: true
-      }, {
-        path: 'region-subject',
-        component: LowScoreRegionSubject,
-        name: '全区单科',
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'area-class-subjest',
-        name: '区各班级单科',
-        meta: { role: ['5','6'] }
-      },{
-        path: 'class-subject',
-        component: LowScoreClassSubject,
-        name: '所有班级单科',
-        meta: { role: ['1', '3','5','6', '8', '9'] }
-      }, {
-        path: 'region-all-subject',
-        name: '全区各科',
-        component: LowScoreRegionAllSubject,
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'school',
-        component: LowScoreSchool,
-        name: '历考学校各科优良率',
-        meta: { role: ['1', '3','5','6', '8', '9'] }
-      }, {
-        path: 'class',
-        component: LowScoreClass,
-        name: '班级历次各科优良率',
-        meta: {role: [ '1', '3','5','6', '8', '9' ] }
-      }
-    ]
-  },
-  {
-    path: '/pass-score',
-    component: Layout,
-    name: '及格率',
-    icon: 'jige',
-    meta: { role: [ '1', '3', '7', '8', '9'] },
-    children: [
-      {
-        path: 'region',
-        component: PassScoreRegion,
-        name: ' 区优良率图',
-        meta: { role: ['7'] }
-      }, {
-        path: 'region-school',
-        component: PassScoreRegionSchool,
-        name: ' 区优良率表',
-        meta: { role: ['1', '3', '7'] },
-        hidden: true
-      }, {
-        path: 'region-table',
-        component: PassScoreRegionTable,
-        name: ' 区优良率表',
-        meta: { role: ['7'] },
-      }, {
-        path: 'region-school-table',
-        component: PassScoreRegionSchoolTable,
-        name: ' 学校优良率表',
-        meta: { role: ['7'] },
-        hidden: true
-      }, {
-        path: 'subject',
-        component: PassScoreSubject,
-        name: '学科优良率',
-        meta: { role: ['7'] },
-        hidden: true
-      }, {
-        path: 'region-subject',
-        component: PassScoreRegionSubject,
-        name: '全区单科',
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'area-class-subjest',
-        name: '区各班级单科',
-        meta: { role: ['5','6'] }
-      },{
-        path: 'class-subject',
-        component: PassScoreClassSubject,
-        name: '所有班级单科',
-        meta: { role: ['1', '3','5','6', '8', '9'] }
-      }, {
-        path: 'region-all-subject',
-        name: '全区各科',
-        component: PassScoreRegionAllSubject,
-        meta: { role: [ '8', '9'] }
-      }, {
-        path: 'school',
-        component: PassScoreSchool,
-        name: '历考学校各科优良率',
-        meta: { role: ['1', '3','5','6', '8', '9'] }
-      }, {
-        path: 'class',
-        component: PassScoreClass,
-        name: '班级历次各科优良率',
-        meta: {role: [ '1', '3','5','6', '8', '9' ] }
-      }
-    ]
-  }, 
-  {
-    path: '/fraction',
-    name: '总分管理',
-    component: Layout,
-    icon: 'zongfen',
-    meta: { role: [ '1', '3','5','6','7', '8', '9'] },
-    children: [
-      { path: 'regoin', name: '历检全区总分', component: FractionRegion, meta: { role: [ '1', '3','5','6','7', '8', '9'] } },
-      { path: 'administration', name: '历检全区行政班', component: FractionAdministration, meta: { role: [ '1', '3','5','6','7', '8', '9'] } }
-    ]
-  },
-  {
     path: '/ability',
+    redirect: '/ability/index',
     component: Layout,
     name: '能力发展',
     icon: 'nenglizhi',
     noDropdown: true,
-    meta: { role: ['7'] },
+    meta: { role: ['0'] },
     children: [
       {
         path: 'index',
-        component: AbilityIndex,
-        name: '能力发展',
-        meta: { role: ['7'] }
+        component: _import('ability/index'),
+        name: '年级学科能力监控图',
       },
       {
-        path: 'school',
-        component: AbilitySchool,
-        name: '能力发展',
-        meta: { role: ['7'] }
+        path: 'class',
+        component: _import('ability/class'),
+        name: '班级学科能力监控图',
       },
       {
         path: 'special',
-        component: AbilitySpecial,
-        name: '能力发展',
-        meta: { role: ['7'] }
-      },
-      {
-        path: 'analysis',
-        component: AbilityAnalysis,
-        name: '分析',
-        meta: { role: ['7'] }
-      }
+        component: _import('ability/track'),
+        name: '班级学科能力跟踪表',
+      }    
     ]
   },
   {
-    path: '/subject',
-    name: '学科管理',
+    path: '/student',
+    redirect: '/student/score',
     component: Layout,
-    icon: 'xueke',
-    meta: { role: [ '1', '3','5','6', '8', '9'] },
-    children: [
-      {
-        path: 'shcool',
-        name: '历检全区学校',
-        component: SubjectSchool,
-        meta: { role: [ '1', '3','5','6', '8', '9'] }
-      },
-      {
-        path: 'administration',
-        name: '历检区行政班',
-        component: SubjectAdministration,
-        meta: { role: [ '1', '3', '5','6','8', '9'] }
-      },
-      {
-        path: 'teaching',
-        name: '历检全区教学班',
-        component: SubjectTeaching,
-        meta: { role: [ '1', '3','5','6', '8', '9'] }
-      }
-    ]
-  },
-  {
-    path: '/p',
-    name: 'P值管理',
-    component: Layout,
-    icon: 'p',
-    meta: { role: ['100'] },
-    // meta: { role: ['admin'] },
-    children: [
-      {
-        path: 'single-region',
-        name: '单次全区',
-        component: PSingleRegion,
-        meta: { role: ['1', '3', '8', '9'] }
-      },
-      {
-        path: 'single-class',
-        name: '单次班级',
-        component: PSingleClass,
-        meta: { role: ['1', '3', '8', '9'] }
-      },
-      {
-        path: 'all-region',
-        name: '所有全区',
-        component: PAllRegion,
-        meta: { role: ['1', '3', '8', '9'] }
-      },
-      {
-        path: 'all-class',
-        name: '所有班级',
-        component: PAllClass,
-        meta: { role: ['1', '3', '8', '9'] }
-      }
-    ]
-  },
-  {
-    path: '/student-mark',
-    name: '历次质检表',
-    component: Layout,
-    icon: 'kaoshi',
-    meta: { role: ['10'] },
+    name: '质检成绩总表',
+    icon: 'nenglizhi',
     noDropdown: true,
-    children: [
-      { path: 'index', name: '成绩总表', component: StudentMark, meta: { role: ['10'] } }
-    ]
-  },
-  {
-    path: '/student-subject',
-    name: '学科管理',
-    component: Layout,
-    icon: 'kaoshi',
     meta: { role: ['10'] },
-    noDropdown: true,
     children: [
-      { path: 'index', name: '学科管理', component: StudentSubject, meta: { role: ['10'] } }
+      {path: 'score', component: _import('student/score'), name: '质检成绩总表'}
     ]
   },
+  // {
+  //   path: '/fenjiexian',
+  //   component: Layout,
+  //   name: '****分界线****',
+  // },
+  // {
+  //   path: '/achievement',
+  //   component: Layout,
+  //   name: '成绩管理',
+  //   icon: 'chengjiguanli',
+  //   meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] },
+  //   children: [
+  //     {
+  //       path: 'total-score',
+  //       component: TotalScore,
+  //       name: '全区各校单考总分',
+  //       meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
+  //     }, {
+  //       path: 'administration-com',
+  //       component: AdministrationCom,
+  //       name: '行政班单考总表',
+  //       meta: { role: ['1', '5', '6'] }
+  //     },{
+  //       path: 'area-all-student-com',
+  //       name: '区单考学生成绩总表',
+  //       meta: { role: ['5', '6'] }
+  //     },{
+  //       path: 'section-class',
+  //       component: SectionClass,
+  //       name: '年段各班总分',
+  //       meta: { role: ['0']}
+  //     }, {
+  //       path: 'discipline-hierarchy',
+  //       component: DisciplineHierarchy,
+  //       name: '学科分层',
+  //       meta: { role: ['7'] }
+  //     }, {
+  //       path: 'singl-subject-stratification',
+  //       component: SingleSubjectStratification,
+  //       name: '单考学科分层',
+  //       meta: { role: ['0'] }
+  //     }, {
+  //       path: 'section-class-discipline-hierarchy',
+  //       component: SectionClassDisciplineHierarchy,
+  //       name: '年段各班学科分层',
+  //       meta: { role: ['0'] }
+  //     }, {
+  //       path: 'subject-score',
+  //       component: SubjectScore,
+  //       name: '单试学科学生总分',
+  //       meta: { role: ['0'] }
+  //     }, {
+  //       path: 'all-class',
+  //       name: '班级单次考试',
+  //       component: AllClass,
+  //       meta: { role: [ '8', '9'] }
+  //     }, {
+  //       path: 'administration-discipline-hierarchy',
+  //       name: '行政班学科分层',
+  //       component: AdministrationDisciplineHierarchy,
+  //       meta: { role: [ '3', '7'] }
+  //     }, {
+  //       path: 'teaching-discipline-hierarchy',
+  //       component: TeachingDisciplineHierarchy,
+  //       name: "教学班学科分层",
+  //       meta: { role: ['7'] }
+  //     }, {
+  //       path: 'all-student',
+  //       name: '学生单考',
+  //       component: AllStudent,
+  //       meta: { role: [ '1', '3', '8', '9'] }
+  //     }, {
+  //       path: 'discipline-average',
+  //       component: DisciplineAverage,
+  //       name: '学科均分',
+  //       meta: { role: ['7'] }
+  //     }, {
+  //       path: 'annual-split',
+  //       component: AnnualSplit,
+  //       name: '年段学科均分',
+  //       meta: { role: ['0'] }
+  //     }, {
+  //       path: 'administration-average',
+  //       component: AdministrationAverage,
+  //       name: '行政班均分',
+  //       meta: { role: ['7'] }
+  //     }, {
+  //       path: 'teaching-average',
+  //       component: TeachingAverage,
+  //       name: '教学班均分',
+  //       meta: { role: ['7'] }
+  //     }
+  //   ]
+  // },{
+  //   path: '/special',
+  //   component: Layout,
+  //   name: '专题管理',
+  //   icon: 'guanli',
+  //   meta: { role: ['0', '7'] },
+  //   children: [
+  //     {
+  //       path: 'scoring-monitoring',
+  //       component: ScoringMonitoring,
+  //       name: '得分率',
+  //       meta: { role: ['0', '7'] },
+  //     }, {
+  //       path: 'scoring-item',
+  //       component: ScoringItem,
+  //       name: '专题得分率',
+  //       meta: { role: ['0', '7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'scoring-test-item/:id',
+  //       component: ScoringTestItem,
+  //       name: '考点管理',
+  //       hidden: true,
+  //       meta: { role: ['0', '7'] }
+  //     }, {
+  //       path: 'quality',
+  //       component: Quality,
+  //       name: '质量管理',
+  //       meta: { role: ['0', '7'] }
+  //     }, {
+  //       path: 'quality-school',
+  //       component: SpecialQualitySchool,
+  //       name: '质量管理',
+  //       meta: { role: ['0', '7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'analysis',
+  //       component: Analysis,
+  //       name: '质量分析',
+  //       meta: { role: ['0', '7'] }
+  //     }
+  //   ]
+  // }, 
+  // {
+  //   path: '/excellent',
+  //   component: Layout,
+  //   name: '优良率',
+  //   icon: 'zizhiyouliang',
+  //   meta: { role: [ '1', '3','5','6', '7', '8', '9'] },
+  //   children: [
+  //     {
+  //       path: 'region',
+  //       component: ExcellentRegion,
+  //       name: ' 区优良率图',
+  //       meta: { role: ['7'] }
+  //     }, {
+  //       path: 'region-school',
+  //       component: ExcellentRegionSchool,
+  //       name: ' 区优良率表',
+  //       meta: { role: ['1', '3', '7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'region-table',
+  //       component: ExcellentRegionTable,
+  //       name: ' 区优良率表',
+  //       meta: { role: ['7'] },
+  //     }, {
+  //       path: 'region-school-table',
+  //       component: ExcellentRegionSchoolTable,
+  //       name: ' 学校优良率表',
+  //       meta: { role: ['7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'subject',
+  //       component: ExcellentSubject,
+  //       name: '学科优良率',
+  //       meta: { role: ['7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'region-subject',
+  //       component: ExcellentRegionSubject,
+  //       name: '全区单科',
+  //       meta: { role: [ '8', '9'] }
+  //     }, {
+  //       path: 'area-class-subjest',
+  //       name: '区各班级单科',
+  //       meta: { role: ['5','6'] }
+  //     },{
+  //       path: 'class-subject',
+  //       component: ExcellentClassSubject,
+  //       name: '所有班级单科',
+  //       meta: { role: ['1', '3','5','6', '8', '9'] }
+  //     }, {
+  //       path: 'region-all-subject',
+  //       name: '全区各科',
+  //       component: ExcellentRegionAllSubject,
+  //       meta: { role: [ '8', '9'] }
+  //     }, {
+  //       path: 'school',
+  //       component: ExcellentSchool,
+  //       name: '历考学校各科优良率',
+  //       meta: { role: ['1', '3','5','6', '8', '9'] }
+  //     }, {
+  //       path: 'class',
+  //       component: ExcellentClass,
+  //       name: '班级历次各科优良率',
+  //       meta: {role: [ '1', '3','5','6', '8', '9' ] }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/low-score',
+  //   component: Layout,
+  //   name: '低分率',
+  //   icon: 'bujige',
+  //   meta: { role: [ '1', '3', '7', '8', '9'] },
+  //   children: [
+  //     {
+  //       path: 'region',
+  //       component: LowScoreRegion,
+  //       name: ' 区优良率图',
+  //       meta: { role: ['7'] }
+  //     }, {
+  //       path: 'region-school',
+  //       component: LowScoreRegionSchool,
+  //       name: ' 区优良率表',
+  //       meta: { role: ['1', '3', '7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'region-table',
+  //       component: LowScoreRegionTable,
+  //       name: ' 区优良率表',
+  //       meta: { role: ['7'] },
+  //     }, {
+  //       path: 'region-school-table',
+  //       component: LowScoreRegionSchoolTable,
+  //       name: ' 学校优良率表',
+  //       meta: { role: ['7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'subject',
+  //       component: LowScoreSubject,
+  //       name: '学科优良率',
+  //       meta: { role: ['7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'region-subject',
+  //       component: LowScoreRegionSubject,
+  //       name: '全区单科',
+  //       meta: { role: [ '8', '9'] }
+  //     }, {
+  //       path: 'area-class-subjest',
+  //       name: '区各班级单科',
+  //       meta: { role: ['5','6'] }
+  //     },{
+  //       path: 'class-subject',
+  //       component: LowScoreClassSubject,
+  //       name: '所有班级单科',
+  //       meta: { role: ['1', '3','5','6', '8', '9'] }
+  //     }, {
+  //       path: 'region-all-subject',
+  //       name: '全区各科',
+  //       component: LowScoreRegionAllSubject,
+  //       meta: { role: [ '8', '9'] }
+  //     }, {
+  //       path: 'school',
+  //       component: LowScoreSchool,
+  //       name: '历考学校各科优良率',
+  //       meta: { role: ['1', '3','5','6', '8', '9'] }
+  //     }, {
+  //       path: 'class',
+  //       component: LowScoreClass,
+  //       name: '班级历次各科优良率',
+  //       meta: {role: [ '1', '3','5','6', '8', '9' ] }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/pass-score',
+  //   component: Layout,
+  //   name: '及格率',
+  //   icon: 'jige',
+  //   meta: { role: [ '1', '3', '7', '8', '9'] },
+  //   children: [
+  //     {
+  //       path: 'region',
+  //       component: PassScoreRegion,
+  //       name: ' 区优良率图',
+  //       meta: { role: ['7'] }
+  //     }, {
+  //       path: 'region-school',
+  //       component: PassScoreRegionSchool,
+  //       name: ' 区优良率表',
+  //       meta: { role: ['1', '3', '7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'region-table',
+  //       component: PassScoreRegionTable,
+  //       name: ' 区优良率表',
+  //       meta: { role: ['7'] },
+  //     }, {
+  //       path: 'region-school-table',
+  //       component: PassScoreRegionSchoolTable,
+  //       name: ' 学校优良率表',
+  //       meta: { role: ['7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'subject',
+  //       component: PassScoreSubject,
+  //       name: '学科优良率',
+  //       meta: { role: ['7'] },
+  //       hidden: true
+  //     }, {
+  //       path: 'region-subject',
+  //       component: PassScoreRegionSubject,
+  //       name: '全区单科',
+  //       meta: { role: [ '8', '9'] }
+  //     }, {
+  //       path: 'area-class-subjest',
+  //       name: '区各班级单科',
+  //       meta: { role: ['5','6'] }
+  //     },{
+  //       path: 'class-subject',
+  //       component: PassScoreClassSubject,
+  //       name: '所有班级单科',
+  //       meta: { role: ['1', '3','5','6', '8', '9'] }
+  //     }, {
+  //       path: 'region-all-subject',
+  //       name: '全区各科',
+  //       component: PassScoreRegionAllSubject,
+  //       meta: { role: [ '8', '9'] }
+  //     }, {
+  //       path: 'school',
+  //       component: PassScoreSchool,
+  //       name: '历考学校各科优良率',
+  //       meta: { role: ['1', '3','5','6', '8', '9'] }
+  //     }, {
+  //       path: 'class',
+  //       component: PassScoreClass,
+  //       name: '班级历次各科优良率',
+  //       meta: {role: [ '1', '3','5','6', '8', '9' ] }
+  //     }
+  //   ]
+  // }, 
+  // {
+  //   path: '/fraction',
+  //   name: '总分管理',
+  //   component: Layout,
+  //   icon: 'zongfen',
+  //   meta: { role: [ '1', '3','5','6','7', '8', '9'] },
+  //   children: [
+  //     { path: 'regoin', name: '历检全区总分', component: FractionRegion, meta: { role: [ '1', '3','5','6','7', '8', '9'] } },
+  //     { path: 'administration', name: '历检全区行政班', component: FractionAdministration, meta: { role: [ '1', '3','5','6','7', '8', '9'] } }
+  //   ]
+  // },
+  // {
+  //   path: '/ability',
+  //   component: Layout,
+  //   name: '能力发展',
+  //   icon: 'nenglizhi',
+  //   noDropdown: true,
+  //   meta: { role: ['7'] },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: AbilityIndex,
+  //       name: '能力发展',
+  //       meta: { role: ['7'] }
+  //     },
+  //     {
+  //       path: 'school',
+  //       component: AbilitySchool,
+  //       name: '能力发展',
+  //       meta: { role: ['7'] }
+  //     },
+  //     {
+  //       path: 'special',
+  //       component: AbilitySpecial,
+  //       name: '能力发展',
+  //       meta: { role: ['7'] }
+  //     },
+  //     {
+  //       path: 'analysis',
+  //       component: AbilityAnalysis,
+  //       name: '分析',
+  //       meta: { role: ['7'] }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/subject',
+  //   name: '学科管理',
+  //   component: Layout,
+  //   icon: 'xueke',
+  //   meta: { role: [ '1', '3','5','6', '8', '9'] },
+  //   children: [
+  //     {
+  //       path: 'shcool',
+  //       name: '历检全区学校',
+  //       component: SubjectSchool,
+  //       meta: { role: [ '1', '3','5','6', '8', '9'] }
+  //     },
+  //     {
+  //       path: 'administration',
+  //       name: '历检区行政班',
+  //       component: SubjectAdministration,
+  //       meta: { role: [ '1', '3', '5','6','8', '9'] }
+  //     },
+  //     {
+  //       path: 'teaching',
+  //       name: '历检全区教学班',
+  //       component: SubjectTeaching,
+  //       meta: { role: [ '1', '3','5','6', '8', '9'] }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/p',
+  //   name: 'P值管理',
+  //   component: Layout,
+  //   icon: 'p',
+  //   meta: { role: ['100'] },
+  //   // meta: { role: ['admin'] },
+  //   children: [
+  //     {
+  //       path: 'single-region',
+  //       name: '单次全区',
+  //       component: PSingleRegion,
+  //       meta: { role: ['1', '3', '8', '9'] }
+  //     },
+  //     {
+  //       path: 'single-class',
+  //       name: '单次班级',
+  //       component: PSingleClass,
+  //       meta: { role: ['1', '3', '8', '9'] }
+  //     },
+  //     {
+  //       path: 'all-region',
+  //       name: '所有全区',
+  //       component: PAllRegion,
+  //       meta: { role: ['1', '3', '8', '9'] }
+  //     },
+  //     {
+  //       path: 'all-class',
+  //       name: '所有班级',
+  //       component: PAllClass,
+  //       meta: { role: ['1', '3', '8', '9'] }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/student-mark',
+  //   name: '历次质检表',
+  //   component: Layout,
+  //   icon: 'kaoshi',
+  //   meta: { role: ['10'] },
+  //   noDropdown: true,
+  //   children: [
+  //     { path: 'index', name: '成绩总表', component: StudentMark, meta: { role: ['10'] } }
+  //   ]
+  // },
+  // {
+  //   path: '/student-subject',
+  //   name: '学科管理',
+  //   component: Layout,
+  //   icon: 'kaoshi',
+  //   meta: { role: ['10'] },
+  //   noDropdown: true,
+  //   children: [
+  //     { path: 'index', name: '学科管理', component: StudentSubject, meta: { role: ['10'] } }
+  //   ]
+  // },
   {
     path: '/student-special',
     name: '专题',

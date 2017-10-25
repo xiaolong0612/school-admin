@@ -1,193 +1,160 @@
 <template>
 	<div>
-		<el-form :inline="true" :model="fromData" class="demo-form-inline">
-			<el-form-item label="届">
-				<el-select v-model="fromData.selectedSession" filterable placeholder="请选择" style="width: 100px" :change="subjectChange(fromData.selectedSession)">
-				  <el-option v-for="item in sessionList" :label="item.label" :value="item.value" :key="item.value">
-				  </el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="学科">
-				<el-select v-model="fromData.selectedSubject" filterable placeholder="请选择" :change="subjectChange(fromData.selectedSubject)">
-				  <el-option v-for="item in subjectList" :label="item.label" :value="item.value" :key="item.value">
-				  </el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item>
-	          <el-button type="primary" @click="onSearch">查询</el-button>
-	        </el-form-item>
-		</el-form>
-		<el-table :data="tableData" border style="width: 100%" :max-height="maxHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
-			<el-table-column prop="school" label="学校" width="120" fixed></el-table-column>
-			<el-table-column prop="candidatesNumber" label="生数" width="120" fixed></el-table-column>
-			<el-table-column label='入学考试' header-align='center'>
-				<el-table-column prop="chineseScoringRate" label="优良生" width="100"></el-table-column>
-				<el-table-column prop="chineseAverage" label="优良率" width="100"></el-table-column>
-				<el-table-column label="均分" width="100" sortable>
-					<template scope="scope">
-						<div :formatter="formatter(scope.row)" :class="{cRed: isRed}">{{scope.row.chineseScoringRate}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="chineseAreaPlace" label="位置" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column label='七上质检' header-align='center'>
-				<el-table-column prop="gradeer" label="备课组长" width="100"></el-table-column>
-				<el-table-column prop="chineseAverage" label="均分" width="100"></el-table-column>
-				<el-table-column prop="mathematicsAverage" label="得分率" width="100"></el-table-column>
-				<el-table-column prop="mathematicsAverage" label="超均率" width="100"></el-table-column>
-				<el-table-column prop="mathematicsAreaPlace" label="区位置" width="100"></el-table-column>
-				<el-table-column prop="mathematicsCityPlace" label="市位置" width="100"></el-table-column>
-				<el-table-column prop="mathematicsExceedAverage" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-			<el-table-column label='七下质检' header-align='center'>
-				<el-table-column prop="gradeer" label="备课组长" width="100"></el-table-column>
-				<el-table-column prop="chineseAverage" label="均分" width="100"></el-table-column>
-				<el-table-column prop="mathematicsAverage" label="得分率" width="100"></el-table-column>
-				<el-table-column prop="mathematicsAverage" label="超均率" width="100"></el-table-column>
-				<el-table-column prop="mathematicsAreaPlace" label="区位置" width="100"></el-table-column>
-				<el-table-column prop="mathematicsCityPlace" label="市位置" width="100"></el-table-column>
-				<el-table-column prop="mathematicsExceedAverage" label="进步值" width="100"></el-table-column>
-			</el-table-column>
-		</el-table>
+		<div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
+			<div class="chart" id="chart" style="height:600px;width:100%"></div>
+		</div>
 	</div>
 </template>
 <script>
-	const tableData = [];
-	const sessionList = [
-    	{value: '17', label: '17'},
-    	{value: '16', label: '16'},
-    	{value: '15', label: '15'},
-    	{value: '14', label: '14'}
-	]
-	const subjectList = [
-		{value: '0', label: '语文'},
-    	{value: '1', label: '数学'},
-    	{value: '2', label: '英语'},
-    	{value: '3', label: '物理'},
-    	{value: '4', label: '化学'},
-    	{value: '5', label: '地理'},
-    	{value: '6', label: '思品'},
-    	{value: '7', label: '历史'}
-	]
-	for(var i = 0; i < 15; i++) {
-		tableData.push({
-			school: '启悟中学'+i,
-			class: i + '班',
-			factor: i,
-			candidatesNumber: '120',
-			gradeer: '小龙君',
-			chineseHeadman: '小龙君',
-			chineseAverage: 98,
-			chineseScoringRate: i+i,
-			chineseExceedAverage: '70%',
-			chineseAreaPlace: 40,
-			chineseCityPlace: 100,
-			chineseProgressNumber: 20,
-			mathematicsHeadman: '小龙君',
-			mathematicsAverage: 98,
-			mathematicsScoringRate: '80%',
-			mathematicsExceedAverage: '70%',
-			mathematicsAreaPlace: 40,
-			mathematicsCityPlace: 100,
-			mathematicsProgressNumber: 20,
-			EnglishHeadman: '小龙君',
-			EnglishAverage: 98,
-			EnglishScoringRate: '80%',
-			EnglishExceedAverage: '70%',
-			EnglishAreaPlace: 40,
-			EnglishCityPlace: 100,
-			EnglishProgressNumber: 20,
-			totalScoreAverage: 98,
-			totalScoreScoringRate: '80%',
-			totalScoreExceedAverage: '70%',
-			totalScoreAreaPlace: 40,
-			totalScoreCityPlace: 100,
-			totalScoreProgressNumber: 20,
-			equivalentTotalScoreAverage: 98,
-			equivalentTotalScoreScoringRate: '80%',
-			equivalentTotalScoreExceedAverage: '70%',
-			equivalentTotalScoreAreaPlace: 40,
-			equivalentTotalScoreCityPlace: 100,
-			equivalentTotalScoreProgressNumber: 20,
-		})
-	}
-	for(var i = 15; i < 30; i++) {
-		tableData.push({
-			school: '育才中学'+i,
-			class: i + '班',
-			factor: i,
-			candidatesNumber: '120',
-			gradeer: '小龙君',
-			chineseHeadman: '小龙君',
-			chineseAverage: 98,
-			chineseScoringRate: i*0.5,
-			chineseExceedAverage: '70%',
-			chineseAreaPlace: 40,
-			chineseCityPlace: 100,
-			chineseProgressNumber: 20,
-			mathematicsHeadman: '小龙君',
-			mathematicsAverage: 98,
-			mathematicsScoringRate: '80%',
-			mathematicsExceedAverage: '70%',
-			mathematicsAreaPlace: 40,
-			mathematicsCityPlace: 100,
-			mathematicsProgressNumber: 20,
-			EnglishHeadman: '小龙君',
-			EnglishAverage: 98,
-			EnglishScoringRate: '80%',
-			EnglishExceedAverage: '70%',
-			EnglishAreaPlace: 40,
-			EnglishCityPlace: 100,
-			EnglishProgressNumber: 20,
-			totalScoreAverage: 98,
-			totalScoreScoringRate: '80%',
-			totalScoreExceedAverage: '70%',
-			totalScoreAreaPlace: 40,
-			totalScoreCityPlace: 100,
-			totalScoreProgressNumber: 20,
-			equivalentTotalScoreAverage: 98,
-			equivalentTotalScoreScoringRate: '80%',
-			equivalentTotalScoreExceedAverage: '70%',
-			equivalentTotalScoreAreaPlace: 40,
-			equivalentTotalScoreCityPlace: 100,
-			equivalentTotalScoreProgressNumber: 20,
-		})
-	}
+  import echarts from 'echarts';
+  require('echarts/theme/macarons'); // echarts 主题
+	import { getPaperIdSchoolExcellentRate } from 'api/excellent';
 	export default {
 		data() {
 			return {
-				name: '总分监控表',
-				tableData,
-				maxHeight: '',
-				isRed: false,
-				fromData: {
-					selectedSession: '',
-					selectedSubject: ''
+				name: '各学科优良率',
+				screenHeight: 0,
+				listQuery: {
+					paperId: 1
 				},
-				subjectList,
-				sessionList
+				listLoading: false,
+				total: 0,
+				list: [],
+				series: []
 			}
 		},
 		mounted() {
-			this.maxHeight = window.innerHeight-80;
-			window.onresize = () => {
-	          return (() => {
-	            this.maxHeight = window.innerHeight-80;
-	          })()
-	        }
+			this.screenHeight = this.setTableHeight(false);
+			this.initChart();
+			this.getList();
 		},
 		methods: {
-			formatter(row) {
-				if(row.chineseScoringRate < 6){
-					this.isRed = true
-				}
-			},
-			subjectChange(val) {
-				console.log(val);
-			},
-			onSearch() {
-				
-			}
+			getList() {
+        getPaperIdSchoolExcellentRate(this.listQuery).then(res => {
+          var data = res.data.data;
+          this.list['data'] = data.data;
+          this.list['title'] = data.title;
+          this.list['right'] = data.right;
+
+          for(let index in this.list.right){
+            this.series.push({
+              name: '',
+              type: 'bar',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  label: {
+                    show: true,
+                    position: 'top',
+                    formatter(p) {
+                      return p.value > 0 ? p.value : '';
+                    }
+                  }
+                }
+              },
+              data: this.list.data
+            })
+          }
+
+          this.specialList = data.left;
+          this.qualityList = [];
+          for(var item in data.right){
+            this.qualityList.push({
+              name: data.right[item].split(':')[0],
+              number: data.right[item].split(':')[1]
+            })
+          };
+
+        	this.setOption();
+        })
+      },
+      initChart() {
+        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
+      },
+      setOption() {
+        var _that = this;
+        this.chart.setOption({
+          title: {
+            text: '各学科优良率',
+            x: 'center',
+            textStyle: {
+              color: '#333',
+              fontSize: '20',
+            },
+            padding: [25, 0, 0, 0]
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+            }
+          },
+          grid: {
+            borderWidth: 0,
+            top: 110,
+            bottom: 95,
+            textStyle: {
+              color: '#fff'
+            }
+          },
+          calculable: true,
+          xAxis: [{
+            type: 'category',
+            triggerEvent: true,
+            axisLine: {
+              lineStyle: {
+                color: '#ccc'
+              }
+            },
+            axisLabel: {
+              textStyle: {
+                color: '#333'
+              }
+            },
+            data: _that.list.title
+          }],
+          yAxis: [{
+            type: 'value',
+            axisLine: {
+              lineStyle: {
+                color: '#ccc'
+              }
+            },
+            axisLabel: {
+              interval: 2,
+              textStyle: {
+              	color: '#333'
+              }
+            }
+          }],
+          dataZoom: [{
+            show: true,
+            height: 30,
+            xAxisIndex: [
+              0
+            ],
+            bottom: 30,
+            start: 10,
+            end: 80,
+            handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+            handleSize: '110%',
+            handleStyle: {
+              color: '#d3dee5'
+
+            },
+            textStyle: {
+              color: '#fff' },
+            borderColor: '#90979c'
+          }, {
+            type: 'inside',
+            show: true,
+            height: 15,
+            start: 1,
+            end: 35
+          }],
+          series: _that.series
+        })
+		  }
 		}
 	}
 </script>

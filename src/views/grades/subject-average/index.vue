@@ -31,6 +31,7 @@
 </template>
 <script>
 	import { mapGetters } from 'vuex';
+	import { getLatestTest } from 'utils/auth';
 	import store from 'store';
 	import { getSchoolScoreRateBySubjectAndPeriodAndGrade } from 'api/grades';
 	export default {
@@ -47,9 +48,9 @@
         listQuery: {
         	pageNo: 1,
         	pageSize: 30,
-          period: 2017,
+          period: '',
           subject: "语文",
-          grade: "初一年"
+          grade: ""
         }
 			}
 		},
@@ -60,8 +61,6 @@
       ])
     },
 		created() {
-      this.listQuery.subject = this.subject;
-      this.listQuery.grade = this.gradeNo;
 
     },
 		mounted() {
@@ -71,6 +70,12 @@
 		methods: {
 			getList() {
         this.listLoading = true;
+
+        let paper = JSON.parse(getLatestTest());
+
+	      this.listQuery.subject = this.subject;
+	      this.listQuery.grade = this.gradeNo;
+	      this.listQuery.period = paper.period;
         getSchoolScoreRateBySubjectAndPeriodAndGrade(this.listQuery).then(res => {
           this.list.data = res.data.data.data;
           this.list.head = res.data.data.head;

@@ -4,40 +4,88 @@
   </div>
 </template>
 <script>
+  import { getLatestTest } from 'utils/auth';
   import echarts from 'echarts';
+  import { mapGetters } from 'vuex';
   require('echarts/theme/macarons'); // echarts 主题
-  import { getSchoolSpecialTopicBySubjectAndPeriod } from 'api/ability'
+  import { getPaperSchoolPassRateSpecialTopic } from 'api/ability'
   export default {
     data() {
       return {
+        name: '',
         chart: '',
         list: {
           data: [],
           title: [],
           right: []
         },
+        x_id:{},
+        series: [],
+        selected: {},
         listQuery: {
-          period: '2017',
-          subject: '语文'
+          paperId: '',
         }
       }
     },
+    computed: {
+      ...mapGetters([
+        'uid',
+      ])
+    },
     mounted() {
+      this.setDefault();
       this.initChart();
       this.getList()
     },
     methods: {
+      setDefault() {
+        let paper = JSON.parse(getLatestTest());
+        console.log(paper)
+        this.listQuery.paperId = paper.id;
+      },
       getList() {
         this.listLoading = true;
-        getSchoolSpecialTopicBySubjectAndPeriod(this.listQuery).then(res => {
+        getPaperSchoolPassRateSpecialTopic(this.listQuery).then(res => {
           var data = res.data.data;
-          this.list.data = data.data[0].split(',');
-          this.list.right = data.right;
+          this.name = data.right;
+          this.list.right = [];
+          let i = 0;
+          for(let index in data.data){
+
+            this.list.right.push(index);
+            if(i < data.right.length/3) this.selected[index] = true;
+            else this.selected[index] = false;
+            
+
+            this.series.push({
+              name: index,
+              type: 'bar',
+              barMaxWidth: '100',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  label: {
+                    show: true,
+                    position: 'top',
+                    formatter(p) {
+                      return p.value > 0 ? p.value : '';
+                    }
+                  }
+                }
+              },
+              data: data.data[index]
+            });
+            i++;
+          }
+          this.x_id = data.title;
+          this.list.title = [];
           for(var item in data.title){
             this.list.title.push(item);
           }
+          console.log(this.selected)
           // this.list.right = data.right;
           this.setOption();
+          this.addChartClick();
           this.listLoading = false;
         })
       },
@@ -46,10 +94,9 @@
       },
       setOption() {
         var _that = this;
-        console.log(_that.list)
         this.chart.setOption({
           title: {
-            text: '所有和最近考试市、区学科能力发展监控表',
+            text: _that.name,
             x: 'center',
             textStyle: {
               color: '#333',
@@ -73,9 +120,10 @@
           },
           legend: {
             orient: 'vertical',
-            bottom: '25%',
+            bottom: '20%',
             right: '0',
-            data: _that.list.right
+            data: _that.list.right,
+            selected: _that.selected
           },
           calculable: true,
           xAxis: [{
@@ -107,34 +155,42 @@
               }
             }
           }],
-          series: [{
-            name: '厦门市平均',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                label: {
-                  show: true,
-                  position: 'insideTop',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
+          dataZoom: [{
+            show: true,
+            height: 30,
+            xAxisIndex: [
+              0
+            ],
+            bottom: 30,
+            start: 30,
+            end: 70,
+            handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+            handleSize: '110%',
+            handleStyle: {
+              color: '#d3dee5'
+
             },
-            data: _that.list.data,
-            markLine: {
-            	silent: false
-            }
-          }]
+            textStyle: {
+              color: '#fff' },
+            borderColor: '#90979c'
+          }, {
+            type: 'inside',
+            show: true,
+            height: 15,
+            start: 1,
+            end: 35
+          }],
+          series: _that.series
         })
       },
       addChartClick() {
         this.chart.on('click', params => {
           if(params.componentType === "xAxis") {
-            console.log('我点击 的x轴');
+            console.log(this.x_id[params.value]);
+            this.$router.push({ path: '/ability/class', query: {id: this.x_id[params.value]}});
           }
           // console.log(this.link[params.seriesName])
-          this.$router.push({ path: '/ability/school'});
+          // this.$router.push({ path: '/ability/school'});
         })
       }
     }

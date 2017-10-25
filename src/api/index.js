@@ -3,11 +3,11 @@ import fetch from 'utils/fetch';
  * @author xiaolong
  * @default 首页
  */
-export function student(query) {
+export function student(data) {
   return fetch({
     url: '/admin/student/get-top',
     method: 'post',
-    params: query
+    data
   });
 }
 
@@ -37,12 +37,11 @@ export function bureau(data) {
 }
 
 // 通用首页
-export function teacherTop(id) {
-  var data = { id }
+export function teacherTop(data) {
   return fetch({
     url: '/admin/schoo-basic/teacherTop',
     method: 'post',
-    params: data
+    data
   });
 }
 

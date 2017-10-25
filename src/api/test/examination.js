@@ -24,11 +24,11 @@ export function addExaminationPaperItem(data) {
 }
 
 // 编辑试卷
-export function modExaminationPaperItem(query) {
+export function modExaminationPaperItem(data) {
   return fetch({
     url: '/admin/examination-paper-item/mod-examination-paper-item',
     method: 'post',
-    params: query
+    data
   });
 }
 
@@ -38,6 +38,6 @@ export function delExaminationPaperItem(id) {
   return fetch({
     url: '/admin/examination-paper-item/del-examination-paper-item',
     method: 'post',
-    params: data
+    data
   });
 }

@@ -30,9 +30,9 @@
 	</div>
 </template>
 <script>
+	import { getLatestTest } from 'utils/auth';
 	import { mapGetters } from 'vuex';
-	import store from 'store';
-	import { getSchoolScoreRateByPaperNameAndPeriodAndGrade } from 'api/excellent';
+	import { quaryAllScoreRataByPeriodForPage } from 'api/excellent';
 	export default {
 		data() {
 			return {
@@ -45,7 +45,7 @@
 				total: null,
         listLoading: true,
         listQuery: {
-          period: 2017,
+          period: '',
           pageNo: 1,
           pageSize: 30,
           grade: '',
@@ -60,18 +60,26 @@
       ])
     },
 		created() {
-      this.listQuery.subject = this.subject;
-      this.listQuery.grade = this.gradeNo;
 
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(false);
+			this.setDefault();
 			this.getList();
 		},
 		methods: {
+			setDefault(){
+
+        let paper = JSON.parse(getLatestTest());
+
+        this.listQuery.subject = this.subject;
+	      this.listQuery.grade = this.gradeNo;
+	      this.listQuery.period = paper.period;
+			},
 			getList() {
         this.listLoading = true;
-        getSchoolScoreRateByPaperNameAndPeriodAndGrade(this.listQuery).then(res => {
+	      
+        quaryAllScoreRataByPeriodForPage(this.listQuery).then(res => {
           var data = res.data.data;
           this.list.data = data.data;
           this.list.head = data.head;

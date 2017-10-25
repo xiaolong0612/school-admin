@@ -6,29 +6,29 @@ import fetch from 'utils/fetch';
  */
 
 // 获取考卷列表
-export function getExaminationPaperList(query) {
+export function getExaminationPaperList(data) {
   return fetch({
     url: '/admin/examination-paper/list-examination-paper',
     method: 'post',
-    params: query
+    data
   });
 }
 
 // 新增试卷
-export function addExaminationPaper(query) {
+export function addExaminationPaper(data) {
   return fetch({
     url: '/admin/examination-paper/save-examination-paper',
     method: 'post',
-    params: query
+    data
   });
 }
 
 // 编辑试卷
-export function modExaminationPaper(query) {
+export function modExaminationPaper(data) {
   return fetch({
     url: '/admin/examination-paper/mod-examination-paper',
     method: 'post',
-    params: query
+    data
   });
 }
 
@@ -38,6 +38,6 @@ export function delExaminationPaper(id) {
   return fetch({
     url: '/admin/examination-paper/del-examination-paper',
     method: 'post',
-    params: data
+    data
   });
 }

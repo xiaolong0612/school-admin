@@ -60,6 +60,7 @@
 <script>
     import { mapGetters } from 'vuex';
     import { validataPhone } from 'utils/validate';
+    import Cookies from 'js-cookie';
     // import { getQueryObject } from 'utils';
     import socialSign from './socialsignin';
 
@@ -146,7 +147,8 @@
       },
       computed: {
         ...mapGetters([
-          'auth_type'
+          'auth_type',
+          'roles'
         ])
       },
       mounted() {
@@ -162,8 +164,10 @@
               this.loading = true;
               this.$store.dispatch('LoginByAccount', this.loginForm).then((res) => {
                 this.loading = false;
-                if( typeof res.userinfo.typeStr == 'undefined' ) this.$router.push({ path: this.pathList[10]});
-                this.$router.push({ path: this.pathList[res.userinfo.typeStr]});
+                if( typeof res.userinfo.type == 'undefined' ) this.$router.push({ path: this.pathList[10]});
+                // console.log(this.pathList[this.roles.split(',')[0]]);
+                this.$router.push({ path: this.pathList[Cookies.get('xxkd-roles').split(',')[0]]});
+                console.log(124)
               }).catch(err => {
                 this.loading = false;
                 this.$message.error(err);

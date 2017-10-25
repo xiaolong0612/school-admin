@@ -48,6 +48,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex';
+  import { teacherTop } from 'api/index';
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
 
@@ -57,11 +59,17 @@
   	components: {
   		IndexItem
   	},
+    computed: {
+      ...mapGetters([
+        'uid',
+        'gradeNo'
+      ])
+    },
   	data() {
   		return {
   			name: '',
         listQuery: {
-          type: 0
+          grade: 0
         },
   			subjectList: [{
           value: '1',
@@ -109,7 +117,7 @@
   	},
   	methods: {
       getData() {
-        student(this.listQuery).then(response => {
+        student({id: this.uid, grade: this.gradeNo}).then(response => {
           console.log(response);
         })
       },

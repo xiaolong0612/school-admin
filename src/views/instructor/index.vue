@@ -1,7 +1,16 @@
 <template>
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
-			 <el-button v-for='item in classList' @click="getList()" :type="item.label" :key="item.label" style="margin-bottom: 15px;width:89px;">{{item.label}}</el-button>
+      <el-form :inline="true">  
+        <el-form-item label="年级选择">
+          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="getList">
+            <el-option v-for="item in classList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+
+			<!--  <el-button v-for='(item, index) in classList' @click="getList(index)" :type="item.select" :key="item.label" :plain="true" focus style="margin-bottom: 15px;width:89px;">{{item.label}}{{item.select}}</el-button> -->
 		</div>
 		<div>
 		<el-row :gutter="15">
@@ -106,7 +115,7 @@
 <script>
   import { mapGetters } from 'vuex';
   import { teacherTop } from 'api/index';
-  import { gradeList } from 'utils/data'
+  import { gradeList } from 'utils/data';
   import echarts from 'echarts';
   require('echarts/theme/macarons'); // echarts 主题
   export default {
@@ -121,6 +130,7 @@
           right: []
         },
         series: [],
+        length: [],
   			specialList: [],
   			qualityList: [],
   			testList: [],
@@ -129,6 +139,10 @@
   				{ name: '考试2' },
   				{ name: '考试3' }
   			],
+        listQuery: {
+          id: '',
+          grade: ''
+        },
         data:[
           {
             "list":[
@@ -156,28 +170,50 @@
     },
     created() {
       let grade_list = gradeList('all');
-      for(var i=0; i<grade_list.length; i++){
+      for(let i=0; i<grade_list.length; i++){
         for(var o=0; o<grade_list[i].options.length; o++){
-          this.classList.push(grade_list[i].options[o])
+          this.classList.push(grade_list[i].options[o]);
         }
       };
+      for(let i in this.classList){
+        this.$set(this.classList[i], 'select', '');
+      }
     },
   	mounted() {
+      this.listQuery.id = this.uid;
       this.initChart();
-  		this.getList();
+  		this.getList('七年级');
   	},
   	methods: {
-  		getList() {
-        teacherTop(2).then(res => {
+      selectGrade(index){
+        for(let i in this.classList){
+          if(index == i) this.classList[i].select = 'info';
+          else this.classList[i].select = '';
+        }
+        return this.classList[index].label;
+      },
+  		getList(grade) {
+        this.listQuery.grade = grade;
+        teacherTop(this.listQuery).then(res => {
+          if(typeof res == 'undefined'){
+            this.series = [];
+            this.legend = [];
+            this.list.title = [];
+            this.setOption();
+            return;
+          };
+          this.$message.success('查询成功！');
           var data = res.data.data;
           this.list.name = data.name;
           this.list.data = data.data;
           this.list.title = data.title;
           this.list.right = data.right;
-          for(let index in this.list.right){
+          this.series = [];
+          this.legend = [];
             this.series.push({
               name: '',
               type: 'bar',
+              barMaxWidth: '100',
               itemStyle: {
                 normal: {
                   barBorderRadius: 0,
@@ -192,9 +228,8 @@
               },
               data: this.list.data
             })
-          }
+          // }
         	this.setOption();
-
           this.specialList = data.left;
           this.qualityList = [];
           for(var item in data.right){
@@ -226,6 +261,12 @@
             axisPointer: { // 坐标轴指示器，坐标轴触发有效
               type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
             }
+          },
+          legend: {
+            orient: 'vertical',
+            bottom: '25%',
+            right: '2%',
+            data: _that.legend,
           },
           grid: {
             borderWidth: 0,

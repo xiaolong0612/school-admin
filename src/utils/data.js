@@ -25,17 +25,17 @@ export function gradeList(type){
 		{
 			label:'初中',
 			options: [
-				{ label: '初一' },
-				{ label: '初二' },
-				{ label: '初三' },
+				{ label: '七年级' },
+				{ label: '八年级' },
+				{ label: '九年级' },
 			]
 		},
 		{
 			label:'高中',
 			options: [
-				{ label: '高一' },
-				{ label: '高二' },
-				{ label: '高三' }
+				{ label: '高一年' },
+				{ label: '高二年' },
+				{ label: '高三年' }
 			]
 		}
 	];

@@ -9,9 +9,12 @@ import fetch from 'utils/fetch';
  * @DateTime  2017-09-29
  * @namespace 总分跟踪管理
  * @param     {
- *            	period: 2017
+ *            	pageNo: 1,
+          			pageSize: 30,
+          			period: 2017,
+          			grade: '七年级'
  * 						}
- * @static    无法使用
+ * @static    无法使用  http://localhost:8080/sqms/admin/schoo-basic/quaryAllScoreRataByPeriodForPage?pageNo=1&pageSize=10&period=2017&grade=%E4%B8%83%E5%B9%B4%E7%BA%A7
  */
 export function quaryAllScoreRataByPeriodForPage(data){
 	return fetch({

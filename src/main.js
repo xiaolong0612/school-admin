@@ -19,6 +19,7 @@ import vueWaves from './directive/waves';// 水波纹指令
 import errLog from 'store/errLog';// error log组件
 import './mock/index.js';  // 该项目所有请求使用mockjs模拟
 import RegionPicker from 'region-picker' // 省市区三级联动
+import Cookies from 'js-cookie';
 import { getToken } from 'utils/auth';
 
 import { gpath } from 'utils/index'; // 全局的path
@@ -49,13 +50,13 @@ function hasPermission(roles, permissionRoles) {
 const whiteList = ['/login', '/authredirect', '/reset', '/sendpwd'];// 不重定向白名单
 router.beforeEach((to, from, next) => {
   NProgress.start(); // 开启Progress
-  if (getToken()) { // 判断是否有token
+  if (typeof getToken() != 'undefined') { // 判断是否有token
     if (to.path === '/login') {
       next({ path: '/' });
     } else {
-      if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
+      if (store.getters.name === '') { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo').then(res => { // 拉取user_info
-          const roles = res.data.userinfo.typeStr.split(',');
+          const roles = store.getters.roles;
           // let roles = ['admin'];
           store.dispatch('GenerateRoutes', { roles } ).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表

@@ -34,3 +34,10 @@ export function getSchoolList(query) {
 		params: query
 	})
 }
+export function getAllSchoolList(data) {
+	return fetch({
+		url: '/admin/school/list-all-school',
+		method: 'post',
+		data
+	})
+}

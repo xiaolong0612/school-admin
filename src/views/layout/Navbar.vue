@@ -34,7 +34,7 @@
                         </el-dropdown-item>
                     </router-link>
                 </div>
-                <div v-if="roles[1] == 5 || roles[1] == 6 || roles[1] == 7">
+                <div v-if="roles.indexOf('5') != -1 || roles.indexOf('6') != -1 || roles.indexOf('7') != -1">
                     <router-link to="/task/list">
                         <el-dropdown-item>
                             成绩列表
