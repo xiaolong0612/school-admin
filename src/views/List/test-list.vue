@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
-			<el-form :inline="true">	
+			<el-form :inline="true">
 				<el-form-item>
 	        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
 	      </el-form-item>
@@ -98,7 +98,7 @@
 					</el-table-column>
 				</el-table>
 				<div v-show="!listLoading" class="pagination-container fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>

@@ -100,7 +100,7 @@
         },
         listQuery: {
           pageNo: 1,
-          pageSize: 30,
+          pageSize: 50,
           importance: undefined,
           title: undefined,
           type: undefined,

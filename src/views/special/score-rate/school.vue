@@ -6,16 +6,16 @@
       </el-button>
     </router-link>
     <div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
-      <div class="chart" id="chart" style="height:600px;width:100%"></div>
+      <chart height='600px' width='100%' :setChartOption="chart.setOption" :clickChart="false"></chart>
     </div>
   </div>
 </template>
 <script>
+  import chart from '@/components/Charts/chart';
   import { getLatestTest } from 'utils/auth';
-  import echarts from 'echarts';
-  require('echarts/theme/macarons'); // echarts 主题
   import { getPaperSchoolPassRateSpecialTopic } from 'api/special';
   export default {
+    components: { chart },
     data() {
       return {
         name: '',
@@ -29,9 +29,15 @@
           title: [],
           right: []
         },
-        x_id:{},
         series: [],
-        legend: []
+        legend: [],
+        chart: {
+          data: [],
+          X: [],
+          legend: [],
+          series: [],
+          setOption: {},
+        }
       }
     },
     mounted() {
@@ -45,7 +51,7 @@
       this.listQuery.paperId = paper.id;
       this.listQuery.specialTopicId = this.$route.query.id;
 
-      this.initChart();
+      // this.initChart();
       this.getList();
     },
     methods: {
@@ -53,6 +59,7 @@
 
         getPaperSchoolPassRateSpecialTopic(this.listQuery).then(res => {
           var data = res.data.data;
+          console.log(data);
           this.list.data = data.data;
           for(let index in data.title){
             this.list.title.push(index)
@@ -82,7 +89,7 @@
             },
             data: this.list.data[this.list.right]
           })
-          console.log(this.legend)
+          console.log(this.list.data)
           this.setOption();
         })
       },
@@ -91,7 +98,7 @@
       },
       setOption() {
         var _that = this;
-        this.chart.setOption({
+        this.chart.setOption = {
           title: {
             text: _that.list.right+"-"+_that.name,
             x: 'center',
@@ -177,7 +184,7 @@
             end: 35
           }],
           series: _that.series
-        })
+        }
       },
       // addEchartClick() {
       //   var _that = this;

@@ -1,5 +1,18 @@
 <template>
 	<div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+      <el-form :inline="true">
+        <el-form-item label="班级类型">
+          <el-select v-model="listQuery.subject" filterable placeholder="请选择" @change="subjectChange">
+            <el-option label="语文" value="语文"></el-option>
+            <el-option label="数学" value="数学"></el-option>
+            <el-option label="英语" value="英语"></el-option>
+            <el-option label="化学" value="化学"></el-option>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
 		<div class="ui-table-wrap clearfix">
 			<h3 class="ui-table-title">
 				<wscn-icon-svg icon-class="shuxian"/>
@@ -21,7 +34,7 @@
 	        </el-table-column>
 	    	</el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
@@ -30,6 +43,7 @@
 	</div>
 </template>
 <script>
+	import { getLatestTest } from 'utils/auth';
 	import { getSchoolScoreRateBySubjectAndPeriodAndGrade_2 } from 'api/subject';
 	export default {
 		data() {
@@ -44,20 +58,27 @@
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 30,
-          period: 2017,
+          pageSize: 50,
+          period: 2019,
           grade: '七年级',
           subject: '语文'
         }
 			}
 		},
-		created() {
-      this.getList();
-    },
 		mounted() {
 			this.screenHeight = this.setTableHeight(false);
+			this.setDefault();
+			this.getList();
 		},
 		methods: {
+			setDefault(){
+				this.screenHeight = this.setTableHeight(false);
+
+        let paper = JSON.parse(getLatestTest());
+	      this.listQuery.paperId = paper.id;
+	      this.listQuery.grade = paper.grade;
+	      
+			},
 			getList() {
         this.listLoading = true;
         getSchoolScoreRateBySubjectAndPeriodAndGrade_2(this.listQuery).then(response => {
@@ -75,14 +96,9 @@
         this.listQuery.pageNo = val;
         this.getList();
       },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
+      subjectChange(val){
+      	this.listQuery.subject = val;
+      	this.getList();
       }
 		}
 	}

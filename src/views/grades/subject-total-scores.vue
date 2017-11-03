@@ -1,5 +1,21 @@
 <template>
 	<div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+      <el-form :inline="true">
+        <el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable placeholder="请选择" @change="periodChange">
+            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="年级选择">
+          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="gradeChange">
+            <el-option v-for="item in classList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
 		<div class="ui-table-wrap clearfix">
 			<h3 class="ui-table-title">
 				<wscn-icon-svg icon-class="shuxian"/>
@@ -7,8 +23,8 @@
 			</h3>
 			<div class="ui-table-main">
 				<el-table :data="list.data" border style="width: 100%">
-	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
-	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable>
+	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable :prop='first.value'>
+	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 		            <template scope="scope">
 		              <div>{{scope.row[first.value][second.value]}}</div>
 		            </template>
@@ -22,7 +38,7 @@
 		    </el-table>
 			</div>
 			<div v-show="!listLoading" class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
@@ -31,7 +47,8 @@
 </template>
 <script>
 	import { mapGetters } from 'vuex';
-import { getLatestTest } from 'utils/auth';
+	import { getLatestTest } from 'utils/auth';
+  import { gradeList } from 'utils/data';
 	import store from 'store';
 	import { getSchoolScoreRateByPaperNameAndPeriodAndGrade } from 'api/grades';
 	export default {
@@ -39,6 +56,8 @@ import { getLatestTest } from 'utils/auth';
 			return {
 				name: '各科总分监控',
 				screenHeight: 0,
+				classList: [],
+        periodList: [],
 				list: {
 					head: [],
 					data: []
@@ -47,9 +66,9 @@ import { getLatestTest } from 'utils/auth';
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 30,
+          pageSize: 50,
           period: '',
-          grade: '',
+          grade: '一年级',
           paperName: '',
         }
 			}
@@ -64,17 +83,39 @@ import { getLatestTest } from 'utils/auth';
 
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+			this.screenHeight = this.setTableHeight(true);
+			// 设置顶部搜索条件
+      this.setForm();
 			this.getList();
 		},
 		methods: {
+			setForm(){
+        // 年级
+        let grade_list = gradeList('all');
+        for(let i=0; i<grade_list.length; i++){
+          for(var o=0; o<grade_list[i].options.length; o++){
+            this.classList.push(grade_list[i].options[o]);
+          }
+        };
+        for(let i in this.classList){
+          this.$set(this.classList[i], 'select', '');
+        }
+        // 届
+        let year = new Date().getFullYear();
+        console.log(year);
+        for(let i=0; i<3; i++){
+          this.periodList.push({
+            label: year+i,
+            value: year+i,
+          })
+        }
+      },
 			getList() {
         this.listLoading = true;
-
+        console.log(getLatestTest())
         let paper = JSON.parse(getLatestTest());
 
-	      this.listQuery.subject = this.subject;
-	      this.listQuery.grade = this.gradeNo;
+	      // this.listQuery.subject = this.subject;
 	      this.listQuery.paperName = paper.name;
 	      this.listQuery.period = paper.period;
         getSchoolScoreRateByPaperNameAndPeriodAndGrade(this.listQuery).then(res => {
@@ -97,6 +138,15 @@ import { getLatestTest } from 'utils/auth';
       handleCurrentChange(val) {
         this.listQuery.pageNo = val;
         this.getList();
+      },
+      periodChange(val){
+      	this.listQuery.period = val;
+				this.getList();
+
+      },
+      gradeChange(val){
+      	this.listQuery.grade = val;
+				this.getList();
       }
 		}
 	}

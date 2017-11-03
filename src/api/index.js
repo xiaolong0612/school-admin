@@ -10,11 +10,20 @@ export function student(data) {
     data
   });
 }
-
-export function teacher() {
+// 学科教师
+export function teacher(data) {
   return fetch({
-    url: '',
+    url: '/admin/class-basic/get-top',
     method: 'post',
+    data
+  });
+}
+// 学科老师获取班级列表
+export function teacgetTeacherClassher(data) {
+  return fetch({
+    url: '/admin/teacher/getTeacherClass',
+    method: 'post',
+    data
   });
 }
 
@@ -47,7 +56,6 @@ export function teacherTop(data) {
 
 // 教务处
 export function principalIndex(query) {
-  console.log(query)
   return fetch({
     url: '/admin/schoo-basic/getExaminationPaperByPeriodAndGrade',
     method: 'post',

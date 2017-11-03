@@ -1,5 +1,17 @@
 <template>
 	<div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+      <el-form :inline="true">
+        <el-form-item label="班级类型">
+          <el-select v-model="listQuery.state" filterable placeholder="请选择" @change="stateChange">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="教学班" value="0"></el-option>
+            <el-option label="行政班" value="1"></el-option>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
 		<div class="ui-table-wrap clearfix">
 			<h3 class="ui-table-title">
 				<wscn-icon-svg icon-class="shuxian"/>
@@ -21,7 +33,7 @@
 	        </el-table-column>
 	    	</el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
@@ -34,7 +46,7 @@
 	export default {
 		data() {
 			return {
-				name: '班级各科均分',
+				name: '总分跟踪管理',
 				list: {
 					data: [],
 					head: []
@@ -44,11 +56,11 @@
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 30,
+          pageSize: 50,
        		period: 2017,
        		subject: '语文',
        		grade: '七年级',
- 					state: 1 // 0教学班 1行政班
+ 					state: '' // 0教学班 1行政班
         }
 			}
 		},
@@ -76,14 +88,9 @@
         this.listQuery.pageNo = val;
         this.getList();
       },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
+      stateChange(val) {
+      	this.listQuery.state = val;
+      	this.getList();
       }
 		}
 	}

@@ -19,7 +19,8 @@
 			      prop="questionNumber"
 			      label="题号"
 			      width="100"
-			      sortable>
+			      sortable
+			      :sort-method="tableSort">
 			      <template scope="scope">
 			      	<el-input v-show="scope.row.edit" placeholder="请输入内容" v-model="scope.row.questionNumber"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.questionNumber}}</span>
@@ -135,7 +136,7 @@
 					</el-table-column>
 				</el-table>
 				<div v-show="!listLoading" class="pagination-container fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
@@ -261,7 +262,7 @@
         dialogVisible: false,
         listQuery: {
           pageNo: 1,
-          pageSize: 30,
+          pageSize: 50,
           examinationPaperId: this.$route.params.id
         },
         testQuery: {
@@ -288,7 +289,8 @@
 					answer: '',
 					analysis: '',
 					examinationPaperId: '',
-					cases: []
+					cases: [],
+					scoreCriterion: ''
         },
         fromDataDefaultTest: [],
         rules: {},
@@ -519,6 +521,28 @@
       handleEditRow(scope) {
       	scope.row.edit = true;
       	scope.row.defaultTest = [scope.row.testSpecialTopicId, scope.row.testSitesId]
+      },
+      tableSort(a, b){
+      	a = a.questionNumber.split('_');
+      	b = b.questionNumber.split('_');
+      	let a_len = a.length;
+      	let b_len = b.length;
+      	let len = 0;
+      	if(a_len <= b_len) len = b_len;
+      	else len = a_len;
+      	for(let i=0; i<len; i++){
+      		if(typeof a[i] != 'undefined' && typeof b[i] != 'undefined'){
+      			if(parseInt(a[i]) > parseInt(b[i])) return true;
+      			else if(parseInt(a[i]) < parseInt(b[i])) return false;
+      			else continue;
+      		}else if(typeof a[i] == 'undefined' && typeof b[i] != 'undefined'){
+      			return true
+      		}else if(typeof a[i] != 'undefined' && typeof b[i] == 'undefined'){
+      			return false
+      		}else{
+      			return true
+      		}
+      	}
       }
 		}
 	}

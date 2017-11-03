@@ -9,105 +9,73 @@
           </el-select>
         </el-form-item>
       </el-form>
-
-			<!--  <el-button v-for='(item, index) in classList' @click="getList(index)" :type="item.select" :key="item.label" :plain="true" focus style="margin-bottom: 15px;width:89px;">{{item.label}}{{item.select}}</el-button> -->
 		</div>
 		<div>
-		<el-row :gutter="15">
-      <el-col :span="4">
-        <div class="wrap">
-          <ul>
-            <li v-for="item in specialList">
-              <el-row class="ui-sidebar">
-                <el-col :span="12">
-                  <div class="ui-label">
-                    <router-link to="/">{{item.specialTopicName}}</router-link>
-                  </div>
-                </el-col>
-                <el-col :span="12">
-                  <div class="ui-number">
-                    <router-link to="/">{{item.scoreRate}}</router-link>
-                  </div>
-                </el-col>
-              </el-row>
-            </li>
-          </ul>
-        </div>
-      </el-col>
-		  <el-col :span="16">
-		  	<div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
-					<div class="chart" id="chart" style="height:600px;width:100%"></div>
-          <!-- <div class="ui-course">
-            <div class="clearfix ui-course_nr">
-              <ul class="ui-course_nr2">
-                <li>2007
-                  <div class="ui-once">
-                    <h1>2007</h1>
-                    <p>内容描述4</p>
-                  </div>
-                </li>
-                <li>2008
-                  <div class="ui-once">
-                    <h1>2008</h1>
-                    <p>内容描述5</p>
-                  </div>
-                </li>
-                <li>2009
-                  <div class="ui-once">
-                    <h1>2009</h1>
-                    <p>内容描述6</p>
-                  </div>
-                </li>
-                <li>2013
-                  <div class="ui-once">
-                    <h1>2013</h1>
-                    <p>内容描述7</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div> -->
-				</div>
-		  </el-col>
-		  <el-col :span="4">
-		  	<div class="wrap" style="margin-bottom: 15px">
-		  		<ul>
-						<li v-for="item in qualityList">
-							<el-row class="ui-sidebar">
-							  <el-col :span="12">
-							  	<div class="ui-label">
-							  		<router-link to="/">{{item.name}}</router-link>
-							  	</div>
-							  </el-col>
-							  <el-col :span="12">
-							  	<div class="ui-number">
-							  		<router-link to="/">{{item.number}}</router-link>
-							  	</div>
-							  </el-col>
-							</el-row>
-						</li>
-					</ul>
-				</div>
-				<!-- <div class="wrap">
-					<ul>
-						<li v-for="item in testList">
-							<el-row class="ui-sidebar">
-							  <el-col :span="12">
-							  	<div class="ui-label">
-							  		<router-link to="/">{{item.name}}</router-link>
-							  	</div>
-							  </el-col>
-							  <el-col :span="12">
-							  	<div class="ui-number">
-							  		<router-link to="/">{{item.number}}</router-link>
-							  	</div>
-							  </el-col>
-							</el-row>
-						</li>
-					</ul>
-		  	</div> -->
-		  </el-col>
-		</el-row>
+  		<el-row :gutter="15">
+        <el-col :span="4">
+          <div class="wrap">
+            <ul>
+              <li v-for="item in specialList">
+                <el-row class="ui-sidebar">
+                  <el-col :span="12">
+                    <div class="ui-label">
+                      {{item.specialTopicName}}
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="ui-number">
+                      {{item.scoreRate}}
+                    </div>
+                  </el-col>
+                </el-row>
+              </li>
+            </ul>
+          </div>
+        </el-col>
+  		  <el-col :span="16">
+  		  	<div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
+  					<chart height='calc(100vh - 165px)' width='100%' :setChartOption="chart.setOption" :clickChart="false"></chart>
+  				</div>
+  		  </el-col>
+  		  <el-col :span="4">
+          <div class="wrap" style="margin-bottom: 15px">
+            <ul>
+              <li v-for="item in qualityList">
+                <el-row class="ui-sidebar">
+                  <el-col :span="12">
+                    <div class="ui-label">
+                      {{item.name}}
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="ui-number">
+                      {{item.number}}
+                    </div>
+                  </el-col>
+                </el-row>
+              </li>
+            </ul>
+          </div>
+          <div class="wrap" style="margin-bottom: 15px">
+            <ul>
+              <li v-for="item in level">
+                <el-row class="ui-sidebar">
+                  <el-col :span="12">
+                    <div class="ui-label">
+                      {{item.levelName}}
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="ui-number">
+                      {{item.scoreRate}}
+                    </div>
+                  </el-col>
+                </el-row>
+              </li>
+            </ul>
+          </div>
+  		  </el-col>
+  		</el-row>
 		</div>
 	</div>
 </template>
@@ -116,24 +84,24 @@
   import { mapGetters } from 'vuex';
   import { teacherTop } from 'api/index';
   import { gradeList } from 'utils/data';
-  import echarts from 'echarts';
-  require('echarts/theme/macarons'); // echarts 主题
+  import chart from '@/components/Charts/chart';
   export default {
+    components: { chart },
   	data() {
   		return {
   			name: '',
   			classList: [],
-        list: {
+        chart: {
           name: '',
           data: [],
-          title: [],
-          right: []
+          X: [],
+          legend: [],
+          series: [],
+          setOption: {}
         },
-        series: [],
-        length: [],
   			specialList: [],
   			qualityList: [],
-  			testList: [],
+        level: [],
   			examinationList: [
   				{ name: '考试1' },
   				{ name: '考试2' },
@@ -142,25 +110,7 @@
         listQuery: {
           id: '',
           grade: ''
-        },
-        data:[
-          {
-            "list":[
-              [0,0,0,0,0.02,0.2],
-              [0,0,0,0,0.02,0.2]
-            ],
-            "name":["七上考试","七上考试","七上考试",],
-            "success":true,
-            "right":["七上考试","七上考试","七上考试",],
-            "title":[
-              {"名著阅读":3},
-              {"语言运用":1},
-              {"非连续性文本阅读":2},
-              {"诗歌阅读":4},
-              {"文言文阅读":5}
-            ]
-          }  
-        ]
+        }
   		}
   	},
     computed: {
@@ -181,7 +131,6 @@
     },
   	mounted() {
       this.listQuery.id = this.uid;
-      this.initChart();
   		this.getList('七年级');
   	},
   	methods: {
@@ -196,21 +145,19 @@
         this.listQuery.grade = grade;
         teacherTop(this.listQuery).then(res => {
           if(typeof res == 'undefined'){
-            this.series = [];
-            this.legend = [];
-            this.list.title = [];
+            for(let i in this.chart){
+              this.chart[i] = []
+            }
             this.setOption();
             return;
           };
-          this.$message.success('查询成功！');
+          // this.$message.success('查询成功！');
           var data = res.data.data;
-          this.list.name = data.name;
-          this.list.data = data.data;
-          this.list.title = data.title;
-          this.list.right = data.right;
-          this.series = [];
-          this.legend = [];
-            this.series.push({
+          this.chart.name = data.name;
+          this.chart.data = data.data;
+          this.chart.X = data.title;
+          this.chart.legend = data.right;
+            this.chart.series = {
               name: '',
               type: 'bar',
               barMaxWidth: '100',
@@ -226,11 +173,12 @@
                   }
                 }
               },
-              data: this.list.data
-            })
+              data: this.chart.data
+            }
           // }
         	this.setOption();
           this.specialList = data.left;
+          this.level = data.level;
           this.qualityList = [];
           for(var item in data.right){
             this.qualityList.push({
@@ -241,14 +189,11 @@
 
         });
       },
-  		initChart() {
-        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
-      },
       setOption() {
         var _that = this;
-        this.chart.setOption({
+        this.chart.setOption = {
           title: {
-            text: _that.list.name,
+            text: _that.chart.name,
             x: 'center',
             textStyle: {
               color: '#333',
@@ -266,7 +211,7 @@
             orient: 'vertical',
             bottom: '25%',
             right: '2%',
-            data: _that.legend,
+            data: _that.chart.legend,
           },
           grid: {
             borderWidth: 0,
@@ -290,7 +235,7 @@
                 color: '#333'
               }
             },
-            data: _that.list.title
+            data: _that.chart.X
           }],
           yAxis: [{
             type: 'value',
@@ -331,8 +276,8 @@
             start: 1,
             end: 35
           }],
-          series: _that.series
-        })
+          series: _that.chart.series
+        }
 		  }
   	}
   }

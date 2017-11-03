@@ -46,17 +46,17 @@
       },
       getList() {
         this.listLoading = true;
-        getClassSpecialTopicBySchoolId(this.listQuery).then(res => {
-          var data = res.data.data;
-          this.list.data = data.data[0].split(',');
-          this.list.right = data.right;
-          for(var item in data.title){
-            this.list.title.push(item);
-          }
-          // this.list.right = data.right;
-          this.setOption();
-          this.listLoading = false;
-        })
+        // getClassSpecialTopicBySchoolId(this.listQuery).then(res => {
+        //   var data = res.data.data;
+        //   this.list.data = data.data[0].split(',');
+        //   this.list.right = data.right;
+        //   for(var item in data.title){
+        //     this.list.title.push(item);
+        //   }
+        //   // this.list.right = data.right;
+        //   this.setOption();
+        //   this.listLoading = false;
+        // })
       },
       initChart() {
         this.chart = echarts.init(document.getElementById('chart'),'macarons');

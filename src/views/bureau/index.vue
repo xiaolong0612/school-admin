@@ -1,11 +1,24 @@
 <template>
   <div>
     <div class="ui-search-wrap" id="ui-search-wrap">
-        <el-button v-for='item in classList' @click="getList()" :type="item.type" :key="item" style="margin-bottom: 15px;width:90px;">{{item.label}}</el-button>
+      <el-form :inline="true">
+        <el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable placeholder="请选择" @change="periodChange">
+            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="年级选择">
+          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="gradeChange">
+            <el-option v-for="item in classList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
     </div>
     <div class="echarts-wrap ui-echart-wrap">
-      <div class="chart" id="chart" style="height:600px;width:100%"></div>
-      <div class="ui-course">
+      <chart height='calc(100vh - 165px)' width='100%' :setChartOption="chart.setOption" :clickChart="false"></chart>
+      <!-- <div class="ui-course">
         <div class="clearfix ui-course_nr">
           <ul class="ui-course_nr2">
             <li>2007
@@ -34,7 +47,7 @@
             </li>
           </ul>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -42,92 +55,112 @@
 <script>
   import { mapGetters } from 'vuex';
   import { bureau } from 'api/index';
+  import { gradeList } from 'utils/data';
 
-  import echarts from 'echarts';
-  require('echarts/theme/macarons'); // echarts 主题
+  import chart from '@/components/Charts/chart';
   export default {
+    components: { chart },
     data() {
       return {
         name: '',
-        list: {
-          right: [],
+        classList: [],
+        periodList: [],
+        chart: {
+          name: '',
           data: [],
-          xAxis: []
+          X: [],
+          legend: [],
+          series: [],
+          setOption: {}
         },
         listQuery: {
-          period: 2017,
-          grade: '初一年级'
-        },
-        classList: [{
-          value: '1',
-          label: '七年级'
-        }, {
-          value: '2',
-          label: '八年级'
-        }, {
-          value: '3',
-          label: '九年级'
-        }, {
-          value: '4',
-          label: '高一'
-        }, {
-          value: '5',
-          label: '高二'
-        }, {
-          value: '5',
-          label: '高二'
-        }, {
-          value: '5',
-          label: '高二'
-        }, {
-          value: '5',
-          label: '高二'
-        }, {
-          value: '5',
-          label: '高二'
-        }, {
-          value: '5',
-          label: '高二'
-        }, {
-          value: '5',
-          label: '高二'
-        }, {
-          value: '6',
-          label: '高三'
-        }],
-        fromData: {
-          selectedClass: ''
-        },
-        listQuery: {
-          period: 2017,
-          grade: '初一年'
+          period: '',
+          grade: '七年级'
         }
       }
     },
     created() {
-      
+      this.listQuery.period = new Date().getFullYear() + 2;
     },
     mounted() {
-      this.initChart();
+      // 设置顶部搜索条件
+      this.setForm();
       this.getList();
     },
     methods: {
       getList() {
-        bureau(this.listQuery).then(response => {
-          this.list.right = response.data.right;
-          this.list.data = response.data.data;
-          this.list.title = response.data.title;
-          this.setOption()
+        bureau(this.listQuery).then(res => {
+          if(typeof res == 'undefined'){
+            for(let i in this.chart){
+              this.chart[i] = []
+            }
+            this.setOption();
+            return;
+          };
+          let data = res.data.data;
+
+          this.chart.series = [];
+          this.chart.X = [];
+          this.chart.legend = [];
+          
+          this.chart.X = data.title;
+          for(let index in data.data){
+            this.chart.legend.push(index);
+            this.chart.series.push({
+              name: index,
+              type: 'bar',
+              barMaxWidth: '100',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  label: {
+                    show: true,
+                    position: 'top',
+                    formatter(p) {
+                      return p.value > 0 ? p.value : '';
+                    }
+                  }
+                }
+              },
+              data: data.data[index]
+            })
+          }
+          this.setOption();
         });
       },
-      initChart() {
-        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
+      setForm(){
+        // 年级
+        let grade_list = gradeList('all');
+        for(let i=0; i<grade_list.length; i++){
+          for(var o=0; o<grade_list[i].options.length; o++){
+            this.classList.push(grade_list[i].options[o]);
+          }
+        };
+        for(let i in this.classList){
+          this.$set(this.classList[i], 'select', '');
+        }
+        // 届
+        let year = new Date().getFullYear();
+        for(let i=0; i<3; i++){
+          this.periodList.push({
+            label: year+i,
+            value: year+i,
+          })
+        }
+      },
+      periodChange(val){
+        this.listQuery.period = val;
+        this.getList();
+      },
+      gradeChange(val){
+        this.listQuery.grade = val;
+        this.getList();
       },
       setOption() {
-        _that = this;
-        this.chart.setOption({
+        var _that = this;
+        this.chart.setOption = {
           title: {
-            text: '总分监控表',
+            text: '',
             x: 'center',
             textStyle: {
               color: '#333',
@@ -141,6 +174,12 @@
               type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
             }
           },
+          legend: {
+            orient: 'vertical',
+            bottom: '25%',
+            right: '2%',
+            data: _that.chart.legend,
+          },
           grid: {
             borderWidth: 0,
             top: 110,
@@ -148,11 +187,6 @@
             textStyle: {
               color: '#fff'
             }
-          },
-          legend: {
-            orient: 'vertical',
-            bottom: '25%',
-            right: _that.list.right
           },
           calculable: true,
           xAxis: [{
@@ -168,7 +202,7 @@
                 color: '#333'
               }
             },
-            data: ['语文', '数学', '英语', '物理', '化学', '生物', '思品', '历史', '地理', '总分', '折合总分']
+            data: _that.chart.X
           }],
           yAxis: [{
             type: 'value',
@@ -178,77 +212,39 @@
               }
             },
             axisLabel: {
+              interval: 2,
               textStyle: {
                 color: '#333'
               }
             }
           }],
-          series: [{
-            name: '得分率',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
+          dataZoom: [{
+            show: true,
+            height: 30,
+            xAxisIndex: [
+              0
+            ],
+            bottom: 30,
+            start: 10,
+            end: 80,
+            handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+            handleSize: '110%',
+            handleStyle: {
+              color: '#d3dee5'
+
             },
-            data: _that.list.data[0],
+            textStyle: {
+              color: '#fff' },
+            borderColor: '#90979c'
           }, {
-            name: '超均率',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: _that.list.data[1],
-          }, {
-            name: '位置',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: _that.list.data[2],
-          }, {
-            name: '进步值',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
-            },
-            data: _that.list.data[3],
-          }]
-        })
+            type: 'inside',
+            show: true,
+            height: 15,
+            start: 1,
+            end: 35
+          }],
+          series: _that.chart.series
+        }
       }
     }
   }

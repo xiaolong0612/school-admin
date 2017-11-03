@@ -31,7 +31,7 @@
 	        </el-table-column>
 	    	</el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
@@ -57,7 +57,7 @@
           period: '',
           grade: '',
           pageNo: 1,
-          pageSize: 30,
+          pageSize: 50,
           schoolId: ''
         }
 			}
@@ -72,23 +72,20 @@
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(true);
-			this.getSchoolList();
       this.setDefault();
-			this.getList();
+			this.getSchoolList();
 		},
 		methods: {
 			setDefault(){
 
         let paper = JSON.parse(getLatestTest());
 
-        this.listQuery.schoolId = this.schoolId;
-	      this.listQuery.grade = this.gradeNo;
+	      this.listQuery.grade = paper.grade;
 	      this.listQuery.period = paper.period;
 			},
 			getList() {
         this.listLoading = true;
         getClassLowGradeRateByPeriodAndGradeAndSchoolIdTable(this.listQuery).then(res => {
-        	console.log(res)
           this.list['data'] = res.data.data.data;
           this.list['head'] = res.data.data.head;
           this.total = res.data.data.total;
@@ -106,9 +103,12 @@
       getSchoolList(){
       	getAllSchoolList().then(res => {
       		this.schoolList = res.data.list;
+					this.listQuery.schoolId = this.schoolList[0].id
+      		this.getList();
       	})
       },
-      schoolChange() {
+      schoolChange(val) {
+      	this.listQuery.schoolId = val;
       	this.getList();
       }
 		}

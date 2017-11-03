@@ -118,7 +118,14 @@ export function quaryAllScoreRataByPeriodForPage(data){
 	})
 }
 
-
+// 全区各校单次考试成绩总表
+// export function getSchoolScoreRateByPaperNameAndPeriodAndGrade(data){
+// 	return fetch({
+// 		url: '/admin/schoo-basic/getSchoolScoreRateByPaperNameAndPeriodAndGrade',
+// 		method: 'post',
+// 		data
+// 	})
+// }
 
 // 所有考试全区各校单科优良率监控表
 

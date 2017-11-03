@@ -54,3 +54,26 @@ export function gradeList(type){
 			break;
 	}
 }
+export function periodList(){
+	let periodList = [];
+	let section = 3;
+	let year = new Date().getFullYear();
+  for(let i=0; i<section; i++){
+    periodList.push({
+      label: year+i,
+      value: year+i,
+    })
+  }
+  return periodList;
+}
+export function subjectList(){
+	let subjectList = [];
+	let subject = ['语文', '数学','英语', '政治', '历史', '地理', '物理', '化学', '生物'];
+  for(let i=0; i<subject.length; i++){
+    subjectList.push({
+      label: subject[i],
+      value: subject[i],
+    })
+  }
+  return subjectList;
+}

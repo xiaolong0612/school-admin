@@ -145,7 +145,7 @@
 				</el-table>
 			</div>
 			<div v-show="!listLoading" class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
@@ -265,7 +265,7 @@
         dialogVisible: false,
         listQuery: {
           pageNo: 1,
-          pageSize: 20,
+          pageSize: 50,
           name: '',
           classNo: '',
           gradeNo: '',

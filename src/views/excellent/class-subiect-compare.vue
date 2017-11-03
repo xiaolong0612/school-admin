@@ -1,5 +1,39 @@
 <template>
 	<div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+      <el-form :inline="true">
+
+      	<el-form-item label="届">
+          <el-select v-model="fromData.period" filterable placeholder="请选择" @change="queryChange('period')">
+            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="学校">
+          <el-select v-model="fromData.schoolId" filterable placeholder="请选择" @change="queryChange('school')">
+            <el-option v-for="item in schoolList" :label="item.name" :value="item.id" :key="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="年级">
+          <el-select v-model="fromData.grade" filterable placeholder="请选择" @change="queryChange('grade')">
+            <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="→"></el-form-item>
+
+        <el-form-item label="班级列表">
+          <el-select v-model="listQuery.classId" filterable placeholder="请选择" @change="getList">
+            <el-option v-for="item in classList" :label="item.name" :value="item.id" :key="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
 		<div class="ui-table-wrap clearfix">
 			<h3 class="ui-table-title">
 				<wscn-icon-svg icon-class="shuxian"/>
@@ -21,7 +55,7 @@
 	        </el-table-column>
 	    	</el-table>
 				<div v-show="!listLoading" class="page-wrap fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
@@ -31,6 +65,10 @@
 </template>
 <script>
 	import { mapGetters } from 'vuex';
+  import { gradeList } from 'utils/data';
+	import { getLatestTest } from 'utils/auth';
+	import { getSchoolList } from 'api/info-administration/school';
+	import { getClassList } from 'api/list';
 	import { getClassExcellentRateByPeriodAndClassIdAndGrade } from 'api/excellent';
 	export default {
 		data() {
@@ -40,15 +78,21 @@
 				screenHeight: 0,
 				total: null,
         listLoading: true,
+        gradeList: [],
+        periodList: [],
+        schoolList: [],
+        classList: [],
         listQuery: {
           pageNo: 1,
-          pageSize: 30,
+          pageSize: 50,
           period: 2017,
           grade: '七年级',
-          classId: 1
+          classId: ''
         },
         fromData: {
-					selectedSubject: '语文'
+					period: '',
+					schoolId: '',
+					grade: ''
         }
 			}
 		},
@@ -57,13 +101,40 @@
         'classNo'
       ])
     },
-		created() {
-      this.getList();
-    },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+			// 设置顶部搜索条件
+      this.setForm();
+
+			this.getSchoolList();
 		},
 		methods: {
+			setDefault(){
+				this.screenHeight = this.setTableHeight(true);
+				this.fromData = {
+					period: new Date().getFullYear(),
+					schoolId: this.schoolList[0].id,
+					grade: '七年级'
+        };
+
+        let paper = JSON.parse(getLatestTest());
+			},
+			setForm(){
+        // 年级
+        let grade_list = gradeList('all');
+        for(let i=0; i<grade_list.length; i++){
+          for(var o=0; o<grade_list[i].options.length; o++){
+            this.gradeList.push(grade_list[i].options[o]);
+          }
+        };
+        // 届
+        let year = new Date().getFullYear();
+        for(let i=0; i<3; i++){
+          this.periodList.push({
+            label: year+i,
+            value: year+i,
+          })
+        }
+      },
 			getList() {
         this.listLoading = true;
         getClassExcellentRateByPeriodAndClassIdAndGrade(this.listQuery).then(res => {
@@ -73,6 +144,32 @@
           this.listLoading = false;
         })
       },
+      getSchoolList(){
+      	let query = {
+          pageNo: 1,
+          pageSize: 999,
+          name: '',
+          type: ''
+        };
+      	getSchoolList(query).then( res => {
+      		this.schoolList = res.data.list;
+					this.setDefault();
+      		this.getClassList();
+      	})
+      },
+      getClassList(){
+      	getClassList(this.fromData).then( res => {
+      		if(res.data.list.length == 0){
+      			this.listQuery.classId = '';
+      			this.classList = [];
+      			this.list.data = [];
+      		}
+      		else{
+      			this.classList = res.data.list;
+      			this.listQuery.classId = this.classList[0].id;
+      		}
+      	})
+      },
       handleSizeChange(val) {
         this.listQuery.pageSize = val;
         this.getList();
@@ -81,21 +178,9 @@
         this.listQuery.page = val;
         this.getList();
       },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
-      },
-      onSearch() {
-      	this.listQuery.page++;
-      	if(this.listQuery.page == 6){
-      		this.listQuery.page = 1;
-      	}
-      	this.getList();
+      queryChange(val) {
+      	if(val != 'school') this.listQuery[val] = this.fromData[val];
+      	this.getClassList();
       }
 		}
 	}

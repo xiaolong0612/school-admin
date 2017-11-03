@@ -1,7 +1,15 @@
 <template>
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
-			<el-form :inline="true">	
+			<el-form :inline="true">
+
+				<el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="queryChange('period')">
+            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
 				<el-form-item>
 	        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
 	      </el-form-item>
@@ -18,14 +26,12 @@
 			    <el-table-column
 			      prop="period"
 			      label="届"
-			      width="100"
 			      fixed>
 			    </el-table-column>
 
 					<el-table-column
 			      prop="subject"
 			      label="科目"
-			      width="100"
 			      fixed>
 	      		<template scope="scope">
           		<span >{{scope.row.subject}}</span>
@@ -33,8 +39,7 @@
 			    </el-table-column>
 			    <el-table-column
 			      prop="name"
-			      label="试卷名"
-			      width="250">
+			      label="试卷名">
 			      <template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.name"></el-input>
           		<router-link :to="'/paper/examination-list/'+scope.row.id+'/'+scope.row.name+'/'+scope.row.subject" v-show="!scope.row.edit">{{scope.row.name}}
@@ -43,8 +48,7 @@
 			    </el-table-column>
 			    <el-table-column
 			      prop="grade"
-			      label="年级"
-			      width="100">
+			      label="年级">
 			      <template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.grade"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.grade}}</span>
@@ -52,16 +56,14 @@
 			    </el-table-column>
 			    <el-table-column
 			      prop="teacherName"
-			      label="教研员"
-			      width="150">
+			      label="教研员">
 			      <template scope="scope">
           		<span>{{scope.row.teacherName}}</span>
 						</template>
 			    </el-table-column>
 			    <el-table-column
 			      prop="totalScore"
-			      label="总分"
-			      width="90">
+			      label="总分">
 			      <template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.totalScore"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.totalScore}}</span>
@@ -83,7 +85,7 @@
 			    
 				</el-table>
 				<div v-show="!listLoading" class="pagination-container fr">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 		        :page-size="listQuery.pageSzie" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
@@ -159,7 +161,7 @@
 	import { mapGetters } from 'vuex';
 	import { getExaminationPaperList, addExaminationPaper, modExaminationPaper, delExaminationPaper} from 'api/test/paper';
 	import { validataPhone } from 'utils/validate';
-	import { gradeList } from 'utils/data'
+	import { gradeList, periodList } from 'utils/data';
 	const valiPhone = (rule, value, callback) => {
 		if (!validataPhone(value)) {
       callback(new Error('请输入正确的手机号'));
@@ -175,14 +177,15 @@
 				screenHeight: 0,
 				total: 0,
         listLoading: true,
+        periodList: periodList(),
         classList: gradeList('all'),
-        // subject: ['语文', '数学', '英语', '物理', '化学', '地理', '历史', '政治'],
         listQuery: {
           pageNo: 1,
-          pageSize: 30,
+          pageSize: 50,
           subject: '',
           name: '',
-          grade: ''
+          grade: '',
+          period: ''
         },
         fromData: {
         	name: '',
@@ -219,17 +222,23 @@
       ])
     },
 		created() {
+
     },
 		mounted() {
 			this.screenHeight = this.setTableHeight(true);
+			this.setDefault();
       this.getList();
 		},
 		methods: {
+			setDefault(){
+				this.listQuery.period = this.periodList[this.periodList.length-1].value;
+				this.listQuery.subject = this.subject;
+				this.listQuery.grade = this.gradeNo;
+
+				this.fromData.teacherId = this.uid;
+			},
 			getList() {
         this.listLoading = true;
-				this.fromData.teacherId = this.uid;
-				this.fromData.subject = this.subject;
-				this.fromData.grade = this.gradeNo;
         getExaminationPaperList(this.listQuery).then(response => {
         	this.list = response.data.list;
         	for(let i=0; i<this.list.length; i++){
@@ -239,6 +248,10 @@
           this.total = response.data.total;
           this.listLoading = false;
         })
+      },
+      queryChange(val){
+      	console.log(val)
+      	this.getList();
       },
       handleSizeChange(val) {
         this.listQuery.pageSize = val;
@@ -275,21 +288,6 @@
 	          type: 'success'
 	        });
 	        this.getList();
-	       //  let bridge = {
-	      	// 	name: scope.row.name,
-	      	// 	subject: scope.row.subject,
-	      	// 	totalScore: scope.row.totalScore,
-	      	// 	grade: scope.row.grade,
-	      	// 	period: scope.row.period,
-	      	// 	index: scope.$index
-	      	// }
-	      	// console.log(this.backList)
-      		// this.backList[bridge.index].name = bridge.name;
-      		// this.backList[bridge.index].subject = bridge.subject;
-      		// this.backList[bridge.index].totalScore = bridge.totalScore;
-      		// this.backList[bridge.index].grade = bridge.grade;
-      		// this.backList[bridge.index].period = bridge.period;
-      		// scope.row.edit = false
       	})
       },
       handleCancel(scope){

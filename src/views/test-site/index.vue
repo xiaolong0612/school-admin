@@ -62,7 +62,7 @@
 					</el-table-column>
 				</el-table>
 				<div v-show="!listLoading" class="pagination-container">
-		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+		      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 		        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		      </el-pagination>
 		    </div>
@@ -140,7 +140,7 @@
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 30,
+          pageSize: 50,
           name: '',
           subject: '',
           parentId: '0'

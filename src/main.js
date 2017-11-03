@@ -55,9 +55,20 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' });
     } else {
       if (store.getters.name === '') { // 判断当前用户是否已拉取完user_info信息
-        store.dispatch('GetInfo').then(res => { // 拉取user_info
+        store.dispatch('GetInfo').then(user => { // 拉取user_info
+          // console.log(user)
+          let query = {
+            pageNo: 1,
+            pageSize: 30,
+            subject: '',
+            name: '',
+            grade: ''
+          };
+          // store.dispatch('SetPaper', query).then(paperRes => { // 拉取考试信息
+
+          // })
           const roles = store.getters.roles;
-          // let roles = ['admin'];
+            // let roles = ['admin'];
           store.dispatch('GenerateRoutes', { roles } ).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({ ...to }); // hack方法 确保addRoutes已完成

@@ -21,6 +21,7 @@ const user = {
     // 权限and接口使用
     roles: typeof Cookies.get('xxkd-roles') != 'undefined' ? Cookies.get('xxkd-roles').split(',') : [],
     schoolId: '',
+    startSchoolTime: '',
     gradeNo: '',
     classNo: ''
   },
@@ -64,6 +65,9 @@ const user = {
     },
     SET_SCHOOLID: (state, schoolId) => {
       state.schoolId = schoolId;
+    },
+    SET_STARTSCHOOLTIME: (state, startSchoolTime) => {
+      state.startSchoolTime = startSchoolTime;
     },
     SET_GRADENO: (state, gradeNo) => {
       state.gradeNo = gradeNo;
@@ -133,17 +137,16 @@ const user = {
           commit('SET_NATIVEPLACE', user.nativePlace);
 
           commit('SET_SCHOOLID', user.schoolId);
+          commit('SET_STARTSCHOOLTIME', typeof user.startSchoolTime != 'undefined' ? user.startSchoolTime : '');
           commit('SET_GRADENO', user.gradeNo);
           commit('SET_CLASSNO', user.classNo);
           if(typeof user.subject != 'undefined'){
             commit('SET_SUBJECT', user.subject);
-
-            
           }
           let query = {
               pageNo: 1,
               pageSize: 30,
-              subject: user.subject = user.subject == 'undefined' ? '语文' : user.subject,
+              subject: user.subject = user.subject == 'undefined' ? '' : user.subject,
               name: '',
               period: '',
               grade: '七年级'
@@ -158,7 +161,7 @@ const user = {
             }
           })
 
-          resolve(response);
+          resolve(user);
         }).catch(error => {
           reject(error);
         });

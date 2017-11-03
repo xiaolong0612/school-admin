@@ -56,11 +56,19 @@ export function getPaperScore(data){
 		data
 	})
 }
+// 班级类型切换
+export function getClassScore(data){
+	return fetch({
+		url: '/admin/class-basic/get-class-score',
+		method: 'post',
+		data
+	})
+}
 
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-28
- * @namespace 学科均分
+ * @namespace 学科均分监控表
  * @param     {
  *            	pageNo: 1,
  *            	pageSize: 30,
@@ -219,6 +227,20 @@ export function getSchoolScoreExcellent(data){
 export function getSchoolSpecialTopicBySubjectAndPeriod(data){
 	return fetch({
 		url: '/admin/schoo-basic/getSchoolSpecialTopicBySubjectAndPeriod',
+		method: 'post',
+		data
+	})
+}
+/**
+ * @Author    xiaolongjun
+ * @DateTime  2017-10-24
+ * @namespace 学生成绩监控
+ * @static    
+ */
+
+export function allStudentScore(data){
+	return fetch({
+		url: 'admin/education/all-student-score',
 		method: 'post',
 		data
 	})

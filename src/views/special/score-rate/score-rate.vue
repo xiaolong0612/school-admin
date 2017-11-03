@@ -1,22 +1,44 @@
 <template>
   <div>
+    <div class="ui-search-wrap" id="ui-search-wrap">
+      <el-form :inline="true">
+
+        <el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable placeholder="请选择" @change="queryChange">
+            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="年级">
+          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="queryChange">
+            <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
     <div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
-      <div class="chart" id="chart" style="height:600px;width:100%"></div>
+      <!-- <div class="chart" id="chart" style="height:600px;width:100%"></div> -->
+      <chart height='calc(100vh - 165px)' width='100%' :setChartOption="setOption" :clickChart="true" :xParmas="x_id" clickPath="/special/score-rate/school"></chart>
     </div>
   </div>
 </template>
 <script>
   import { getLatestTest } from 'utils/auth';
-  import echarts from 'echarts';
-  require('echarts/theme/macarons'); // echarts 主题
+  import { gradeList } from 'utils/data';
+  import chart from '@/components/Charts/chart'
   import { getAllSpecialTopic } from 'api/special';
   export default {
+    components: { chart },
     data() {
       return {
         name: '',
-        screenHeight: 0,
+        gradeList: [],
+        periodList: [],
         listQuery: {
-          period: ''
+          period: '',
+          grade: ''
         },
         listLoading: false,
         list: {
@@ -25,16 +47,42 @@
           right: []
         },
         x_id:{},
-        series: []
+        series: [],
+        setOption: {},
       }
     },
     mounted() {
-      this.screenHeight = this.setTableHeight(false);
-      this.initChart();
+      // 设置顶部搜索条件
+      this.setForm();
+      this.setDefault();
       this.getList();
     },
     methods: {
+      setDefault(){
+        this.listQuery.period = this.periodList[0].value;
+        this.listQuery.grade = this.gradeList[0].label;
+      },
+      setForm(){
+        // 年级
+        let grade_list = gradeList('all');
+        for(let i=0; i<grade_list.length; i++){
+          for(var o=0; o<grade_list[i].options.length; o++){
+            this.gradeList.push(grade_list[i].options[o]);
+          }
+        };
+        // 届
+        let year = new Date().getFullYear();
+        for(let i=0; i<3; i++){
+          this.periodList.push({
+            label: year+i,
+            value: year+i,
+          })
+        }
+      },
       getList() {
+        this.list.title = [];
+        this.series = [];
+
         if(getLatestTest().length == 0){
           this.$message.error('sorry, 暂无考试信息');
           return;
@@ -43,6 +91,7 @@
         this.listQuery.period = paper.period;
 
         getAllSpecialTopic(this.listQuery).then(res => {
+          if(typeof res == 'undefined') return;
           var data = res.data.data;
           this.list.data = data.data;
           for(let index in data.title){
@@ -52,13 +101,13 @@
 
           // this.list['title'] = data.title;
           this.list.right = data.right;
-          this.series = [];
           // this.legend = []
-          for(let index in this.list.right){
+          for(let index in data.data){
             // this.legend.push(this.list.right[index]);
             this.series.push({
-              name: this.list.right[index],
+              name: index,
               type: 'bar',
+              barMaxWidth: 100,
               itemStyle: {
                 normal: {
                   barBorderRadius: 0,
@@ -71,20 +120,19 @@
                   }
                 }
               },
-              data: this.list.data[index].split(',')
+              data: data.data[index]
             })
           }
-          this.setOption();
-          this.addEchartClick();
+          this.setChartOption();
+          // this.addEchartClick();
         })
       },
-      initChart() {
-        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
+      queryChange(){
+        this.getList();
       },
-      setOption() {
+      setChartOption() {
         var _that = this;
-        console.log(_that.series)
-        this.chart.setOption({
+        this.setOption = {
           title: {
             text: '所有考试区专题得分率监控图',
             x: 'center',
@@ -104,7 +152,7 @@
             orient: 'vertical',
             bottom: '25%',
             right: '2%',
-            data: _that.legend,
+            data: _that.list.right,
           },
           grid: {
             borderWidth: 0,
@@ -170,19 +218,7 @@
             end: 35
           }],
           series: _that.series
-        })
-      },
-      addEchartClick() {
-        var _that = this;
-        this.chart.on('click', params => {
-          if(params.componentType === "xAxis") {
-            console.log(this.x_id[params.value]);
-            var id = _that.x_id[params.value];
-            _that.$router.push({ path: '/special/score-rate/school',  query: { id: id, name: params.value }});
-          }
-          // console.log(this.link[params.seriesName])
-          // this.$router.push({ path: '/special/scoring-item'});
-        })
+        }
       }
     }
   }

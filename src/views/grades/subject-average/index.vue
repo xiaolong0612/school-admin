@@ -8,7 +8,7 @@
 			<div class="ui-table-main">
 				<el-table :data="list.data" border style="width: 100%">
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
-	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable>
+	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 		            <template scope="scope">
 		              <div>{{scope.row[first.value][second.value]}}</div>
 		            </template>
@@ -22,7 +22,7 @@
 		    </el-table>
 			</div>
 			<div v-show="!listLoading" class="page-wrap fr">
-	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[10,20,30, 50]"
+	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"
 	        :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
 	      </el-pagination>
 	    </div>
@@ -47,7 +47,7 @@
         listLoading: true,
         listQuery: {
         	pageNo: 1,
-        	pageSize: 30,
+        	pageSize: 50,
           period: '',
           subject: "语文",
           grade: ""
@@ -74,7 +74,7 @@
         let paper = JSON.parse(getLatestTest());
 
 	      this.listQuery.subject = this.subject;
-	      this.listQuery.grade = this.gradeNo;
+	      this.listQuery.grade = paper.grade;
 	      this.listQuery.period = paper.period;
         getSchoolScoreRateBySubjectAndPeriodAndGrade(this.listQuery).then(res => {
           this.list.data = res.data.data.data;

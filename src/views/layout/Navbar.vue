@@ -17,7 +17,7 @@
                         首页
                     </el-dropdown-item>
                 </router-link> -->
-                <div v-if="roles[1] == 5 || roles[1] == 6">
+                <div v-if="roles.indexOf('5') != -1 || roles.indexOf('6') != -1">
                     <router-link to="/student/list">
                         <el-dropdown-item>
                             学生列表
@@ -93,9 +93,13 @@
         'roles'
       ])
     },
+    mounted() {
+      console.log(this.roles)
+    },
     methods: {
+        
       toggleSideBar() {
-        this.$store.dispatch('ToggleSideBar')
+        this.$store.dispatch('ToggleSideBar');
       },
       logout() {
         this.$store.dispatch('LogOut').then(() => {

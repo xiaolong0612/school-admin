@@ -23,93 +23,93 @@ const BureauIndex = _import('bureau/index');         // 教育局8、进修学�
 const StudentIndex = _import('student/index');       // 学生10
 
 // 成绩管理
-const TotalScore = _import('achievement/total-score');
-const DisciplineHierarchy = _import('achievement/discipline-hierarchy');
-const AdministrationDisciplineHierarchy = _import('achievement/administration-discipline-hierarchy');
-const AllClass = _import('achievement/all-class');
-const AllStudent = _import('achievement/all-student');
-const TeachingDisciplineHierarchy = _import('achievement/teaching-discipline-hierarchy');
-const DisciplineAverage = _import('achievement/discipline-average');
-const AdministrationAverage = _import('achievement/administration-average');
-const SectionClassDisciplineHierarchy = _import('achievement/section-class-discipline-hierarchy');
-const SubjectScore = _import('achievement/subject-score');
-const AnnualSplit = _import('achievement/annual-split');
-const StudentScore = _import('achievement/student-score');
-const TeachingAverage = _import('achievement/teaching-average');
-const SectionClass = _import('achievement/section-class');
-const AdministrationCom = _import('achievement/administration-com')
-const SingleSubjectStratification = _import('achievement/single-subject-stratification')
+// const TotalScore = _import('achievement/total-score');
+// const DisciplineHierarchy = _import('achievement/discipline-hierarchy');
+// const AdministrationDisciplineHierarchy = _import('achievement/administration-discipline-hierarchy');
+// const AllClass = _import('achievement/all-class');
+// const AllStudent = _import('achievement/all-student');
+// const TeachingDisciplineHierarchy = _import('achievement/teaching-discipline-hierarchy');
+// const DisciplineAverage = _import('achievement/discipline-average');
+// const AdministrationAverage = _import('achievement/administration-average');
+// const SectionClassDisciplineHierarchy = _import('achievement/section-class-discipline-hierarchy');
+// const SubjectScore = _import('achievement/subject-score');
+// const AnnualSplit = _import('achievement/annual-split');
+// const StudentScore = _import('achievement/student-score');
+// const TeachingAverage = _import('achievement/teaching-average');
+// const SectionClass = _import('achievement/section-class');
+// const AdministrationCom = _import('achievement/administration-com')
+// const SingleSubjectStratification = _import('achievement/single-subject-stratification')
 // 考点管理
 const IndexTest = _import('test-site/index');
 const TestItem = _import('test-site/test-item');
-// 专题管理
-const ScoringMonitoring = _import('special/scoring-monitoring');
-const ScoringItem = _import('special/scoring-item');
-const ScoringTestItem = _import('special/test-item');
-const Quality = _import('special/quality');
-const SpecialQualitySchool = _import('special/quality-school');
-const Analysis = _import('special/analysis');
-// 优良率
-const ExcellentRegion = _import('excellent/region');
-const ExcellentRegionSchool = _import('excellent/region-scholl');
-const ExcellentRegionTable = _import('excellent/region-table');
-const ExcellentRegionSchoolTable = _import('excellent/region-school-table');
-const ExcellentSubject = _import('excellent/subject');
-const ExcellentRegionSubject = _import('excellent/region-subject');
-const ExcellentClassSubject = _import('excellent/class-subject');
-const ExcellentSchool = _import('excellent/school');
-const ExcellentClass = _import('excellent/class');
-const ExcellentRegionAllSubject = _import('excellent/region-all-subject');
+// // 专题管理
+// const ScoringMonitoring = _import('special/scoring-monitoring');
+// const ScoringItem = _import('special/scoring-item');
+// const ScoringTestItem = _import('special/test-item');
+// const Quality = _import('special/quality');
+// const SpecialQualitySchool = _import('special/quality-school');
+// const Analysis = _import('special/analysis');
+// // 优良率
+// const ExcellentRegion = _import('excellent/region');
+// const ExcellentRegionSchool = _import('excellent/region-scholl');
+// const ExcellentRegionTable = _import('excellent/region-table');
+// const ExcellentRegionSchoolTable = _import('excellent/region-school-table');
+// const ExcellentSubject = _import('excellent/subject');
+// const ExcellentRegionSubject = _import('excellent/region-subject');
+// const ExcellentClassSubject = _import('excellent/class-subject');
+// const ExcellentSchool = _import('excellent/school');
+// const ExcellentClass = _import('excellent/class');
+// const ExcellentRegionAllSubject = _import('excellent/region-all-subject');
 
-const LowScoreRegion = _import('low-score/region');
-const LowScoreRegionSchool = _import('low-score/region-scholl');
-const LowScoreRegionTable = _import('low-score/region-table');
-const LowScoreRegionSchoolTable = _import('low-score/region-school-table');
-const LowScoreSubject = _import('low-score/subject');
-const LowScoreRegionSubject = _import('low-score/region-subject');
-const LowScoreClassSubject = _import('low-score/class-subject');
-const LowScoreSchool = _import('low-score/school');
-const LowScoreClass = _import('low-score/class');
-const LowScoreRegionAllSubject = _import('low-score/region-all-subject');
+// const LowScoreRegion = _import('low-score/region');
+// const LowScoreRegionSchool = _import('low-score/region-scholl');
+// const LowScoreRegionTable = _import('low-score/region-table');
+// const LowScoreRegionSchoolTable = _import('low-score/region-school-table');
+// const LowScoreSubject = _import('low-score/subject');
+// const LowScoreRegionSubject = _import('low-score/region-subject');
+// const LowScoreClassSubject = _import('low-score/class-subject');
+// const LowScoreSchool = _import('low-score/school');
+// const LowScoreClass = _import('low-score/class');
+// const LowScoreRegionAllSubject = _import('low-score/region-all-subject');
 
-const PassScoreRegion = _import('pass-score/region');
-const PassScoreRegionSchool = _import('pass-score/region-scholl');
-const PassScoreRegionTable = _import('pass-score/region-table');
-const PassScoreRegionSchoolTable = _import('pass-score/region-school-table');
-const PassScoreSubject = _import('pass-score/subject');
-const PassScoreRegionSubject = _import('pass-score/region-subject');
-const PassScoreClassSubject = _import('pass-score/class-subject');
-const PassScoreSchool = _import('pass-score/school');
-const PassScoreClass = _import('pass-score/class');
-const PassScoreRegionAllSubject = _import('pass-score/region-all-subject');
+// const PassScoreRegion = _import('pass-score/region');
+// const PassScoreRegionSchool = _import('pass-score/region-scholl');
+// const PassScoreRegionTable = _import('pass-score/region-table');
+// const PassScoreRegionSchoolTable = _import('pass-score/region-school-table');
+// const PassScoreSubject = _import('pass-score/subject');
+// const PassScoreRegionSubject = _import('pass-score/region-subject');
+// const PassScoreClassSubject = _import('pass-score/class-subject');
+// const PassScoreSchool = _import('pass-score/school');
+// const PassScoreClass = _import('pass-score/class');
+// const PassScoreRegionAllSubject = _import('pass-score/region-all-subject');
 
-// 能力
-const AbilityIndex = _import('ability/index');
-const AbilitySchool = _import('ability/school');
-const AbilitySpecial = _import('ability/special');
-const AbilityAnalysis = _import('ability/analysis');
-// 总分管理
-const FractionRegion = _import('fraction/region');
-const FractionAdministration = _import('fraction/administration');
-// 学科管理
-const SubjectSchool = _import('subject/school');
-const SubjectAdministration = _import('subject/administration');
-const SubjectTeaching = _import('subject/teaching');
-// P值
-const PSingleSchool = _import('P/single-school');
-const PSingleClass = _import('P/single-class');
-const PAllSchool = _import('P/all-school');
-const PAllRegion = _import('P/all-region');
-const PAllClass = _import('P/all-class');
-const PSingleRegion = _import('P/single-region');
-const PSingleRegionClass = _import('P/single-region-class');
-// 学生页
-const StudentSubject = _import('student/subject/subject');
-const StudentSpecial = _import('student/subject/special');
-const StudentTest = _import('student/subject/test');
-const StudentQuestions = _import('student/subject/questions');
-const StudentSummary = _import('student/subject/summary');
-const StudentMark = _import('student/mark');
+// // 能力
+// const AbilityIndex = _import('ability/index');
+// const AbilitySchool = _import('ability/school');
+// const AbilitySpecial = _import('ability/special');
+// const AbilityAnalysis = _import('ability/analysis');
+// // 总分管理
+// const FractionRegion = _import('fraction/region');
+// const FractionAdministration = _import('fraction/administration');
+// // 学科管理
+// const SubjectSchool = _import('subject/school');
+// const SubjectAdministration = _import('subject/administration');
+// const SubjectTeaching = _import('subject/teaching');
+// // P值
+// const PSingleSchool = _import('P/single-school');
+// const PSingleClass = _import('P/single-class');
+// const PAllSchool = _import('P/all-school');
+// const PAllRegion = _import('P/all-region');
+// const PAllClass = _import('P/all-class');
+// const PSingleRegion = _import('P/single-region');
+// const PSingleRegionClass = _import('P/single-region-class');
+// // 学生页
+// const StudentSubject = _import('student/subject/subject');
+// const StudentSpecial = _import('student/subject/special');
+// const StudentTest = _import('student/subject/test');
+// const StudentQuestions = _import('student/subject/questions');
+// const StudentSummary = _import('student/subject/summary');
+// const StudentMark = _import('student/mark');
 
 const ClassList = _import('List/class-list');
 const StudentList = _import('List/student-list');
@@ -412,7 +412,7 @@ export const asyncRouterMap = [
         path: 'student-grades-layering',
         component: gradesStudentGradesLayering,
         name: '学生成绩监控',
-        meta: { role: ['0', '1', '3'] }
+        meta: { role: ['0', '1', '3','6', '5', '8', '9'] }
       },
       {
         path: 'subject-average',
@@ -709,11 +709,11 @@ export const asyncRouterMap = [
         component: subjectSubjectAverage,
         name: '学科均分监控表',
       },
-      {
-        path: 'school-subject',
-        component: subjectSchoolSubject,
-        name: '学校各科均分',
-      },
+      // {
+      //   path: 'school-subject',
+      //   component: subjectSchoolSubject,
+      //   name: '学校各科均分',
+      // },
       {
         path: 'class-subject',
         component: subjectClassSubject,
@@ -757,6 +757,18 @@ export const asyncRouterMap = [
     meta: { role: ['10'] },
     children: [
       {path: 'score', component: _import('student/score'), name: '质检成绩总表'}
+    ]
+  },
+  {
+    path: '/student',
+    redirect: '/student/sbuject',
+    component: Layout,
+    name: '质量监控图',
+    icon: 'nenglizhi',
+    noDropdown: true,
+    meta: { role: ['10'] },
+    children: [
+      {path: 'sbuject', component: _import('student/subject'), name: '质量监控图'}
     ]
   },
   // {
@@ -1224,46 +1236,46 @@ export const asyncRouterMap = [
   //     { path: 'index', name: '学科管理', component: StudentSubject, meta: { role: ['10'] } }
   //   ]
   // },
-  {
-    path: '/student-special',
-    name: '专题',
-    component: Layout,
-    meta: { role: ['10'] },
-    hidden: true,
-    children: [
-      { path: 'index', name: '专题', component: StudentSpecial, meta: { role: ['10'] } }
-    ]
-  },
-  {
-    path: '/student-test',
-    name: '考点',
-    component:  Layout,
-    meta: { role: ['10'] },
-    hidden: true,
-    children: [
-      { path: 'index', name: '考点', component: StudentTest, meta: { role: ['10'] } }
-    ]
-  },
-  {
-    path: '/student-questions',
-    name: '考题',
-    component:  Layout,
-    meta: { role: ['10'] },
-    noDropdown: true,
-    children: [
-      { path: 'index', name: '考题管理', component: StudentQuestions, meta: { role: ['10'] } }
-    ]
-  },
-  {
-    path: '/student-summary',
-    name: '总结',
-    component:  Layout,
-    meta: { role: ['10'] },
-    noDropdown: true,
-    children: [
-      { path: 'index', name: '考后总结', component: StudentSummary, meta: { role: ['10'] } }
-    ]
-  },
+  // {
+  //   path: '/student-special',
+  //   name: '专题',
+  //   component: Layout,
+  //   meta: { role: ['10'] },
+  //   hidden: true,
+  //   children: [
+  //     { path: 'index', name: '专题', component: StudentSpecial, meta: { role: ['10'] } }
+  //   ]
+  // },
+  // {
+  //   path: '/student-test',
+  //   name: '考点',
+  //   component:  Layout,
+  //   meta: { role: ['10'] },
+  //   hidden: true,
+  //   children: [
+  //     { path: 'index', name: '考点', component: StudentTest, meta: { role: ['10'] } }
+  //   ]
+  // },
+  // {
+  //   path: '/student-questions',
+  //   name: '考题',
+  //   component:  Layout,
+  //   meta: { role: ['10'] },
+  //   noDropdown: true,
+  //   children: [
+  //     { path: 'index', name: '考题管理', component: StudentQuestions, meta: { role: ['10'] } }
+  //   ]
+  // },
+  // {
+  //   path: '/student-summary',
+  //   name: '总结',
+  //   component:  Layout,
+  //   meta: { role: ['10'] },
+  //   noDropdown: true,
+  //   children: [
+  //     { path: 'index', name: '考后总结', component: StudentSummary, meta: { role: ['10'] } }
+  //   ]
+  // },
   {
     path: '/class',
     component: Layout,
