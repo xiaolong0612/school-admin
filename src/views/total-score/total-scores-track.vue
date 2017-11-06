@@ -2,8 +2,29 @@
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
       <el-form :inline="true">
+      	<el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
+            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="年级">
+          <el-select v-model="listQuery.grade" filterable clearable placeholder="请选择" @change="getList('grade')">
+            <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="科目">
+          <el-select v-model="listQuery.subject" filterable clearable placeholder="请选择" @change="getList('subject')">
+            <el-option v-for="item in subjectList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="班级类型">
-          <el-select v-model="listQuery.state" filterable placeholder="请选择" @change="stateChange">
+          <el-select v-model="listQuery.state" filterable placeholder="请选择" @change="getList">
             <el-option label="全部" value=""></el-option>
             <el-option label="教学班" value="0"></el-option>
             <el-option label="行政班" value="1"></el-option>
@@ -18,9 +39,9 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list.data" border style="width: 100%">
-	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
-	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable>
+				<el-table v-loading="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
+	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :align="first.children != undefined ? 'center' : 'left'">
+	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 	            <template scope="scope">
 	              <div>{{scope.row[first.value][second.value]}}</div>
 	            </template>
@@ -42,11 +63,15 @@
 	</div>
 </template>
 <script>
+  import { periodList, gradeList, subjectList } from 'utils/data';
 	import { quaryAllScoreRataByPeriodForPage } from 'api/total_score';
 	export default {
 		data() {
 			return {
 				name: '总分跟踪管理',
+				periodList: periodList(),
+        gradeList:[],
+        subjectList: subjectList(),
 				list: {
 					data: [],
 					head: []
@@ -64,19 +89,36 @@
         }
 			}
 		},
-		created() {
-      this.getList();
-    },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+      this.setForm();
+			this.setDefault(this.getList());
 		},
 		methods: {
+      setForm(){
+        let grade_list = gradeList('all');
+        for(let i=0; i<grade_list.length; i++){
+          for(var o=0; o<grade_list[i].options.length; o++){
+            this.gradeList.push(grade_list[i].options[o]);
+          }
+        };
+      },
+      setDefault(callbak){
+        this.screenHeight = this.setTableHeight(true);
+        this.listQuery.period = this.periodList[0].value;
+        this.listQuery.grade = this.gradeList[0].label;
+        this.listQuery.subject = this.subjectList[0].value;
+        if(typeof callbak == 'function') callbak
+      },
 			getList() {
         this.listLoading = true;
-        quaryAllScoreRataByPeriodForPage(this.listQuery).then(response => {
-          this.list.data = response.data.data.data;
-          this.list.head = response.data.data.head;
-          this.total = response.data.total;
+        quaryAllScoreRataByPeriodForPage(this.listQuery).then(res => {
+        	if(typeof res == 'undefined'){
+        		this.listLoading = false;
+        		return false;
+        	}
+          this.list.data = res.data.data.data;
+          this.list.head = res.data.data.head;
+          this.total = res.data.data.total;
           this.listLoading = false;
         })
       },
@@ -87,10 +129,6 @@
       handleCurrentChange(val) {
         this.listQuery.pageNo = val;
         this.getList();
-      },
-      stateChange(val) {
-      	this.listQuery.state = val;
-      	this.getList();
       }
 		}
 	}

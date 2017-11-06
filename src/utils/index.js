@@ -269,6 +269,15 @@ export function deepClone(source) {
  return targetObj;
 }
 
+export function clearEchart(chart){
+  for(let i in chart){
+    if(i == 'setOption') chart[i] = {};
+    else chart[i] = [];
+  }
+
+  return chart
+}
+
 export function getPlace(dataPlace, placeNumber){
   if(isNaN(placeNumber)) return placeNumber;
 
@@ -284,7 +293,7 @@ export function getPlace(dataPlace, placeNumber){
 export const gpath = {
   code: 'http://118.178.93.124/admin/code/',
   // action: 'http://localhost:8080/sqms/ajaxfileupload',
-  action: 'http://118.178.93.124:8086/ajaxfileupload',
+  action: 'http://118.178.93.124/ajaxfileupload',
   userInfoAction: 'http://118.178.93.124/admin/upload',
   img: 'http://xqkd.oss-cn-beijing.aliyuncs.com/xqkd/images/'
 }

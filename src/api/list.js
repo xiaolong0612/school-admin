@@ -10,3 +10,11 @@ export function getClassList(data){
 		data
 	})
 }
+// 试卷列表
+export function getPaperList(data){
+	return fetch({
+		url: '/admin/examination-paper/getExaminationPaper',
+		method: 'post',
+		data
+	})
+}

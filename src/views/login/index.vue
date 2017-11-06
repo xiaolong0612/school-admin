@@ -19,7 +19,7 @@
         </el-col>
       </el-row>
     </div>
-    <el-dialog title="登陆" :visible.sync="showDialog" size="tiny">
+    <el-dialog title="登陆" :visible.sync="showDialog" size="tiny" width="500px">
       <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="70px" class="login-form" >
           <el-form-item label="帐号">
               <el-input name="account" type="text" v-model="loginForm.account" autoComplete="on" placeholder="帐号"></el-input>

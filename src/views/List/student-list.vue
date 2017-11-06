@@ -102,12 +102,12 @@
 					<el-table-column prop="" label="操作" width="140" fixed="right">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
-								<el-button type="danger" icon="delete" size="small" @click="handleDel(scope.row.id)"></el-button>
+								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
+								<el-button type="danger" icon="el-icon-delete" size="small" @click="handleDel(scope.row.id)"></el-button>
 							</div>
 							<div v-show="scope.row.edit">
-								<el-button type="success" icon="circle-check" size="small" @click="handleMod(scope)"></el-button>
-								<el-button type="warning" icon="circle-cross" size="small" @click="handleCancel(scope)"></el-button>
+								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
+								<el-button type="warning" icon="el-icon-circle-close" size="small" @click="handleCancel(scope)"></el-button>
 							</div>
 						</template>
 					</el-table-column>

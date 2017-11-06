@@ -11,6 +11,13 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+export function getPaperIdSchoolLowRate(data){
+	return fetch({
+		url: '/admin/schoo-basic/get-PaperIdSchoolLowRate',
+		method: 'post',
+		data
+	})
+}
 
 
 /**
@@ -20,6 +27,13 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+export function getClassLowRateByPeriodAndSubjectAndGrade(data){
+	return fetch({
+		url: '/admin/class-basic/getClassLowRateByPeriodAndSubjectAndGrade',
+		method: 'post',
+		data
+	})
+}
 
 
 /**
@@ -29,6 +43,13 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+export function getSchoolLowRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
+	return fetch({
+		url: '/admin/schoo-basic/getSchoolLowRateBySchoolIdAndSubjectAndPeriodAndGrade',
+		method: 'post',
+		data
+	})
+}
 
 /**
  * @Author    xiaolongjun
@@ -45,3 +66,10 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+export function getClassLowRateByPeriodAndClassIdAndGrade(data){
+	return fetch({
+		url: '/admin/class-basic/getClassLowRateByPeriodAndClassIdAndGrade',
+		method: 'post',
+		data
+	})
+}

@@ -11,6 +11,13 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+export function getPaperIdSchoolPassRate(data){
+	return fetch({
+		url: '/admin/schoo-basic/get-PaperIdSchoolPassRate',
+		method: 'post',
+		data
+	})
+}
 
 
 /**
@@ -20,6 +27,13 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+export function getClassPassRateByPeriodAndSubjectAndGrade(data){
+	return fetch({
+		url: '/admin/class-basic/getClassPassRateByPeriodAndSubjectAndGrade',
+		method: 'post',
+		data
+	})
+}
 
 
 /**
@@ -29,6 +43,13 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+export function getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
+	return fetch({
+		url: '/admin/schoo-basic/getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade',
+		method: 'post',
+		data
+	})
+}
 
 /**
  * @Author    xiaolongjun
@@ -37,6 +58,13 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+// export function getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
+// 	return fetch({
+// 		url: '/admin/schoo-basic/getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade',
+// 		method: 'post',
+// 		data
+// 	})
+// }
 
 /**
  * @Author    xiaolongjun
@@ -45,3 +73,10 @@ import fetch from 'utils/fetch';
  * @param     {}
  * @static    暂无
  */
+export function getClassPassRateByPeriodAndClassIdAndGrade(data){
+	return fetch({
+		url: '/admin/class-basic/getClassPassRateByPeriodAndClassIdAndGrade',
+		method: 'post',
+		data
+	})
+}

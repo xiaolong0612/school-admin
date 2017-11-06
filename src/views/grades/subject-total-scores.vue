@@ -22,8 +22,8 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list.data" border style="width: 100%">
-	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable :prop='first.value'>
+				<el-table v-loading="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
+	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :prop='first.value' :align="first.children != undefined ? 'center' : 'left'">
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 		            <template scope="scope">
 		              <div>{{scope.row[first.value][second.value]}}</div>
@@ -112,19 +112,17 @@
       },
 			getList() {
         this.listLoading = true;
-        console.log(getLatestTest())
         let paper = JSON.parse(getLatestTest());
-
-	      // this.listQuery.subject = this.subject;
 	      this.listQuery.paperName = paper.name;
 	      this.listQuery.period = paper.period;
         getSchoolScoreRateByPaperNameAndPeriodAndGrade(this.listQuery).then(res => {
-          let data = res.data.data;
-          console.log(data.data)
-          if(data.data.length == 0){
-          	this.$message.error('sorry,没有查询到考试信息');
+          if(typeof res == 'undefined'){
+          	// this.$message.error('sorry,没有查询到考试信息');
+            this.list.data = [];
+            this.listLoading = false;
           	return;
           }
+          let data = res.data.data;
           this.list.data = data.data;
           this.list.head = data.head;
           this.total = data.total;

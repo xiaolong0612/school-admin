@@ -84,11 +84,11 @@
 					<el-table-column v-if="hasPermission()" label="操作" width="140px">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
+								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
 							</div>
 							<div v-show="scope.row.edit">
-								<el-button type="success" icon="circle-check" size="small" @click="handleMod(scope)"></el-button>
-								<el-button type="warning" icon="circle-cross" size="small" @click="handleCancel(scope)"></el-button>
+								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
+								<el-button type="warning" icon="el-icon-circle-close" size="small" @click="handleCancel(scope)"></el-button>
 							</div>
 						</template>
 					</el-table-column>
@@ -123,8 +123,6 @@
 				listQuery: {
 					pageNo: 1,
 					pageSize: 50,
-					grade: '',
-					period: 2017,
 					testSitesId: '',
 					paperId: ''
 				},
@@ -167,7 +165,6 @@
 				this.screenHeight = this.setTableHeight(true);
 				this.testQuery.subject = this.subject;
 				this.paperQuery.subject = this.subject;
-				this.listQuery.grade = this.gradeNo;
 			},
 			getTestItem(val) {
       	this.testQuery.id = val[0];
@@ -177,8 +174,9 @@
       		let list = res.data.list;
       		for(let i=0; i<this.testSpecialTopic.length; i++){
       			if(this.testSpecialTopic[i].value == val[0]){;
+      				this.testSpecialTopic[i]['children'] = [];
 	      			for(let item=0; item<list.length; item++){
-		      			this.testSpecialTopic[i]['children'].push({
+		      			this.testSpecialTopic[i].children.push({
 		      				label: list[item].name,
 		      				value: list[item].id
 		      			})
@@ -214,6 +212,7 @@
 				})
 			},
 			getPaperList(){
+				this.listQuery.paperId = '';
 				getExaminationPaperList(this.paperQuery).then( res => {
 					this.paperList = res.data.list;
 				})
@@ -221,7 +220,6 @@
 			getList(){
 				this.listLoading = true;
 				this.listQuery.testSitesId = this.fromTest[1];
-				this.listQuery.period = this.paperQuery.period;
 				listInstructorQualityAnalysis(this.listQuery).then(res => {
 					this.list = res.data.list;
 					this.total = res.data.totalPage;
@@ -246,6 +244,7 @@
 						this.backList[scope.$index].teachAdvice = data.teachAdvice;
 						this.backList[scope.$index].analysis = data.analysis;
 						this.$message.success('编辑成功');
+						this.getList();
 					}
 				})
 			},

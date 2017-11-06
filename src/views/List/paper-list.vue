@@ -70,15 +70,45 @@
 						</template>
 			    </el-table-column>
 
+			    <el-table-column
+			      prop="file"
+			      label="试卷文件">
+			      <template scope="scope">
+			      	<el-upload
+			      		v-show="scope.row.edit"
+							  class="upload-demo"
+							  :action="gpath.action"
+							  :on-success="fileUpSuccess"
+							  :on-remove="handleImgRemove"
+							  multiple
+							  :data="{id: scope.row.id}"
+							  :limit="1"
+							  :file-list="scope.row.file">
+							  <el-button size="small" type="primary">点击上传</el-button>
+							</el-upload>
+
+							<div class='file-list' v-show="!scope.row.edit">
+								<a target="_blank" :href="item.url" v-for="item in scope.row.file">
+									<el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+										<div class="file_item">
+											<img class="file_icon" :src='"/static/img/suffix/"+ item.suffix+".png"' />
+											<p class="file_name">{{item.name}}</p>
+										</div>
+									</el-tooltip>
+								</a>
+          		</div>
+						</template>
+			    </el-table-column>
+
 			    <el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="edit" size="small" @click="scope.row.edit = true"></el-button>
-								<el-button type="danger" icon="delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
+								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
+								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
 							</div>
 							<div v-show="scope.row.edit">
-								<el-button type="success" icon="circle-check" size="small" @click="handleMod(scope)"></el-button>
-								<el-button type="warning" icon="circle-cross" size="small" @click="handleCancel(scope)"></el-button>
+								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
+								<el-button type="warning" icon="el-icon-circle-close" size="small" @click="handleCancel(scope)"></el-button>
 							</div>
 						</template>
 					</el-table-column>
@@ -173,6 +203,7 @@
 		data() {
 			return {
 				name: '试卷列表',
+				paperFileList: [],
 				list: [],
 				screenHeight: 0,
 				total: 0,
@@ -243,6 +274,11 @@
         	this.list = response.data.list;
         	for(let i=0; i<this.list.length; i++){
         		this.$set(this.list[i], 'edit', false);
+        		if(this.list[i].file == ''){
+        			this.list[i].file = [];
+        		}else{
+        			this.list[i].file = JSON.parse(this.list[i].file);
+        		}
         	}
         	this.backList = JSON.parse(JSON.stringify(this.list));
           this.total = response.data.total;
@@ -281,7 +317,12 @@
       	})
       },
       handleMod(scope){
-      	modExaminationPaper(scope.row).then(response => {
+      	let data = {};
+      	for(let i in scope.row){
+      		if(i == 'file') data[i] = JSON.stringify(scope.row[i]);
+      		else data[i] = scope.row[i];
+      	}
+      	modExaminationPaper(data).then(response => {
       		if(typeof response == 'undefined') return;
       		this.$message({
 	          message: '修改成功',
@@ -322,7 +363,38 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-      }
+      },
+      fileUpSuccess(res, file, fileList){
+      	for(let i in this.list){
+      		if(this.list[i].id = res.id ){
+      			this.list[i].file.push({
+    					name: res.originalName,
+    					originalName: res.name,
+    					size: res.size,
+    					suffix: res.suffix,
+    					url: res.url
+    				});
+      		}
+      	}
+      },
+      handleImgRemove(file, fileList) {
+      	for(let i=0; i<this.list.length; i++){
+      		for(let c=0; c<this.list[i].file.length; c++){
+      			if(this.list[i].file[c].url == file.url){
+      				this.list[i].file = [];
+      				for(let f=0; f<fileList.length; f++){
+      					this.list[i].file.push({
+      						name: fileList[f].name,
+	      					originalName: fileList[f].originalName,
+	      					size: fileList[f].size,
+	      					suffix: fileList[f].suffix,
+	      					url: fileList[f].url
+      					})
+      				}
+      			}
+      		}
+      	}
+      },
 		}
 	}
 </script>

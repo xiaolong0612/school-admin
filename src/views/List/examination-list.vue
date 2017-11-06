@@ -14,7 +14,27 @@
 			</h3>
 			<div class="ui-table-main">
 				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'questionNumber'}">
-
+					
+					<el-table-column type="expand">
+			      <template scope="scope">
+			        <el-form label-position="left" inline class="demo-table-expand pr100">
+			        	<el-row :gutter="20">
+								  <el-col :span="12">
+								  	<el-form-item label="题干">
+					            <el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.title"></el-input>
+          						<span v-show="!scope.row.edit">{{scope.row.title}}</span>
+					          </el-form-item>
+								  </el-col>
+								  <el-col :span="12">
+								  	<el-form-item label="题目">
+					            <el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.content"></el-input>
+          						<span v-show="!scope.row.edit">{{scope.row.content}}</span>
+					          </el-form-item>
+								  </el-col>
+								</el-row>
+			        </el-form>
+			      </template>
+			    </el-table-column>
 			    <el-table-column
 			      prop="questionNumber"
 			      label="题号"
@@ -29,21 +49,17 @@
 
 			    <el-table-column
 			      prop="title"
-			      label="题干"
-			      width="320">
+			      label="题干">
 			      <template scope="scope">
-			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.title"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.title}}</span>
+			      	<p class="eli-2">{{scope.row.title}}</p>
 						</template>
 			    </el-table-column>
 
 			    <el-table-column
 			      prop="content"
-			      label="题目"
-			      width="320">
+			      label="题目">
 			      <template scope="scope">
-			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.content"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.content}}</span>
+			      	<p class="eli-2">{{scope.row.content}}</p>
 						</template>
 			    </el-table-column>
 
@@ -74,20 +90,9 @@
 
 			    </el-table-column>
 
-			    <!-- <el-table-column
-			      prop="analysis"
-			      label="试题解析"
-			      width="400">
-			      <template scope="scope">
-			      	<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.analysis"></el-input>
-          		<span v-show="!scope.row.edit">{{scope.row.analysis}}</span>
-						</template>
-			    </el-table-column> -->
-
 			    <el-table-column
 			      prop="scoreCriterion"
-			      label="评分标准"
-			      width="400">
+			      label="评分标准">
 			      <template scope="scope">
 							<el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="scope.row.scoreCriterion"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.scoreCriterion}}</span>
@@ -96,8 +101,7 @@
 
 			    <el-table-column
 			      prop="cases"
-			      label="典型案例"
-			      width="400">
+			      label="典型案例">
 			      <template scope="scope">
 			      	<el-upload
 			      		v-show="scope.row.edit"
@@ -122,15 +126,15 @@
 						</template>
 			    </el-table-column>
 
-					<el-table-column prop="" label="操作" width="140" fixed="right">
+					<el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="edit" size="small" @click="handleEditRow(scope)"></el-button>
-								<el-button type="danger" icon="delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
+								<el-button type="info" icon="el-icon-edit" size="small" @click="handleEditRow(scope)"></el-button>
+								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
 							</div>
 							<div v-show="scope.row.edit">
-								<el-button type="success" icon="circle-check" size="small" @click="handleMod(scope)"></el-button>
-								<el-button type="warning" icon="circle-cross" size="small" @click="handleCancel(scope)"></el-button>
+								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
+								<el-button type="warning" icon="el-icon-circle-close" size="small" @click="handleCancel(scope)"></el-button>
 							</div>
 						</template>
 					</el-table-column>
@@ -146,9 +150,9 @@
 		  title="提示"
 		  :visible.sync="dialogVisible"
 		  size="tiny">
-		  <el-form class="small-space ui-form" :model="fromData" label-position="right" :rules="rules" ref="fromData" label-width="80px" style="padding:0 30px;">
+		  <el-form class="small-space ui-form" :model="fromData" label-position="right" :rules="rules" ref="fromData" label-width="100px" style="padding:0 30px;">
 
-        <el-form-item label="题号">
+        <el-form-item label="题号" prop="questionNumber">
           <el-input v-model="fromData.questionNumber"></el-input>
         </el-form-item>
 
@@ -165,11 +169,11 @@
           <el-input v-model="fromData.content"></el-input>
         </el-form-item> -->
 
-        <el-form-item label="分值">
+        <el-form-item label="分值" prop="score">
           <el-input v-model.number="fromData.score"></el-input>
         </el-form-item>
 				
-				<el-form-item label="专题/考点">
+				<el-form-item label="专题/考点" prop="testSpecialTopicId">
 					<el-cascader
 			    	expand-trigger="hover"
 			    	v-model="fromDataDefaultTest"
@@ -177,33 +181,6 @@
 					  @active-item-change="getTestItem">
 					</el-cascader>
 				</el-form-item>
-        <!-- <el-form-item label="专题">
-        	<el-select v-model="fromData.testSpecialTopicId" placeholder="请选择专题" @change="getTestItem">
-			      <el-option 
-			      	v-for="item in testSpecialTopic"
-			      	:key='item.value'
-			      	:label="item.label"
-			      	:value="item.value">
-			      </el-option>
-			    </el-select>
-          <el-input v-model="fromData.province"></el-input>
-        </el-form-item>
-
-        <el-form-item label="考点">
-        	<el-select v-model.number="fromData.testSitesId" placeholder="请选择考点">
-			      <el-option 
-			      	v-for="item in testSpecialTopicItem"
-			      	:key='item.value'
-			      	:label="item.label"
-			      	:value="item.value">
-			      </el-option>
-			    </el-select>
-        </el-form-item> -->
-				
-        <!-- <el-form-item label="评分标准">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.answer">
-          </el-input>
-        </el-form-item> -->
 
         <el-form-item label="评分标准">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.scoreCriterion">
@@ -293,7 +270,17 @@
 					scoreCriterion: ''
         },
         fromDataDefaultTest: [],
-        rules: {},
+        rules: {
+        	questionNumber: [
+            { required: true, trigger: 'blur', message: '请填写题号' }
+          ],
+        	score: [
+            { required: true, type: 'number', trigger: 'blur', message: '请填写分值' }
+          ],
+        	testSpecialTopicId: [
+            { required: true, trigger: 'blur', message: '请选择专题考点' }
+          ]
+        },
         dialogVisible: false,
         dialogDel: false,
         del_content: {}
@@ -354,7 +341,8 @@
       		if(typeof res == 'undefined' || res.data.list.length == 0) return;
       		let list = res.data.list;
       		for(let i=0; i<this.testSpecialTopic.length; i++){
-      			if(this.testSpecialTopic[i].value == val[0]){;
+      			if(this.testSpecialTopic[i].value == val[0]){
+	      			this.testSpecialTopic[i].children = [];
 	      			for(let item=0; item<list.length; item++){
 		      			this.testSpecialTopic[i].children.push({
 		      				label: list[item].name,
@@ -385,6 +373,7 @@
 					score: this.fromData.score,
 					answer: this.fromData.answer,
 					analysis: this.fromData.analysis,
+					scoreCriterion: this.fromData.scoreCriterion,
 					examinationPaperId: this.$route.params.id
         };
         if(this.fromData.cases.length == 0){
@@ -392,9 +381,6 @@
         }else{
         	data.cases= JSON.stringify(this.fromData.cases)
         }
-      	// this.fromData.cases = JSON.stringify(this.fromData.cases);
-      	// this.fromData.testSpecialTopicId = this.fromDataDefaultTest[0];
-      	// this.fromData.testSitesId = this.fromDataDefaultTest[1];
   			addExaminationPaperItem(data).then(response => {
   				if(typeof response == 'undefined') return;
           this.$message({
@@ -407,22 +393,13 @@
       	})
       },
       handleMod(scope){
-      	let data = {
-      		content: scope.row.content,
-      		analysis: scope.row.analysis,
-					answer: scope.row.answer,
-					cases: JSON.stringify(scope.row.cases),
-					content: scope.row.content,
-					examinationPaperId: scope.row.examinationPaperId,
-					id: scope.row.id,
-					name: scope.row.name,
-					questionNumber: scope.row.questionNumber,
-					score: scope.row.score,
-					subject: scope.row.subject,
-					testCode: scope.row.testCode,
-					testSitesId: scope.row.defaultTest[1],
-					testSpecialTopicId: scope.row.defaultTest[0],
-					title: scope.row.title
+      	let data = {};
+      	for(let i in scope.row){
+      		if(i == 'cases') data[i] = JSON.stringify(scope.row[i]);
+      		else if(i == 'testSitesId') data[i] = scope.row.defaultTest[1];
+      		else if(i == 'testSpecialTopicId') data[i] = scope.row.defaultTest[0];
+      		else if(i == 'defaultTest') continue;
+      		else data[i] = scope.row[i];
       	}
       	modExaminationPaperItem(data).then(response => {
       		if(typeof response == 'undefined') return;
@@ -443,6 +420,7 @@
       	scope.row.edit = false;
       },
       handleDel() {
+      	this.dialogDel = false;
       	delExaminationPaperItem(this.del_content.id).then(response => {
       		if(typeof response != 'undefined'){
       			this.$message({
@@ -474,6 +452,7 @@
         }
       },
       handleImgSuccess(res, file, fileList){
+      	console.log(res)
       	if(!res.success) return;
       	if(typeof res.id != 'undefined'){
       		for(let i=0; i<this.list.length; i++){
@@ -484,8 +463,8 @@
       					originalName: res.name,
       					size: res.size,
       					suffix: res.suffix,
-      					url: this.gpath.img+res.name
-      				})
+      					url: res.url
+      				});
       			}
       		}
       		// console.log(this.list[res.index]);
@@ -532,14 +511,24 @@
       	else len = a_len;
       	for(let i=0; i<len; i++){
       		if(typeof a[i] != 'undefined' && typeof b[i] != 'undefined'){
-      			if(parseInt(a[i]) > parseInt(b[i])) return true;
-      			else if(parseInt(a[i]) < parseInt(b[i])) return false;
+      			
+      			if(parseInt(a[i]) > parseInt(b[i])){
+      				// console.log(a[i], b[i], true);
+      				return true;
+      			}
+      			else if(parseInt(a[i]) < parseInt(b[i])){
+      				// console.log(a[i], b[i], false);
+      				return false;
+      			}
       			else continue;
       		}else if(typeof a[i] == 'undefined' && typeof b[i] != 'undefined'){
+      			// console.log(a[i], b[i], true)
       			return true
       		}else if(typeof a[i] != 'undefined' && typeof b[i] == 'undefined'){
+      			// console.log(a[i], b[i], false)
       			return false
       		}else{
+      			// console.log(a[i], b[i], true)
       			return true
       		}
       	}
