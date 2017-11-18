@@ -55,15 +55,20 @@ export function gradeList(type){
 	}
 }
 export function periodList(){
+	let new_data = new Date();
 	let periodList = [];
 	let section = 3;
-	let year = new Date().getFullYear();
+	let year = new_data.getFullYear();
+	let month = new_data.getMonth();       //获取当前月份(0-11,0代表1月)
+	let data = new_data.getDate();        //获取当前日(1-31)
+	if(month >= 8) year++;
   for(let i=0; i<section; i++){
     periodList.push({
       label: year+i,
       value: year+i,
     })
   }
+  console.log('periodList')
   return periodList;
 }
 export function subjectList(){
@@ -75,5 +80,6 @@ export function subjectList(){
       value: subject[i],
     })
   }
+  console.log('subjectList')
   return subjectList;
 }

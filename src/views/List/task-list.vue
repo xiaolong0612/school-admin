@@ -27,19 +27,34 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'id'}">
+				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight">
 
-					<el-table-column prop='id' label="序号" width="90" sortable></el-table-column>
+					<el-table-column prop='id' label="序号" width="90"></el-table-column>
 
 					<el-table-column prop='userName' label="老师" width="90"></el-table-column>
 
 					<el-table-column prop='name' label="任务名" width="130"></el-table-column>
 
+					<el-table-column prop='updatetime' label="上传时间" width="200"></el-table-column>
+
 					<el-table-column prop='description' label="任务描述" width="230"></el-table-column>
 
 					<el-table-column prop='stateStr' label="状态" width="160"></el-table-column>
 
-					<el-table-column prop='content' label="结束" width="360"></el-table-column>
+					<el-table-column prop='content' label="结束">
+						<template scope="scope">
+							<el-popover
+							  placement="top"
+							  width="600"
+							  trigger="hover"
+							  :content="scope.row.content">
+							  <p class="eli-2" slot="reference">
+								{{scope.row.content}}
+								</p>
+							</el-popover>
+							
+						</template>
+					</el-table-column>
 
 				</el-table>
 			</div>
@@ -67,7 +82,7 @@
         listQuery: {
         	id: '',
           pageNo: 1,
-          pageSize: 20
+          pageSize: 50
         },
         fromData: {}
 			}
@@ -120,8 +135,8 @@
       		_that.getList();
       	},20000)
       },
-      onSuccess(response, file, fileList) {
-      	console.log(response)
+      onSuccess(res, file, fileList) {
+      	if(typeof res == 'undefined') return;
       	this.$message({
           message: '文件上传成功',
           type: 'success'

@@ -3,13 +3,13 @@
 		<div class="ui-search-wrap" id="ui-search-wrap">
       <el-form :inline="true">
         <el-form-item label="届">
-          <el-select v-model="listQuery.period" filterable placeholder="请选择" @change="periodChange">
+          <el-select v-model="listQuery.period" filterable placeholder="请选择" @change="getList('period')">
             <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.label">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="年级选择">
-          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="gradeChange">
+          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="getList('grade')">
             <el-option v-for="item in classList" :label="item.label" :value="item.label" :key="item.label">
             </el-option>
           </el-select>
@@ -47,8 +47,9 @@
 </template>
 <script>
 	import { mapGetters } from 'vuex';
-	import { getLatestTest } from 'utils/auth';
-  import { gradeList } from 'utils/data';
+	import { getLatestTest, attrGrade, attrPeriod } from 'utils/auth';
+  import { gradeList, periodList } from 'utils/data';
+  import { getAllPeriod } from 'api/list';
 	import store from 'store';
 	import { getSchoolScoreRateByPaperNameAndPeriodAndGrade } from 'api/grades';
 	export default {
@@ -57,7 +58,7 @@
 				name: '各科总分监控',
 				screenHeight: 0,
 				classList: [],
-        periodList: [],
+        periodList: periodList(),
 				list: {
 					head: [],
 					data: []
@@ -68,7 +69,7 @@
           pageNo: 1,
           pageSize: 50,
           period: '',
-          grade: '一年级',
+          grade: '九年级',
           paperName: '',
         }
 			}
@@ -86,7 +87,8 @@
 			this.screenHeight = this.setTableHeight(true);
 			// 设置顶部搜索条件
       this.setForm();
-			this.getList();
+
+      this.getAllPeriod();
 		},
 		methods: {
 			setForm(){
@@ -96,25 +98,34 @@
           for(var o=0; o<grade_list[i].options.length; o++){
             this.classList.push(grade_list[i].options[o]);
           }
-        };
-        for(let i in this.classList){
-          this.$set(this.classList[i], 'select', '');
-        }
-        // 届
-        let year = new Date().getFullYear();
-        console.log(year);
-        for(let i=0; i<3; i++){
-          this.periodList.push({
-            label: year+i,
-            value: year+i,
-          })
         }
       },
-			getList() {
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+          this.listQuery.period = res.data.list[0];
+          this.setDefault();
+        })
+      },
+      setDefault(){
+        if(typeof attrPeriod() != 'undefined') this.listQuery.period = attrPeriod();
+        else this.listQuery.period = this.periodList[this.periodList.length-1].value;
+        if(typeof attrGrade() != 'undefined') this.listQuery.grade = attrGrade();
+        this.getList();
+      },
+			getList(type) {
+
+        switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+        }
+
         this.listLoading = true;
         let paper = JSON.parse(getLatestTest());
 	      this.listQuery.paperName = paper.name;
-	      this.listQuery.period = paper.period;
         getSchoolScoreRateByPaperNameAndPeriodAndGrade(this.listQuery).then(res => {
           if(typeof res == 'undefined'){
           	// this.$message.error('sorry,没有查询到考试信息');
@@ -136,15 +147,6 @@
       handleCurrentChange(val) {
         this.listQuery.pageNo = val;
         this.getList();
-      },
-      periodChange(val){
-      	this.listQuery.period = val;
-				this.getList();
-
-      },
-      gradeChange(val){
-      	this.listQuery.grade = val;
-				this.getList();
       }
 		}
 	}

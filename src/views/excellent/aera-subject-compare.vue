@@ -58,7 +58,7 @@
 	import { mapGetters } from 'vuex';
   import { getSchoolList } from 'api/info-administration/school';
   import { periodList, gradeList } from 'utils/data';
-	import { getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade } from 'api/excellent';
+	import { getSchoolExcellentRateByPeriodAndSubjectAndGrade } from 'api/excellent';
 	export default {
 		data() {
 			return {
@@ -79,7 +79,7 @@
         listQuery: {
           pageNo: 1,
          	pageSize: 50,
-         	schoolId: '',
+         	schoolId: null,
          	period: 2019,
          	grade: '七年级'
         },
@@ -97,6 +97,7 @@
     },
 		mounted() {
       this.setForm();
+      
 			this.getSchoolList();
 		},
 		methods: {
@@ -118,12 +119,12 @@
       getSchoolList(){
         getSchoolList(this.schoolQuery).then( res => {
           this.schoolList = res.data.list;
-          this.setDefault()
+          this.setDefault();
         })
       },
 			getList() {
         this.listLoading = true;
-        getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade(this.listQuery).then(res => {
+        getSchoolExcellentRateByPeriodAndSubjectAndGrade(this.listQuery).then(res => {
           this.list['data'] = res.data.data.data;
           this.list['head'] = res.data.data.head;
           this.total = res.data.data.total;
@@ -137,22 +138,6 @@
       handleCurrentChange(val) {
         this.listQuery.page = val;
         this.getList();
-      },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
-      },
-      onSearch() {
-      	this.listQuery.page++;
-      	if(this.listQuery.page == 6){
-      		this.listQuery.page = 1;
-      	}
-      	this.getList();
       }
 		}
 	}

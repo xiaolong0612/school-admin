@@ -129,8 +129,11 @@
 					<el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="el-icon-edit" size="small" @click="handleEditRow(scope)"></el-button>
-								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
+								<i class="el-icon-edit mr10" @click="handleEditRow(scope)"></i>
+								<i class="el-icon-delete" @click="showDiallogDel(scope.row)"></i>
+
+								<!-- <el-button type="info" icon="el-icon-edit" size="small" @click="handleEditRow(scope)"></el-button>
+								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button> -->
 							</div>
 							<div v-show="scope.row.edit">
 								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>

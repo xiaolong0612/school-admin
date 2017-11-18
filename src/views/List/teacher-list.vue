@@ -2,6 +2,23 @@
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
 			<el-form :inline="true" :model="fromData">
+
+				<el-form-item label="年级选择">
+          <el-select v-model="listQuery.gradeNo" placeholder="请选择" @change="getList('grade')">
+				    <el-option-group
+				      v-for="group in gradeList"
+				      :key="group.label"
+				      :label="group.label">
+				      <el-option
+				        v-for="item in group.options"
+				        :key="item.label"
+				        :label="item.label"
+				        :value="item.label">
+				      </el-option>
+				    </el-option-group>
+				  </el-select>
+        </el-form-item>
+
 				<el-form-item>
 	        <el-upload
 				    class="upload-demo"
@@ -45,7 +62,7 @@
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='sex' label="性别" width="100" sortable>
+					<el-table-column prop='sex' label="性别" width="100">
 						<template scope="scope">
 							<el-select v-show="scope.row.edit" v-model="scope.row.sex" placeholder="请选择">
 					    	<el-option label="男" value="0"></el-option>
@@ -56,7 +73,7 @@
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='birthdayStr' label="出身日期" width="150" sortable>
+					<el-table-column prop='birthdayStr' label="出身日期" width="150">
 						<template scope="scope">
 							<el-date-picker
 								v-show="scope.row.edit"
@@ -68,35 +85,50 @@
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='nativePlace' label="籍贯" width="90" sortable>
+					<el-table-column prop='nativePlace' label="籍贯" width="90">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.nativePlace"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.nativePlace}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='gradeNo' label="年级" width="90" sortable>
+					<el-table-column prop='gradeNo' label="年级" width="90">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.gradeNo"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.gradeNo}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='classNo' label="班级" width="90" sortable>
+					<el-table-column prop='classNo' label="班级" width="90">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.classNo"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.classNo}}</span>
 						</template>
 					</el-table-column>
+					
+					<el-table-column label="是否年段长" width="90">
+						<template scope="scope">
+						</template>
+					</el-table-column>
+					
+					<el-table-column label="是否班主任" width="90">
+						<template scope="scope">
+						</template>
+					</el-table-column>
+					
+					<el-table-column label="是否备课组长" width="90">
+						<template scope="scope">
+						</template>
+					</el-table-column>
 
-					<el-table-column prop='schoolName' label="所属学校" width="140" sortable>
+					<el-table-column prop='schoolName' label="所属学校" width="140">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.schoolName"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.schoolName}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='entryTime' label="入职时间" width="150" sortable>
+					<el-table-column prop='entryTime' label="入职时间" width="150">
 						<template scope="scope">
 							<el-date-picker
 								v-show="scope.row.edit"
@@ -108,21 +140,21 @@
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='highestEducation' label="最高学历" width="120" sortable>
+					<el-table-column prop='highestEducation' label="最高学历" width="120">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.highestEducation"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.highestEducation}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='email' label="email" width="190" sortable>
+					<el-table-column prop='email' label="email" width="190">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.email"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.email}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='telephone' label="联系方式" width="140" sortable fixed="right">
+					<el-table-column prop='telephone' label="联系方式" width="140" fixed="right">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.telephone"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.telephone}}</span>
@@ -132,12 +164,12 @@
 					<el-table-column prop="" label="操作" width="140" fixed="right">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
-								<el-button type="danger" icon="el-icon-delete" size="small" @click="handleDel(scope.row.id)"></el-button>
+								<i class="el-icon-edit mr10" @click="scope.row.edit = true"></i>
+								<i class="el-icon-delete" @click="showDiallogDel(scope.row)"></i>
 							</div>
 							<div v-show="scope.row.edit">
-								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
-								<el-button type="warning" icon="el-icon-circle-close" size="small" @click="handleCancel(scope)"></el-button>
+								<el-button type="success" icon="el-icon-success" size="mini" @click="handleMod(scope)"></el-button>
+								<el-button type="warning" icon="el-icon-circle-close" size="mini" @click="handleCancel(scope)"></el-button>
 							</div>
 						</template>
 					</el-table-column>
@@ -232,6 +264,18 @@
       	<el-button :plain="true" type='warning' @click="dialogVisible = false">取消</el-button>
 		  </span>
 		</el-dialog>
+		<el-dialog
+		  title="提示"
+		  :visible.sync="dialogDel"
+		  size="tiny">
+		  <span>确定要删除</span>
+		  <span style="color: red">{{del_content.name}}</span>
+		  <span>吗？</span>
+		  <span slot="footer" class="dialog-footer">
+		    <el-button @click="dialogDel = false">取 消</el-button>
+		    <el-button type="primary" @click="handleDel()">确 定</el-button>
+		  </span>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -239,6 +283,7 @@
 	import { getListTeacher, addTeacher, modTeacher, delTeacher} from 'api/info-administration/teacher';
 	import { validataPhone } from 'utils/validate';
 	import { gradeList } from 'utils/data';
+	import { attrGrade } from 'utils/auth';
 	export default {
 		data() {
 			const isPhone = (rule, value, callback) => {
@@ -263,11 +308,12 @@
 				total: 0,
         listLoading: true,
         dialogVisible: false,
+        dialogDel: false,
+        del_content: {},
         listQuery: {
           pageNo: 1,
           pageSize: 50,
           name: '',
-          classNo: '',
           gradeNo: '',
           schoolName: ''
         },
@@ -337,20 +383,35 @@
 		computed: {
       ...mapGetters([
         'uid',
+        'school',
         'schoolId'
       ])
     },
-    created() {
-    	this.fromData.schoolId = this.schoolId;
-    },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+			this.setDefault();
 			this.getList();
 		},
 		methods: {
-			getList() {
+			setDefault(){
+				this.screenHeight = this.setTableHeight(true);
+	    	this.fromData.schoolId = this.schoolId;
+	    	this.listQuery.schoolName = this.school.name;
+	    	if(typeof attrGrade() == 'undefined'){
+	    		this.listQuery.gradeNo  = '九年级';
+	    	}else this.listQuery.gradeNo  = attrGrade();
+			},
+			getList(type) {
+				switch(type){
+					case 'grade':
+					  attrGrade(this.listQuery.gradeNo);
+					  break;
+				}
         this.listLoading = true;
         getListTeacher(this.listQuery).then(response => {
+        	if(typeof response == 'undefined'){
+          	this.listLoading = false;
+        		return;
+        	}
           this.list = response.data.list;
         	for(let i=0; i<this.list.length; i++){
         		this.$set(this.list[i], 'edit', false);
@@ -420,8 +481,12 @@
       	scope.row.telephone = bridge.telephone;
       	scope.row.edit = false;
       },
-      handleDel(id) {
-      	delTeacher(id).then(response => {
+      showDiallogDel(row){
+      	this.del_content = row;
+      	this.dialogDel = true;
+      },
+      handleDel() {
+      	delTeacher({id:this.del_content.id}).then(response => {
       		if(typeof response == 'undefined') return;
       		this.$message({
 	          message: '删除成功',

@@ -3,14 +3,14 @@
     <div class="ui-search-wrap" id="ui-search-wrap">
       <el-form :inline="true">
 
-        <el-form-item label="学校">
+        <!-- <el-form-item label="学校">
           <el-select v-model="listQuery.schoolId" filterable clearable placeholder="请选择" @change="getList('school')">
             <el-option v-for="item in schoolList" :label="item.name" :value="item.id" :key="item.id">
             </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
-         <el-form-item label="届">
+        <el-form-item label="届">
           <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
             <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
             </el-option>
@@ -97,7 +97,8 @@
     },
 		mounted() {
       this.setForm();
-			this.getSchoolList();
+      this.setDefault()
+			// this.getSchoolList();
 		},
 		methods: {
       setForm(){
@@ -112,15 +113,15 @@
         this.screenHeight = this.setTableHeight(true);
         this.listQuery.period = this.periodList[0].value;
         this.listQuery.grade = this.gradeList[0].label;
-        this.listQuery.schoolId = this.schoolList[0].id;
+        // this.listQuery.schoolId = this.schoolList[0].id;
         this.getList();
       },
-      getSchoolList(){
-        getSchoolList(this.schoolQuery).then( res => {
-          this.schoolList = res.data.list;
-          this.setDefault()
-        })
-      },
+      // getSchoolList(){
+      //   getSchoolList(this.schoolQuery).then( res => {
+      //     this.schoolList = res.data.list;
+          
+      //   })
+      // },
 			getList() {
         this.listLoading = true;
         getSchoolLowRateBySchoolIdAndSubjectAndPeriodAndGrade(this.listQuery).then(res => {
@@ -137,15 +138,6 @@
       handleCurrentChange(val) {
         this.listQuery.page = val;
         this.getList();
-      },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
       },
       onSearch() {
       	this.listQuery.page++;

@@ -4,7 +4,7 @@
 			<el-form :inline="true">
 
 				<el-form-item label="届">
-          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="queryChange('period')">
+          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
             <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
             </el-option>
           </el-select>
@@ -25,14 +25,12 @@
 					
 			    <el-table-column
 			      prop="period"
-			      label="届"
-			      fixed>
+			      label="届">
 			    </el-table-column>
 
 					<el-table-column
 			      prop="subject"
-			      label="科目"
-			      fixed>
+			      label="科目">
 	      		<template scope="scope">
           		<span >{{scope.row.subject}}</span>
 						</template>
@@ -103,8 +101,11 @@
 			    <el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
-								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
+								<i class="el-icon-edit mr10" @click="scope.row.edit = true"></i>
+								<i class="el-icon-delete" @click="showDiallogDel(scope.row)"></i>
+
+								<!-- <el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
+								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button> -->
 							</div>
 							<div v-show="scope.row.edit">
 								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
@@ -190,6 +191,7 @@
 <script>
 	import { mapGetters } from 'vuex';
 	import { getExaminationPaperList, addExaminationPaper, modExaminationPaper, delExaminationPaper} from 'api/test/paper';
+  import { attrPeriod } from 'utils/auth';
 	import { validataPhone } from 'utils/validate';
 	import { gradeList, periodList } from 'utils/data';
 	const valiPhone = (rule, value, callback) => {
@@ -262,13 +264,20 @@
 		},
 		methods: {
 			setDefault(){
-				this.listQuery.period = this.periodList[this.periodList.length-1].value;
+				if(typeof attrPeriod() != 'undefined') this.listQuery.period = attrPeriod();
+				else this.listQuery.period = this.periodList[this.periodList.length-1].value;
+				
 				this.listQuery.subject = this.subject;
-				this.listQuery.grade = this.gradeNo;
-
 				this.fromData.teacherId = this.uid;
 			},
-			getList() {
+			getList(type) {
+				switch(type){
+					case 'period':
+					  attrPeriod(this.listQuery.period);
+					  console.log(attrPeriod())
+					  break;
+				}
+
         this.listLoading = true;
         getExaminationPaperList(this.listQuery).then(response => {
         	this.list = response.data.list;
@@ -284,10 +293,6 @@
           this.total = response.data.total;
           this.listLoading = false;
         })
-      },
-      queryChange(val){
-      	console.log(val)
-      	this.getList();
       },
       handleSizeChange(val) {
         this.listQuery.pageSize = val;

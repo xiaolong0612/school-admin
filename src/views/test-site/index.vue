@@ -51,12 +51,14 @@
 					<el-table-column prop="" label="操作" width="150">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
-								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
+								<i class="el-icon-edit mr10" @click="scope.row.edit = true"></i>
+								<i class="el-icon-delete" @click="showDiallogDel(scope.row)"></i>
+								<!-- <el-button type="info" icon="el-icon-edit" size="mini" @click="scope.row.edit = true"></el-button>
+								<el-button type="danger" icon="el-icon-delete" size="mini" @click="showDiallogDel(scope.row)"></el-button> -->
 							</div>
 							<div v-show="scope.row.edit">
-								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
-								<el-button type="warning" icon="el-icon-circle-close" size="small" @click="handleCancel(scope)"></el-button>
+								<el-button type="success" icon="el-icon-success" size="mini" @click="handleMod(scope)"></el-button>
+								<el-button type="warning" icon="el-icon-circle-close" size="mini" @click="handleCancel(scope)"></el-button>
 							</div>
 						</template>
 					</el-table-column>
@@ -264,7 +266,10 @@
       },
       handleDel() {
       	delTestSites(this.del_content.id).then(res => {
-      		if(typeof res == 'undefined') return;
+      		if(typeof res == 'undefined'){
+      			this.dialogDel = false;
+      			return;
+      		}
     			this.$message({
 	          message: '删除成功',
 	          type: 'success'

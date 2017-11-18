@@ -277,7 +277,7 @@ export const asyncRouterMap = [
         path: 'subject-total-scores',
         component: gradesSubjectTotalScores,
         name: '各科总分监控',
-        meta: { role: ['0', '1', '3', '5', '6', '7', '8', '9'] }
+        meta: { role: [ '1', '3', '5', '6', '7', '8', '9'] }
       },
       {
         path: 'class-total-scores',

@@ -111,9 +111,11 @@
 					<el-table-column prop="" label="操作" width="150">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
+								<i class="el-icon-edit mr10" @click="scope.row.edit = true"></i>
+								<i class="el-icon-delete" @click="showDiallogDel(scope.row)"></i>
+								<!-- <el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
 
-								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button>
+								<el-button type="danger" icon="el-icon-delete" size="small" @click="showDiallogDel(scope.row)"></el-button> -->
 
 							</div>
 							<div v-show="scope.row.edit">
@@ -217,9 +219,9 @@
 					levelName: '',
 					subject: '',
 					teacherId:  '',
-					analysis: '',
-					scoreCriterion: '',
-					cases: '',
+					analysis: '1',
+					scoreCriterion: '1',
+					cases: '1',
         },
         rules: {
 	        name: [
@@ -361,7 +363,10 @@
       },
       handleDel() {
       	delTestSites(this.del_content.id).then(res => {
-      		if(typeof res == 'undefined') return;
+      		if(typeof res == 'undefined'){
+      			this.dialogDel = false;
+      			return;
+      		}
     			this.$message({
 	          message: '删除成功',
 	          type: 'success'

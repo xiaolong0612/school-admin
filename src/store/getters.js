@@ -11,6 +11,7 @@ const getters = {
   highestEducation: state => state.user.highestEducation,
   nativePlace: state => state.user.nativePlace,
   introduction: state => state.user.introduction,
+  school: state => state.user.school,
   schoolId: state => state.user.schoolId,
   startSchoolTime: state => state.user.startSchoolTime,
   gradeNo: state => state.user.gradeNo,

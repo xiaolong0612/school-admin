@@ -23,7 +23,8 @@ const user = {
     schoolId: '',
     startSchoolTime: '',
     gradeNo: '',
-    classNo: ''
+    classNo: '',
+    school:{}
   },
 
   mutations: {
@@ -63,6 +64,9 @@ const user = {
     SET_ROLES: (state, roles) => {
       state.roles = roles;
     },
+    SET_SCHOOL: (state, school) => {
+      state.school = school;
+    },
     SET_SCHOOLID: (state, schoolId) => {
       state.schoolId = schoolId;
     },
@@ -90,7 +94,7 @@ const user = {
     // 登录
     LoginByAccount({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        loginByAccount(userInfo.account, userInfo.password, userInfo.code, userInfo.type).then(response => {
+        loginByAccount(userInfo.account, userInfo.password, userInfo.type).then(response => {
  
           const data = response.data;
 
@@ -121,6 +125,9 @@ const user = {
           type: state.api_get_type 
         };
         getInfo(query).then(response => {
+
+          commit('SET_SCHOOL', response.data.school)
+
           const user = response.data.userinfo;
           // let roles = user.type.split(',');
 

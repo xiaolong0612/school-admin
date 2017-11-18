@@ -7,13 +7,13 @@ import fetch from 'utils/fetch';
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
- * @namespace 各学科优良率
+ * @namespace 各学科低分率
  * @param     {}
  * @static    暂无
  */
-export function getPaperIdSchoolLowRate(data){
+export function getPaperSchoolLowGradeRate(data){
 	return fetch({
-		url: '/admin/schoo-basic/get-PaperIdSchoolLowRate',
+		url: '/admin/schoo-basic/get-PaperSchoolLowGradeRate',
 		method: 'post',
 		data
 	})
@@ -27,9 +27,9 @@ export function getPaperIdSchoolLowRate(data){
  * @param     {}
  * @static    暂无
  */
-export function getClassLowRateByPeriodAndSubjectAndGrade(data){
+export function getClassLowGradeRateByPeriodAndSubjectAndGrade(data){
 	return fetch({
-		url: '/admin/class-basic/getClassLowRateByPeriodAndSubjectAndGrade',
+		url: '/admin/class-basic/getClassLowGradeRateByPeriodAndSubjectAndGrade',
 		method: 'post',
 		data
 	})
@@ -39,13 +39,13 @@ export function getClassLowRateByPeriodAndSubjectAndGrade(data){
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
- * @namespace 全区各科优良率比较
+ * @namespace 全区各科低分率比较
  * @param     {}
  * @static    暂无
  */
 export function getSchoolLowRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
 	return fetch({
-		url: '/admin/schoo-basic/getSchoolLowRateBySchoolIdAndSubjectAndPeriodAndGrade',
+		url: '/admin/schoo-basic/getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade',
 		method: 'post',
 		data
 	})
@@ -54,15 +54,22 @@ export function getSchoolLowRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
- * @namespace 学校各科优良率比较
+ * @namespace 学校各科低分率比较
  * @param     {}
  * @static    暂无
  */
+// export function getSchoolLowRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
+// 	return fetch({
+// 		url: '/admin/schoo-basic/getSchoolLowRateBySchoolIdAndSubjectAndPeriodAndGrade',
+// 		method: 'post',
+// 		data
+// 	})
+// }
 
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
- * @namespace 班级各科优良率比较
+ * @namespace 班级各科低分率比较
  * @param     {}
  * @static    暂无
  */

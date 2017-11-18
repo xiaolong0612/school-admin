@@ -4,14 +4,14 @@
 			<el-form :inline="true">
 
 				<el-form-item label="届">
-          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="queryChange('period')">
+          <el-select v-model="paperQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
             <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="年级">
-          <el-select v-model="listQuery.grade" filterable clearable placeholder="请选择" @change="queryChange('grade')">
+          <el-select v-model="paperQuery.grade" filterable clearable placeholder="请选择" @change="getList('grade')">
             <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
             </el-option>
           </el-select>
@@ -28,7 +28,10 @@
         <el-form-item label="→"></el-form-item>
 
         <el-form-item label="考试列表">
-          
+          <el-select v-model="listQuery.id" filterable clearable placeholder="请选择" @change="getList">
+            <el-option v-for="item in paperList" :label="item.name" :value="item.id" :key="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
 
 			</el-form>
@@ -41,7 +44,7 @@
 				</h3>
 			</div>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
+				<el-table v-loading.body="listLoading" :data="list" stripe border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
 					<el-table-column prop="schoolName" label="学校" fixed>
 						<template scope="scope">
 							<!-- <router-link to="/achievement/administration-discipline-hierarchy"> -->
@@ -93,8 +96,10 @@
 	</div>
 </template>
 <script>
-  import { getLatestTest } from 'utils/auth';
-	import { gradeList, periodList } from 'utils/data';
+  import { mapGetters } from 'vuex';
+  import { getLatestTest, attrPeriod, attrGrade } from 'utils/auth';
+	import { gradeList, periodList, subjectList } from 'utils/data';
+	import { getPaperList } from 'api/list';
 	import { getPaperScore, getClassScore} from 'api/grades';
 	export default {
 		data() {
@@ -103,14 +108,21 @@
 				screenHeight: 0,
 				list: [],
 				total: null,
-        listLoading: true,
+        listLoading: false,
         periodList: periodList(),
         gradeList: [],
+        subjectList: subjectList(),
+        paperList: [],
+        paperQuery: {
+        	period: '',
+        	grade: '',
+        	subject: ''
+        },
         listQuery: {
           id: '',
           pageNo: 1,
           pageSize: 50,
-          grade: '',
+          grade: '九年级',
           period: ''
         },
         classTyoeQuery: {
@@ -122,10 +134,14 @@
         classType: ''
 			}
 		},
+		computed: {
+      ...mapGetters([
+        'subject',
+      ])
+    },
 		mounted() {
 			this.setForm();
 			this.setDefault();
-			this.getList();
 		},
 		methods: {
 			setForm(){
@@ -138,15 +154,43 @@
 			},
 			setDefault(){
 				this.screenHeight = this.setTableHeight(true);
-				console.log(this.gradeList)
-				this.listQuery.grade = this.gradeList[0].label;
-				this.listQuery.period = this.periodList[0].value;
+
+				if(typeof attrGrade() != 'undefined') this.paperQuery.grade = attrGrade();
+				if(typeof attrPeriod() != 'undefined') this.paperQuery.period = attrPeriod();
+				else this.paperQuery.period = this.periodList[this.periodList.length-1].value;
+
+				this.paperQuery.subject = this.subject;
 			},
-			getList() {
+			getPaperList(){
+				getPaperList(this.paperQuery).then( res => {
+					this.paperList = [];
+					this.listQuery.id = '';
+					this.list = [];
+					if(typeof res == 'undefined') return;
+					this.paperList = res.data.list;
+
+					this.listQuery.id = res.data.list[0].id;
+					this.getList();
+				})
+			},
+			getList(type) {
+
+        switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+        }
         this.listLoading = true;
-        let paper = JSON.parse(getLatestTest());
-        this.listQuery.id = paper.id;
+        this.listQuery.grade = this.paperQuery.grade;
+        this.listQuery.period = this.paperQuery.period;
         getPaperScore(this.listQuery).then(response => {
+        	if(typeof response == 'undefined'){
+          	this.listLoading = false;
+          	return;
+        	}
           this.list = response.data.list;
           this.total = response.data.total;
           this.name = response.data.name;
@@ -171,15 +215,6 @@
       handleCurrentChange(val) {
         this.listQuery.pageNo = val;
         this.getList();
-      },
-      queryChange(val){
-      	if(this.classTyoeQuery.state == -1){
-        	this.listQuery.pageNo = 1;
-      		this.getList();
-      	}else{
-        	this.classTyoeQuery.pageNo = 1;
-      		this.getclassTypeListData();
-      	}
       }
 		}
 	}

@@ -41,7 +41,7 @@
   import { periodList, gradeList, subjectList } from 'utils/data';
   import { clearEchart } from 'utils/index';
   import chart from '@/components/Charts/chart';
-	import { getPaperIdSchoolLowRate } from 'api/low_rate';
+	import { getPaperSchoolLowGradeRate } from 'api/low_rate';
   import { getPaperList } from 'api/list';
 	export default {
     components: { chart },
@@ -56,8 +56,8 @@
 					paperId: '',
 				},
         paperQuery: {
-          period: '2019',
-          grade: '七年级',
+          period: '',
+          grade: '',
           subject: ''
         },
 				total: 0,
@@ -101,18 +101,17 @@
         getPaperList(this.paperQuery).then( res => {
           if(typeof res == 'undefined') return;
           this.paperList = res.data.list;
-          console.log(res.data.list[0].id)
           this.listQuery.paperId = res.data.list[0].id;
           this.getList();
         })
       },
 			getList() {
-        getPaperIdSchoolLowRate(this.listQuery).then(res => {
+        getPaperSchoolLowGradeRate(this.listQuery).then(res => {
           this.chart = clearEchart(this.chart);
           this.setOption();
           if(typeof res == 'undefined') return;
           var data = res.data.data;
-          this.chart.name = data.right[0]
+          this.chart.name = data.right;
 
 
           for(let index in data.data){
@@ -204,8 +203,8 @@
               0
             ],
             bottom: 30,
-            start: 10,
-            end: 80,
+            start: 0,
+            end: 100,
             handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
             handleSize: '110%',
             handleStyle: {

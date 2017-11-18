@@ -58,7 +58,7 @@
 	import { mapGetters } from 'vuex';
   import { getSchoolList } from 'api/info-administration/school';
   import { periodList, gradeList } from 'utils/data';
-	import { getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade } from 'api/excellent';
+	import { getSchoolExcellentRateByPeriodAndSubjectAndGrade } from 'api/excellent';
 	export default {
 		data() {
 			return {
@@ -123,7 +123,7 @@
       },
 			getList() {
         this.listLoading = true;
-        getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade(this.listQuery).then(res => {
+        getSchoolExcellentRateByPeriodAndSubjectAndGrade(this.listQuery).then(res => {
           this.list['data'] = res.data.data.data;
           this.list['head'] = res.data.data.head;
           this.total = res.data.data.total;

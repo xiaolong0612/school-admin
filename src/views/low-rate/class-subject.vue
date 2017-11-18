@@ -55,7 +55,7 @@
 </template>
 <script>
   import { periodList, gradeList, subjectList } from 'utils/data';
-	import { getClassLowRateByPeriodAndSubjectAndGrade } from 'api/low_rate';
+	import { getClassLowGradeRateByPeriodAndSubjectAndGrade } from 'api/low_rate';
 	export default {
 		data() {
 			return {
@@ -103,7 +103,7 @@
       },
 			getList() {
         this.listLoading = true;
-        getClassLowRateByPeriodAndSubjectAndGrade(this.listQuery).then(res => {
+        getClassLowGradeRateByPeriodAndSubjectAndGrade(this.listQuery).then(res => {
           this.list['data'] = res.data.data.data;
           this.list['head'] = res.data.data.head;
           this.total = res.data.data.total;

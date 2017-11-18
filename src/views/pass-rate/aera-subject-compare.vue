@@ -3,12 +3,12 @@
     <div class="ui-search-wrap" id="ui-search-wrap">
       <el-form :inline="true">
 
-        <el-form-item label="学校">
+        <!-- <el-form-item label="学校">
           <el-select v-model="listQuery.schoolId" filterable clearable placeholder="请选择" @change="getList('school')">
             <el-option v-for="item in schoolList" :label="item.name" :value="item.id" :key="item.id">
             </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
          <el-form-item label="届">
           <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
@@ -31,7 +31,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-loading.body="listLoading" :data="list.data" border style="width: 100%">
+				<el-table v-loading="listLoading" :data="list.data" border style="width: 100%">
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :align="first.children != undefined ? 'center' : 'left'">
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 	            <template scope="scope">
@@ -56,9 +56,9 @@
 </template>
 <script>
 	import { mapGetters } from 'vuex';
-  import { getSchoolList } from 'api/info-administration/school';
+  // import { getSchoolList } from 'api/info-administration/school';
   import { periodList, gradeList } from 'utils/data';
-	import { getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade } from 'api/excellent';
+	import { getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade } from 'api/pass_rate';
 	export default {
 		data() {
 			return {
@@ -66,16 +66,19 @@
         periodList: periodList(),
         gradeList:[],
         schoolList: [],
-				list: [],
+				list: {
+          data: [],
+          head: []
+        },
 				screenHeight: 0,
 				total: null,
         listLoading: true,
-        schoolQuery: {
-          pageNo: 1,
-          pageSize: 100,
-          name: '',
-          type: ''
-        },
+        // schoolQuery: {
+        //   pageNo: 1,
+        //   pageSize: 100,
+        //   name: '',
+        //   type: ''
+        // },
         listQuery: {
           pageNo: 1,
          	pageSize: 50,
@@ -97,7 +100,8 @@
     },
 		mounted() {
       this.setForm();
-			this.getSchoolList();
+      this.setDefault();
+			// this.getSchoolList();
 		},
 		methods: {
       setForm(){
@@ -112,21 +116,27 @@
         this.screenHeight = this.setTableHeight(true);
         this.listQuery.period = this.periodList[0].value;
         this.listQuery.grade = this.gradeList[0].label;
-        this.listQuery.schoolId = this.schoolList[0].id;
+        // this.listQuery.schoolId = this.schoolList[0].id;
         this.getList();
       },
-      getSchoolList(){
-        getSchoolList(this.schoolQuery).then( res => {
-          this.schoolList = res.data.list;
-          this.setDefault()
-        })
-      },
+      // getSchoolList(){
+      //   getSchoolList(this.schoolQuery).then( res => {
+      //     this.schoolList = res.data.list;
+          
+      //   })
+      // },
 			getList() {
         this.listLoading = true;
-        getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade(this.listQuery).then(res => {
-          this.list['data'] = res.data.data.data;
-          this.list['head'] = res.data.data.head;
-          this.total = res.data.data.total;
+        getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade(this.listQuery).then(res => {
+          if(typeof res == 'undefined'){
+            this.listLoading = false;
+            this.list.data = [];
+            return;
+          }
+          this.list.data = res.data.data.data;
+          this.list.head = res.data.data.head;
+          console.log(this.list)
+          this.total = res.data.total;
           this.listLoading = false;
         })
       },
@@ -137,22 +147,6 @@
       handleCurrentChange(val) {
         this.listQuery.page = val;
         this.getList();
-      },
-      formatter(val) {
-      	if(val < 60 ) {
-      		return 'red'
-      	}else if(val == 60 ) {
-      		return 'rgb(251,178,23)'
-      	}else if(val>90) {
-      		return 'rgb(6,128,67)'
-      	}
-      },
-      onSearch() {
-      	this.listQuery.page++;
-      	if(this.listQuery.page == 6){
-      		this.listQuery.page = 1;
-      	}
-      	this.getList();
       }
 		}
 	}

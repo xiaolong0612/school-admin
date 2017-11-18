@@ -2,7 +2,21 @@
 .block-checkbox {
   display: block;
 }
-
+ .el-table th{
+  padding: 6px 0;
+}
+.el-table td{
+  padding: 5px 0;
+  .el-icon-delete{
+    color: #FA5555;
+  }
+  .el-icon-edit{
+    color:#409EFF;
+  }
+}
+.el-table td{
+  padding: 5px 0;
+}
 .operation-container {
   .cell {
     padding: 10px !important;

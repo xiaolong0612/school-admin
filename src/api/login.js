@@ -1,11 +1,11 @@
 import fetch from 'utils/fetch';
 
-export function loginByAccount(account, password, code, type) {
-  const data = { account, password, code, type };
+export function loginByAccount(account, password, type) {
+  const data = { account, password, type };
   return fetch({
     url: '/admin/login',
     method: 'post',
-    params: data
+    data
   });
 }
 
@@ -18,10 +18,10 @@ export function getInfo(data) {
   });
 }
 
-export function logout(query) {
+export function logout(data) {
   return fetch({
     url: '/admin/login-out',
     method: 'post',
-    params: query
+    data
   });
 }

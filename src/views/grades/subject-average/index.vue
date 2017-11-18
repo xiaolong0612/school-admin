@@ -1,12 +1,31 @@
 <template>
 	<div>
+		<div class="ui-search-wrap" id="ui-search-wrap">
+			<el-form :inline="true">
+
+				<el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
+            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="年级">
+          <el-select v-model="listQuery.grade" filterable clearable placeholder="请选择" @change="getList('grade')">
+            <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
+
 		<div class="ui-table-wrap clearfix">
 			<h3 class="ui-table-title">
 				<wscn-icon-svg icon-class="shuxian"/>
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list.data" border style="width: 100%">
+				<el-table v-loading.body="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 		            <template scope="scope">
@@ -31,7 +50,8 @@
 </template>
 <script>
 	import { mapGetters } from 'vuex';
-	import { getLatestTest } from 'utils/auth';
+  import { getLatestTest, attrPeriod, attrGrade } from 'utils/auth';
+	import { gradeList, periodList } from 'utils/data';
 	import store from 'store';
 	import { getSchoolScoreRateBySubjectAndPeriodAndGrade } from 'api/grades';
 	export default {
@@ -39,6 +59,8 @@
 			return {
 				name: '学科均分监控',
 				screenHeight: 0,
+				periodList: periodList(),
+        gradeList: [],
 				list: {
 					data: [],
 					head: []
@@ -49,8 +71,8 @@
         	pageNo: 1,
         	pageSize: 50,
           period: '',
-          subject: "语文",
-          grade: ""
+          subject: "",
+          grade: "九年级"
         }
 			}
 		},
@@ -64,19 +86,44 @@
 
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
-			this.getList();
+			this.setForm();
+			this.setDefault();
 		},
 		methods: {
-			getList() {
+			setForm(){
+				let grade_list = gradeList('all');
+	      for(let i=0; i<grade_list.length; i++){
+	        for(var o=0; o<grade_list[i].options.length; o++){
+	          this.gradeList.push(grade_list[i].options[o]);
+	        }
+	      };
+			},
+			setDefault(){
+				this.screenHeight = this.setTableHeight(true);
+				this.listQuery.subject = this.subject;
+
+				if(typeof attrGrade() != 'undefined') this.listQuery.grade = attrGrade();
+				if(typeof attrPeriod() != 'undefined') this.listQuery.period = attrPeriod();
+				else this.listQuery.period = this.periodList[this.periodList.length-1].value;
+
+				this.getList();
+
+			},
+			getList(type) {
+				switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+        }
         this.listLoading = true;
-
-        let paper = JSON.parse(getLatestTest());
-
-	      this.listQuery.subject = this.subject;
-	      this.listQuery.grade = paper.grade;
-	      this.listQuery.period = paper.period;
         getSchoolScoreRateBySubjectAndPeriodAndGrade(this.listQuery).then(res => {
+        	if(typeof res == 'undefined'){
+          	this.listLoading = false;
+          	return;
+        	}
           this.list.data = res.data.data.data;
           this.list.head = res.data.data.head;
           this.total = res.data.data.total;

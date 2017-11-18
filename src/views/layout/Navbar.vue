@@ -1,14 +1,14 @@
 <template>
-    <el-menu class="navbar" mode="horizontal">
+    <el-menu class="navbar pr20" mode="horizontal">
         <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
         <img class="fl" src="../../assets/logo-smile.png" height="50">
         <!-- <levelbar></levelbar> -->
         <tabs-view></tabs-view>
         <error-log v-if="log.length>0" class="errLog-container" :logsList="log"></error-log>
-        <screenfull class='screenfull'></screenfull>
-        <el-dropdown class="avatar-container" trigger="click">
+        <el-dropdown class="avatar-container fr" trigger="click">
             <div class="avatar-wrapper">
-                <img class="user-avatar" src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80">
+                <!-- <img class="user-avatar" src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80"> -->
+                欢迎，{{name}}
                 <i class="el-icon-caret-bottom"></i>
             </div>
             <el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -61,6 +61,7 @@
                 <el-dropdown-item divided><span @click="logout" style="display:block;">退出登录</span></el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
+        <screenfull class='screenfull fr mr10'></screenfull>
     </el-menu>
 </template>
 
@@ -111,54 +112,51 @@
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-    .navbar {
+  .navbar {
+    height: 50px;
+    line-height: 50px;
+    border-radius: 0px !important;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    .hamburger-container {
+        line-height: 58px;
         height: 50px;
-        line-height: 50px;
-        border-radius: 0px !important;
-        background-color: #fff;
-        box-shadow: 0 2px 6px rgba(0,0,0,.12);
+        float: left;
+        padding: 0 10px;
+    }
+    .errLog-container {
+        display: inline-block;
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        .hamburger-container {
-            line-height: 58px;
-            height: 50px;
-            float: left;
-            padding: 0 10px;
+        right: 150px;
+    }
+    .screenfull {
+        height: 50px;
+    }
+    .avatar-container {
+        height: 50px;
+        display: inline-block;
+        &:focus{
+            outline: none;
         }
-        .errLog-container {
-            display: inline-block;
-            position: absolute;
-            right: 150px;
-        }
-        .screenfull {
-            position: absolute;
-            right: 90px;
-            top: 16px;
-            color: red;
-        }
-        .avatar-container {
-            height: 50px;
-            display: inline-block;
-            position: absolute;
-            right: 35px;
-            .avatar-wrapper {
-                cursor: pointer;
-                margin-top: 5px;
-                position: relative;
-                .user-avatar {
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 10px;
-                }
-                .el-icon-caret-bottom {
-                    position: absolute;
-                    right: -20px;
-                    top: 25px;
-                    font-size: 12px;
-                }
+        .avatar-wrapper {
+            cursor: pointer;
+            position: relative;
+            &:focus{
+                outline: none;
+            }
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+            }
+            .el-icon-caret-bottom {
+                font-size: 12px;
             }
         }
     }
+  }
 </style>

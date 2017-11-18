@@ -59,7 +59,13 @@ export function getClassExcellentRateByPeriodAndSubjectAndGrade(data){
  *            }
  * @static    无法使用
  */
-
+export function getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
+	return fetch({
+		url: '/admin/schoo-basic/getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade',
+		method: 'post',
+		data
+	})
+}
 
 /**
  * @Author    xiaolongjun
@@ -74,11 +80,10 @@ export function getClassExcellentRateByPeriodAndSubjectAndGrade(data){
  *            	grade: 七年级
  * 						}
  * @static    可用
- * localhost:8080/sqms/admin/schoo-basic/getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade?pageNo=1&pageSize=10&schoolId=23&period=2017&grade=%E4%B8%83%E5%B9%B4%E7%BA%A7
  */
-export function getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
+export function getSchoolExcellentRateByPeriodAndSubjectAndGrade(data){
 	return fetch({
-		url: '/admin/schoo-basic/getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade',
+		url: '/admin/schoo-basic/getSchoolExcellentRateByPeriodAndSubjectAndGrade',
 		method: 'post',
 		data
 	})

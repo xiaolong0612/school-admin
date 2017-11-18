@@ -114,7 +114,6 @@
             // type: 'admin'
             account: '',
             password: '',
-            code: '',
             type: ''
           },
           loginRules: {
@@ -128,21 +127,7 @@
           codeImg: '',
           loading: false,
           showDialog: false,
-          disabled: false,
-          pathList: {
-            admin: '/',
-            0: '/teacher/index',
-            1: '/headmaster/index',
-            2: '',
-            3: '/director/index',
-            4: '',
-            5: '/principal/index',
-            6: '/principal/index',
-            7: '/instructor/index',
-            8: '/training-college/index',
-            9: '/bureau/index',
-            10: '/student/index'
-          }
+          disabled: false
         }
       },
       computed: {
@@ -164,10 +149,7 @@
               this.loading = true;
               this.$store.dispatch('LoginByAccount', this.loginForm).then((res) => {
                 this.loading = false;
-                if( typeof res.userinfo.type == 'undefined' ) this.$router.push({ path: this.pathList[10]});
-                // console.log(this.pathList[this.roles.split(',')[0]]);
-                this.$router.push({ path: this.pathList[Cookies.get('xxkd-roles').split(',')[0]]});
-                console.log(124)
+                this.$router.push({ path: '/'});
               }).catch(err => {
                 this.loading = false;
                 this.$message.error(err);
@@ -221,7 +203,7 @@
         display: table-cell;
         vertical-align: middle;
         background-color: #2d3a4b;
-        background: url('/static/img/Sky.gif') center no-repeat;
+        background: url('/static/img/Sky.webp') center no-repeat;
         background-size: cover;
         input:-webkit-autofill {
             -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;

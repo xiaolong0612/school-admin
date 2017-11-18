@@ -7,7 +7,7 @@ import fetch from 'utils/fetch';
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
- * @namespace 各学科优良率
+ * @namespace 各学科及格率
  * @param     {}
  * @static    暂无
  */
@@ -39,7 +39,7 @@ export function getClassPassRateByPeriodAndSubjectAndGrade(data){
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
- * @namespace 全区各科优良率比较
+ * @namespace 全区各科及格率比较
  * @param     {}
  * @static    暂无
  */
@@ -54,7 +54,7 @@ export function getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
- * @namespace 学校各科优良率比较
+ * @namespace 学校各科及格率比较
  * @param     {}
  * @static    暂无
  */
@@ -69,7 +69,7 @@ export function getSchoolPassRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
 /**
  * @Author    xiaolongjun
  * @DateTime  2017-09-29
- * @namespace 班级各科优良率比较
+ * @namespace 班级各科及格率比较
  * @param     {}
  * @static    暂无
  */

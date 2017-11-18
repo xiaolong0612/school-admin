@@ -2,6 +2,13 @@
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
       <el-form :inline="true">  
+        <!-- <el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList">
+            <el-option v-for="item in periodList" :label="item.label" :value="item.value" :key="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item> -->
+
         <el-form-item label="年级选择">
           <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="getList">
             <el-option v-for="item in classList" :label="item.label" :value="item.label" :key="item.label">
@@ -24,7 +31,7 @@
                   </el-col>
                   <el-col :span="12">
                     <div class="ui-number">
-                      {{item.scoreRate}}
+                      {{(item.scoreRate*100).toFixed(2)}}%
                     </div>
                   </el-col>
                 </el-row>
@@ -49,7 +56,7 @@
                   </el-col>
                   <el-col :span="12">
                     <div class="ui-number">
-                      {{item.number}}
+                      {{(item.number*100).toFixed(2)}}%
                     </div>
                   </el-col>
                 </el-row>
@@ -67,7 +74,7 @@
                   </el-col>
                   <el-col :span="12">
                     <div class="ui-number">
-                      {{item.scoreRate}}
+                      {{(item.scoreRate*100).toFixed(2)}}%
                     </div>
                   </el-col>
                 </el-row>
@@ -83,13 +90,15 @@
 <script>
   import { mapGetters } from 'vuex';
   import { teacherTop } from 'api/index';
-  import { gradeList } from 'utils/data';
+  import { attrGrade } from 'utils/auth';
+  import { periodList, gradeList } from 'utils/data';
   import chart from '@/components/Charts/chart';
   export default {
     components: { chart },
   	data() {
   		return {
   			name: '',
+        periodList: periodList(),
   			classList: [],
         chart: {
           name: '',
@@ -109,7 +118,8 @@
   			],
         listQuery: {
           id: '',
-          grade: ''
+          grade: '',
+          // period: ''
         }
   		}
   	},
@@ -125,26 +135,26 @@
           this.classList.push(grade_list[i].options[o]);
         }
       };
-      for(let i in this.classList){
-        this.$set(this.classList[i], 'select', '');
-      }
+      // this.listQuery.period = this.periodList[0].value;
+      this.listQuery.grade = this.classList[0].label;
     },
   	mounted() {
       this.listQuery.id = this.uid;
-  		this.getList('七年级');
+      this.setDefault();
+  		this.getList();
   	},
   	methods: {
-      selectGrade(index){
-        for(let i in this.classList){
-          if(index == i) this.classList[i].select = 'info';
-          else this.classList[i].select = '';
-        }
-        return this.classList[index].label;
+      setDefault(){
+        this.listQuery.grade = typeof attrGrade() == 'undefined' ? '九年级' : attrGrade();
       },
-  		getList(grade) {
-        this.listQuery.grade = grade;
+  		getList() {
+        attrGrade(this.listQuery.grade);
+        console.log(attrGrade())
         teacherTop(this.listQuery).then(res => {
           if(typeof res == 'undefined'){
+            this.specialList =[];
+            this.level =[];
+            this.qualityList =[];
             for(let i in this.chart){
               this.chart[i] = []
             }
@@ -258,8 +268,8 @@
               0
             ],
             bottom: 30,
-            start: 10,
-            end: 80,
+            start: 0,
+            end: 100,
             handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
             handleSize: '110%',
             handleStyle: {
