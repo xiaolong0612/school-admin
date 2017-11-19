@@ -14,15 +14,15 @@
 			</h3>
 			<div class="ui-table-main">
 				<el-table :data="list" :key="tableKey" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'schoolName'}">
-					<el-table-column prop='schoolName' label="学校" width="150" sortable></el-table-column>
+					<el-table-column prop='schoolName' label="学校" width="150"></el-table-column>
 					
-					<el-table-column prop='grade' label="年级" width="90" sortable>
+					<el-table-column prop='grade' label="年级" width="90">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.grade"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.grade}}</span>
 						</template>
 					</el-table-column>
-					<el-table-column prop='name' label="班级" width="90" sortable>
+					<el-table-column prop='name' label="班级" width="90">
 						<template scope="scope">
 							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.name"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.name}}</span>
@@ -57,7 +57,7 @@
 					<el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
+								<i class="el-icon-edit mr10" @click="scope.row.edit = true"></i>
 							</div>
 							<div v-show="scope.row.edit">
 								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>

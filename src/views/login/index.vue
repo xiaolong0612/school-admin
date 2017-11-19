@@ -203,7 +203,7 @@
         display: table-cell;
         vertical-align: middle;
         background-color: #2d3a4b;
-        background: url('/static/img/Sky.webp') center no-repeat;
+        background: url('/static/img/Sky_mini.jpg') center no-repeat,url('/static/img/Sky.webp') center no-repeat,url('/static/img/Sky.jpg') center no-repeat;
         background-size: cover;
         input:-webkit-autofill {
             -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;

@@ -9,10 +9,20 @@
 		</div>
 		<div class="ui-table-wrap clearfix">
 			<h3 class="ui-table-title">
+				<a @click="isA4 = !isA4" class="fr mr15"><span class="cWhite">切换查看方式</span></a>
 				<wscn-icon-svg icon-class="shuxian"/>
 				{{name}}-试题列表
 			</h3>
-			<div class="ui-table-main">
+			<div class="A4" v-if="isA4">
+				<h2 class="paper-title">{{name}}</h2>
+				<ul class="big_list">
+					<li class="big_item mb25" v-for="item in list">
+						<h3 class="big_title mb10">{{item.title}}{{item.testSpecialTopic}}/{{item.testName}}</h3>
+						<p class="big_content ml25">{{item.content}}</p>
+					</li>
+				</ul>
+			</div>
+			<div class="ui-table-main" v-else>
 				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'questionNumber'}">
 					
 					<el-table-column type="expand">
@@ -232,6 +242,7 @@
 	export default {
 		data() {
 			return {
+				isA4: true,
 				name: '',
 				list: [],
 				casesList: [],

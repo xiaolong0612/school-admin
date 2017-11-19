@@ -456,3 +456,28 @@ code {
 }
 
 .ui-once p{word-wrap:break-word;line-height:14px;font-size: 16px;}
+
+.A4{
+  width: 800px;
+  padding: 0 30px 30px;
+  margin: 30px auto;
+  box-shadow: 0 0 5px 2px rgb(230, 230, 230);
+  .paper-title{
+    text-align: center;
+    font-size: 24px;
+    line-height: 100px;
+  }
+  .big_list{
+    .big_item{
+      .big_title{
+        font-weight: 400;
+        font-size: 16px;
+      }
+      .big_content{
+        text-indent: 25px;
+        font-size: 14px;
+        line-height: 25px;
+      }
+    }
+  }
+}

@@ -50,14 +50,14 @@
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='studentNo' label="学号" width="160" sortable>
+					<el-table-column prop='studentNo' label="学号" sortable>
 						<template scope="scope">
 			      	<el-input v-show="scope.row.edit" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.studentNo"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.studentNo}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='studentSecondNo' label="学籍辅号" width="160" sortable>
+					<el-table-column prop='studentSecondNo' label="学籍辅号" sortable>
 						<template scope="scope">
 			      	<el-input v-show="scope.row.edit" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.studentSecondNo"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.studentSecondNo}}</span>
@@ -78,32 +78,35 @@
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='birthdayStr' label="出生年月" width="120" sortable>
+					<el-table-column prop='birthdayStr' label="出生年月" width="120">
 						<template scope="scope">
 			      	<el-input v-show="scope.row.edit" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.birthdayStr"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.birthdayStr}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='startSchoolTime' label="入学时间" width="130" sortable>
+					<el-table-column prop='startSchoolTime' label="入学时间" width="130">
 						<template scope="scope">
 			      	<el-input v-show="scope.row.edit" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.startSchoolTime"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.startSchoolTime}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop='telephone' label="联系方式" width="130" sortable>
+					<el-table-column prop='telephone' label="联系方式" width="130">
 						<template scope="scope">
 			      	<el-input v-show="scope.row.edit" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.telephone"></el-input>
           		<span v-show="!scope.row.edit">{{scope.row.telephone}}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column prop="" label="操作" width="140" fixed="right">
+					<el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
-								<el-button type="danger" icon="el-icon-delete" size="small" @click="handleDel(scope.row.id)"></el-button>
+
+								<i class="el-icon-edit mr10" @click="scope.row.edit = true"></i>
+								<i class="el-icon-delete" @click="showDiallogDel(scope.row)"></i>
+								<!-- <el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
+								<el-button type="danger" icon="el-icon-delete" size="small" @click="handleDel(scope.row.id)"></el-button> -->
 							</div>
 							<div v-show="scope.row.edit">
 								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
@@ -194,6 +197,18 @@
       	<el-button @click="dialogVisible = false" :plain="true" type='warning'>取消</el-button>
       </span>
 		</el-dialog>
+		<el-dialog
+		  title="提示"
+		  :visible.sync="dialogDel"
+		  size="tiny">
+		  <span>确定要删除</span>
+		  <span style="color: red">{{del_content.name}}</span>
+		  <span>吗？</span>
+		  <span slot="footer" class="dialog-footer">
+		    <el-button @click="dialogDel = false">取 消</el-button>
+		    <el-button type="primary" @click="handleDel()">确 定</el-button>
+		  </span>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -210,6 +225,8 @@
 				total: 0,
         listLoading: true,
         dialogVisible: false,
+        dialogDel: false,
+        del_content: {},
         sexOptions: [
 	        {
 	          value: '0',
@@ -361,31 +378,6 @@
 	          type: 'success'
 	        });
       		this.getList();
-	       //  let bridge = {
-	      	// 	name: scope.row.name,
-	      	// 	sexStr: scope.row.sexStr,
-	      	// 	studentNo: scope.row.studentNo,
-	      	// 	studentSecondNo: scope.row.studentSecondNo,
-	      	// 	grade: scope.row.grade,
-	      	// 	classNo: scope.row.classNo,
-	      	// 	birthdayStr: scope.row.birthdayStr,
-	      	// 	startSchoolTime: scope.row.startSchoolTime,
-	      	// 	// telephone: scope.row.telephone,
-	      	// 	email: scope.row.email,
-	      	// 	index: scope.$index
-	      	// }
-
-      		// this.backList[bridge.index].name = bridge.name;
-      		// this.backList[bridge.index].sexStr = bridge.sexStr;
-      		// this.backList[bridge.index].studentNo = bridge.studentNo;
-      		// this.backList[bridge.index].studentSecondNo = bridge.studentSecondNo;
-      		// this.backList[bridge.index].grade = bridge.grade;
-      		// this.backList[bridge.index].classNo = bridge.classNo;
-      		// this.backList[bridge.index].birthdayStr = bridge.birthdayStr;
-      		// this.backList[bridge.index].startSchoolTime = bridge.startSchoolTime;
-      		// // this.backList[bridge.index].telephone = bridge.telephone;
-      		// this.backList[bridge.index].email = bridge.email;
-      		// scope.row.edit = false;
       	})
       },
       handleCancel(scope){
@@ -414,8 +406,12 @@
       	scope.row.email = bridge.email;
       	scope.row.edit = false;
       },
-      handleDel(id) {
-      	delStudent(id).then(response => {
+      showDiallogDel(row){
+      	this.del_content = row;
+      	this.dialogDel = true;
+      },
+      handleDel() {
+      	delStudent({id:this.del_content.id}).then(response => {
       		if(typeof response != 'undefined'){
       			this.$message({
 		          message: '删除成功',
