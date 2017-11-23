@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 
 const user = {
   state: {
+    user:{},
     // 登陆状态
     token: Cookies.get('xxkd-Token'),
     uid: Cookies.get('xxkd-uid'),
@@ -28,6 +29,9 @@ const user = {
   },
 
   mutations: {
+    SET_USER: (state, user) => {
+      state.user = user;
+    },
     SET_TOKEN: (state, token) => {
       state.token = token;
     },
@@ -135,6 +139,7 @@ const user = {
 
           // commit('SET_ROLES', roles);
 
+          commit('SET_USER', response.data);
           commit('SET_NAME', user.name);
           commit('SET_AGE', user.age);
           commit('SET_EMAIL', user.email);

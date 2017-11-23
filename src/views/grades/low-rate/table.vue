@@ -81,7 +81,9 @@
 		computed: {
       ...mapGetters([
         'schoolId',
-        'gradeNo'
+        'gradeNo',
+        'subject',
+        'user'
       ])
     },
 		created() {
@@ -92,18 +94,13 @@
 		},
 		methods: {
 			setForm(){
-				let grade_list = gradeList('all');
-	      for(let i=0; i<grade_list.length; i++){
-	        for(var o=0; o<grade_list[i].options.length; o++){
-	          this.gradeList.push(grade_list[i].options[o]);
-	        }
-	      };
+				this.gradeList = this.user.grade.split(',');
 			},
 			setDefault(){
 				this.screenHeight = this.setTableHeight(true);
-				this.listQuery.grade = this.gradeList[0].label;
+				this.listQuery.grade = this.gradeList[0];
 				this.listQuery.period = this.periodList[0].value;
-      	this.listQuery.schoolId = this.schoolList[0].id;
+      	this.listQuery.subject = this.subject;
 
 				this.getList();
 
@@ -111,6 +108,11 @@
 			getList() {
         this.listLoading = true;
         getClassLowGradeRateByPeriodAndGradeAndSchoolIdTable(this.listQuery).then(res => {
+        	if(typeof res == 'undefined'){
+        		this.list['data'] = []
+        		this.listLoading = false;
+        		return false;
+        	}
           this.list['data'] = res.data.data.data;
           this.list['head'] = res.data.data.head;
           this.total = res.data.data.total;

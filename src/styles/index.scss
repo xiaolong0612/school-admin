@@ -422,6 +422,10 @@ code {
   background-color: #fff;
   border-radius: 5px;
   box-sizing: border-box;
+  
+  .el-button-group{
+    padding: 20px;
+  }
 }
 .ui-form .el-select, .ui-form .el-date-editor, .ui-form .el-cascader {
   width: 100%;

@@ -48,7 +48,11 @@
 			      prop="grade"
 			      label="年级">
 			      <template scope="scope">
-							<el-input v-show="scope.row.edit" size="small" v-model="scope.row.grade"></el-input>
+							<!-- <el-input v-show="scope.row.edit" size="small" v-model="scope.row.grade"></el-input> -->
+							<el-select v-show="scope.row.edit" v-model="scope.row.grade" size="small" placeholder="请选择">
+		            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
+		            </el-option>
+		          </el-select>
           		<span v-show="!scope.row.edit">{{scope.row.grade}}</span>
 						</template>
 			    </el-table-column>
@@ -211,7 +215,7 @@
 				total: 0,
         listLoading: true,
         periodList: periodList(),
-        classList: gradeList('all'),
+        gradeList: [],
         listQuery: {
           pageNo: 1,
           pageSize: 50,
@@ -251,7 +255,8 @@
       ...mapGetters([
         'uid',
         'subject',
-        'gradeNo'
+        'gradeNo',
+        'user'
       ])
     },
 		created() {
@@ -266,7 +271,7 @@
 			setDefault(){
 				if(typeof attrPeriod() != 'undefined') this.listQuery.period = attrPeriod();
 				else this.listQuery.period = this.periodList[this.periodList.length-1].value;
-				
+				this.gradeList = this.user.grade.split(',');
 				this.listQuery.subject = this.subject;
 				this.fromData.teacherId = this.uid;
 			},

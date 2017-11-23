@@ -29,16 +29,40 @@
 			      <template scope="scope">
 			        <el-form label-position="left" inline class="demo-table-expand pr100">
 			        	<el-row :gutter="20">
-								  <el-col :span="12">
+								  <el-col :span="6">
 								  	<el-form-item label="题干">
 					            <el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.title"></el-input>
           						<span v-show="!scope.row.edit">{{scope.row.title}}</span>
 					          </el-form-item>
 								  </el-col>
-								  <el-col :span="12">
+								  <el-col :span="6">
 								  	<el-form-item label="题目">
 					            <el-input v-show="scope.row.edit" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="scope.row.content"></el-input>
           						<span v-show="!scope.row.edit">{{scope.row.content}}</span>
+					          </el-form-item>
+								  </el-col>
+								  <el-col :span="6">
+								  	<el-form-item label="附件">
+					            <el-upload
+					            	v-show="scope.row.edit"
+											  class="upload-demo"
+							  				:data="scope.row"
+											  :action="gpath.action" 
+											  :on-success='handlePicSuccess'
+											  :on-remove="handlePicRemove"
+											  :file-list="fromData.pic">
+											  <el-button size="small" type="primary">点击上传</el-button>
+											</el-upload>
+          						<div class='file-list' v-show="!scope.row.edit">
+												<a target="_blank" :href="item.url" v-for="item in scope.row.pic">
+													<el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+														<div class="file_item">
+															<img class="file_icon" :src='"/static/img/suffix/"+ item.suffix+".png"' />
+															<p class="file_name">{{item.name}}</p>
+														</div>
+													</el-tooltip>
+												</a>
+				          		</div>
 					          </el-form-item>
 								  </el-col>
 								</el-row>
@@ -160,7 +184,7 @@
 		  </div>
 		</div>
 		<el-dialog
-		  title="提示"
+		  title="添加试题"
 		  :visible.sync="dialogVisible"
 		  size="tiny">
 		  <el-form class="small-space ui-form" :model="fromData" label-position="right" :rules="rules" ref="fromData" label-width="100px" style="padding:0 30px;">
@@ -176,6 +200,17 @@
         <el-form-item label="题目">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="fromData.content">
           </el-input>
+        </el-form-item>
+
+        <el-form-item label="附件">
+          <el-upload
+					  class="upload-demo"
+					  :action="gpath.action" 
+					  :on-success='handlePicSuccess'
+					  :on-remove="handlePicRemove"
+					  :file-list="fromData.pic">
+					  <el-button size="small" type="primary">点击上传</el-button>
+					</el-upload>
         </el-form-item>
 
         <!-- <el-form-item label="内容" prop="content">
@@ -281,7 +316,8 @@
 					analysis: '',
 					examinationPaperId: '',
 					cases: [],
-					scoreCriterion: ''
+					scoreCriterion: '',
+					pic:[]
         },
         fromDataDefaultTest: [],
         rules: {
@@ -322,6 +358,11 @@
         			this.list[i].cases=[]
         		}else{
         			this.list[i].cases = JSON.parse(this.list[i].cases);
+        		}
+        		if(this.list[i].pic == '' || this.list[i].pic == null){
+        			this.list[i].pic=[]
+        		}else{
+        			this.list[i].pic = JSON.parse(this.list[i].pic);
         		}
         	}
         	this.backList = JSON.parse(JSON.stringify(this.list));
@@ -395,6 +436,11 @@
         }else{
         	data.cases= JSON.stringify(this.fromData.cases)
         }
+        if(this.fromData.pic.length == 0){
+        	data.pic = '';
+        }else{
+        	data.pic= JSON.stringify(this.fromData.pic)
+        }
   			addExaminationPaperItem(data).then(response => {
   				if(typeof response == 'undefined') return;
           this.$message({
@@ -410,6 +456,9 @@
       	let data = {};
       	for(let i in scope.row){
       		if(i == 'cases') data[i] = JSON.stringify(scope.row[i]);
+      		else if(i == 'pic'){
+      			data[i] = JSON.stringify(scope.row[i]);
+      		}
       		else if(i == 'testSitesId') data[i] = scope.row.defaultTest[1];
       		else if(i == 'testSpecialTopicId') data[i] = scope.row.defaultTest[0];
       		else if(i == 'defaultTest') continue;
@@ -428,7 +477,8 @@
       	let index = scope.$index;
       	let bridge = {
       		address: this.backList[index].address,
-      		cases: this.backList[index].cases
+      		cases: this.backList[index].cases,
+      		pic: this.backList[index].pic
       	}
       	scope.row.cases = bridge.cases;
       	scope.row.edit = false;
@@ -462,7 +512,8 @@
 					answer: '',
 					analysis: '',
 					examinationPaperId: '',
-					cases: []
+					cases: [],
+					pic: []
         }
       },
       handleImgSuccess(res, file, fileList){
@@ -500,6 +551,53 @@
       				this.list[i].cases = [];
       				for(let f=0; f<fileList.length; f++){
       					this.list[i].cases.push({
+      						name: fileList[f].name,
+	      					originalName: fileList[f].originalName,
+	      					size: fileList[f].size,
+	      					suffix: fileList[f].suffix,
+	      					url: fileList[f].url
+      					})
+      				}
+      			}
+      		}
+      	}
+      },
+
+      handlePicSuccess(res, file, fileList){
+      	console.log(res)
+      	if(!res.success) return;
+      	if(typeof res.id != 'undefined'){
+      		for(let i=0; i<this.list.length; i++){
+      			if(this.list[i].id == res.id){
+
+      				this.list[i].pic.push({
+      					name: res.originalName,
+      					originalName: res.name,
+      					size: res.size,
+      					suffix: res.suffix,
+      					url: res.url
+      				});
+      			}
+      		}
+      		// console.log(this.list[res.index]);
+      	}else{
+  				this.fromData.pic.push({
+  					name: res.originalName,
+  					originalName: res.name,
+  					size: res.size,
+  					suffix: res.suffix,
+  					url: this.gpath.img+res.name
+  				})
+  			}
+      	
+      },
+      handlePicRemove(file, fileList) {
+      	for(let i=0; i<this.list.length; i++){
+      		for(let c=0; c<this.list[i].pic.length; c++){
+      			if(this.list[i].pic[c].url == file.url){
+      				this.list[i].pic = [];
+      				for(let f=0; f<fileList.length; f++){
+      					this.list[i].pic.push({
       						name: fileList[f].name,
 	      					originalName: fileList[f].originalName,
 	      					size: fileList[f].size,

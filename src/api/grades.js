@@ -103,15 +103,15 @@ export function getSchoolScoreRateBySubjectAndPeriodAndGrade(data){
  *            	paperId: 7
  *            }
  */
-// 无法使用
-export function getClassScoreRateByPeriodAndGradeAndSchoolIdEacher(data){
+// 区
+export function getSchoolExcellentRateByPeriodAndSubjectAndGrade(data){
 	return fetch({
-		url: '/admin/class-basic/getClassExcellentRatePaperId',
+		url: '/admin/schoo-basic/getSchoolExcellentRateByPeriodAndSubjectAndGrade',
 		method: 'post',
 		data
 	})
 }
-// ?period=2017&grade=初一年&pageNo=1&pageSize=10&schoolId=5
+// 校
 export function getClassScoreRateByPeriodAndGradeAndSchoolIdTable(data){
 	return fetch({
 		url: '/admin/class-basic/getClassScoreRateByPeriodAndGradeAndSchoolId',
@@ -129,15 +129,15 @@ export function getClassScoreRateByPeriodAndGradeAndSchoolIdTable(data){
  *            	paperId: 7
  * 						}
  */
- // 404
-export function getClassPassRatePaperIdEacher(data){
+// 区
+export function getSchoolPassRateByPeriodAndSubjectAndGrade(data){
 	return fetch({
-		url: '/admin/class-basic/getClassPassRatePaperId',
+		url: '/admin/schoo-basic/getSchoolPassRateByPeriodAndSubjectAndGrade',
 		method: 'post',
 		data
 	})
 }
-// 404
+// 校
 export function getClassPassRateByPeriodAndGradeAndSchoolIdTable(data){
 	return fetch({
 		url: '/admin/class-basic/getClassPassRateByPeriodAndGradeAndSchoolId',
@@ -155,15 +155,15 @@ export function getClassPassRateByPeriodAndGradeAndSchoolIdTable(data){
  *            	paperId: 7
  * 						}
  */
-// 查询失败
-export function getClassLowGradeRateByPeriodAndGradeAndSchoolIdEacher(data){
+// 区
+export function getSchoolLowGradeRateByPeriodAndSubjectAndGrade(data){
 	return fetch({
-		url: '/admin/class-basic/getClassLowGradeRateByPeriodAndGradeAndSchoolId',
+		url: '/admin/schoo-basic/getSchoolLowGradeRateByPeriodAndSubjectAndGrade',
 		method: 'post',
 		data
 	})
 }
-// 没有
+// 校
 export function getClassLowGradeRateByPeriodAndGradeAndSchoolIdTable(data){
 	return fetch({
 		url: '/admin/class-basic/getClassLowGradeRateByPeriodAndGradeAndSchoolId',

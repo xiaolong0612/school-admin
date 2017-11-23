@@ -57,7 +57,7 @@ export function getClassExcellentRateByPeriodAndSubjectAndGrade(data){
  *            	grade: '初一年',
  *            	schoolId: 1
  *            }
- * @static    无法使用
+ * @static    
  */
 export function getSchoolExcellentRateBySchoolIdAndSubjectAndPeriodAndGrade(data){
 	return fetch({

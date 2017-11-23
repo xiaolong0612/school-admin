@@ -331,12 +331,12 @@ export const asyncRouterMap = [
         hidden: true,
         meta: { role: ['9','0'] }
       },
-      {
-        path: 'total-scores-track',
-        component: gradesTotalAcoresTrack,
-        name: '总分跟踪管理',
-        meta: { role: ['7'] }
-      },
+      // {
+      //   path: 'total-scores-track',
+      //   component: gradesTotalAcoresTrack,
+      //   name: '总分跟踪管理',
+      //   meta: { role: ['7'] }
+      // },
       {
         path: 'excellent-rate/echart',
         component: gradesExcellentRote_echart,

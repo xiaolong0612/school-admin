@@ -24,7 +24,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-loading.body="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
+				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable>
 		            <template scope="scope">

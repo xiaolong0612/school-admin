@@ -10,7 +10,7 @@
         </el-form-item>
         <el-form-item label="年级选择">
           <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="getList('grade')">
-            <el-option v-for="item in classList" :label="item.label" :value="item.label" :key="item.label">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -57,7 +57,7 @@
 			return {
 				name: '各科总分监控',
 				screenHeight: 0,
-				classList: [],
+				gradeList: [],
         periodList: periodList(),
 				list: {
 					head: [],
@@ -77,7 +77,8 @@
 		computed: {
       ...mapGetters([
         'subject',
-        'gradeNo'
+        'gradeNo',
+        'user'
       ])
     },
 		created() {
@@ -93,12 +94,8 @@
 		methods: {
 			setForm(){
         // 年级
-        let grade_list = gradeList('all');
-        for(let i=0; i<grade_list.length; i++){
-          for(var o=0; o<grade_list[i].options.length; o++){
-            this.classList.push(grade_list[i].options[o]);
-          }
-        }
+        
+        this.gradeList = this.user.grade.split(',');
       },
       getAllPeriod(){
         getAllPeriod().then(res => {

@@ -201,8 +201,8 @@
         
         <el-form-item label="性别">
 			    <el-radio-group v-model="fromData.sex">
-			      <el-radio label="男"></el-radio>
-			      <el-radio label="女"></el-radio>
+			      <el-radio label="男" value="1"></el-radio>
+			      <el-radio label="女" value="2"></el-radio>
 			    </el-radio-group>
 			  </el-form-item>
 				
@@ -315,7 +315,7 @@
           pageSize: 50,
           name: '',
           gradeNo: '',
-          schoolName: ''
+          schoolId: ''
         },
         fromData: {
         	name: '',
@@ -384,7 +384,6 @@
       ...mapGetters([
         'uid',
         'school',
-        'schoolId'
       ])
     },
 		mounted() {
@@ -394,7 +393,7 @@
 		methods: {
 			setDefault(){
 				this.screenHeight = this.setTableHeight(true);
-	    	this.fromData.schoolId = this.schoolId;
+	    	this.fromData.schoolId = this.school.id;
 	    	this.listQuery.schoolName = this.school.name;
 	    	if(typeof attrGrade() == 'undefined'){
 	    		this.listQuery.gradeNo  = '九年级';

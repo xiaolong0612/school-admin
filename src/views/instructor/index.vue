@@ -11,7 +11,7 @@
 
         <el-form-item label="年级选择">
           <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="getList">
-            <el-option v-for="item in classList" :label="item.label" :value="item.label" :key="item.label">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -41,7 +41,12 @@
         </el-col>
   		  <el-col :span="16">
   		  	<div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
-  					<chart height='calc(100vh - 165px)' width='100%' :setChartOption="chart.setOption" :clickChart="false"></chart>
+  					<chart height='calc(100vh - 265px)' width='100%' :setChartOption="chart.setOption" :clickChart="false"></chart>
+            
+            <el-button-group>
+              <el-button type="primary" size='small' icon="el-icon-arrow-left" :disabled="paperPage.index == examinationList.length-1" @click="getList('+')">上一卷</el-button>
+              <el-button type="primary" size="small" @click="getList('-')" :disabled="paperPage.index == 0">下一卷<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+            </el-button-group>
   				</div>
   		  </el-col>
   		  <el-col :span="4">
@@ -90,16 +95,15 @@
 <script>
   import { mapGetters } from 'vuex';
   import { teacherTop } from 'api/index';
+  import { getPaperList } from 'api/list';
   import { attrGrade } from 'utils/auth';
-  import { periodList, gradeList } from 'utils/data';
   import chart from '@/components/Charts/chart';
   export default {
     components: { chart },
   	data() {
   		return {
   			name: '',
-        periodList: periodList(),
-  			classList: [],
+  			gradeList: [],
         chart: {
           name: '',
           data: [],
@@ -108,48 +112,64 @@
           series: [],
           setOption: {}
         },
+        paperPage:{
+          index: 0,
+        },
   			specialList: [],
   			qualityList: [],
         level: [],
-  			examinationList: [
-  				{ name: '考试1' },
-  				{ name: '考试2' },
-  				{ name: '考试3' }
-  			],
+  			examinationList: [],
         listQuery: {
           id: '',
           grade: '',
-          // period: ''
+          paperId: '',
         }
   		}
   	},
     computed: {
       ...mapGetters([
+        'user',
         'uid'
       ])
     },
-    created() {
-      let grade_list = gradeList('all');
-      for(let i=0; i<grade_list.length; i++){
-        for(var o=0; o<grade_list[i].options.length; o++){
-          this.classList.push(grade_list[i].options[o]);
-        }
-      };
-      // this.listQuery.period = this.periodList[0].value;
-      this.listQuery.grade = this.classList[0].label;
-    },
   	mounted() {
-      this.listQuery.id = this.uid;
+      this.setForm();
       this.setDefault();
-  		this.getList();
+  		this.getPaperList();
   	},
   	methods: {
-      setDefault(){
-        this.listQuery.grade = typeof attrGrade() == 'undefined' ? '九年级' : attrGrade();
+      setForm(){
+        this.gradeList = this.user.grade.split(',');
       },
-  		getList() {
+      setDefault(){
+        this.listQuery.id = this.uid;
+        this.listQuery.grade = typeof attrGrade() == 'undefined' ? this.gradeList[0] : attrGrade();
+      },
+      getPaperList(){
+        let query = {
+          pageNo:1,
+          pageSize:20,
+          grade: this.listQuery.grade,
+          // grade: '八年级',
+          subject: this.user.userinfo.subject
+        }
+        getPaperList(query).then(res => {
+          this.examinationList = res.data.list;
+          if(this.examinationList.length == 0 || this.examinationList.length == 1){
+            this.paperPage.list['上一页'].disabled = true;
+          }
+          this.getList('');
+        })
+      },
+  		getList(type) {
+        if(type == '-'){
+          this.paperPage.index--;
+        }else if(type == '+'){
+          this.paperPage.index++;
+        }
+        console.log(this.paperPage)
+        this.listQuery.paperId = this.examinationList[this.paperPage.index].id;
         attrGrade(this.listQuery.grade);
-        console.log(attrGrade())
         teacherTop(this.listQuery).then(res => {
           if(typeof res == 'undefined'){
             this.specialList =[];
