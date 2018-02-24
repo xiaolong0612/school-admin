@@ -3,7 +3,7 @@
 		<div class="ui-search-wrap" id="ui-search-wrap">
 			<el-form :inline="true">	
 				<!-- <el-form-item label="学校选择">
-          <el-select v-model="listQuery.schoolId" filterable placeholder="请选择" @change="schoolChange">
+          <el-select v-model="listQuery.schoolId" filterable placeholder="请选择" @change="getList('school')">
             <el-option v-for="item in schoolList" :label="item.name" :value="item.id" :key="item.id">
             </el-option>
           </el-select>
@@ -11,16 +11,29 @@
 
         <el-form-item label="届">
           <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
-            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="年级">
           <el-select v-model="listQuery.grade" filterable clearable placeholder="请选择" @change="getList('grade')">
-            <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
+        </el-form-item>
+
+        <el-form-item label="科目">
+          <el-select v-model="listQuery.subject " filterable placeholder="请选择" @change="getList('subject')">
+            <el-option v-for="item in subjectList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item class="fr">
+          <router-link to="/grades/pass-rate/echart" >
+            <el-button type="primary">切换查看方式</el-button>
+          </router-link>
         </el-form-item>
 			</el-form>
 		</div>
@@ -30,17 +43,29 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-loading.body="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
-	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
-	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable>
+				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%" >
+	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' v-if="first.name != '学校Id'" :header-align="first.children != undefined ? 'center' : 'left'">
+	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 	            <template scope="scope">
-	              <div>{{scope.row[first.value][second.value]}}</div>
+	              <div v-if="second.name == '进步值'" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{scope.row[first.value][second.value]}}</div>
+		            <div v-else>{{scope.row[first.value][second.value]}}</div>
 	            </template>
 	          </el-table-column>
 
-	          <template scope="scope" v-if="first.children == undefined">
-	            <div>{{scope.row[first.value]}}</div>
+	          <template scope="scope" v-if="first.children == undefined ">
+
+	            <!-- <router-link v-if="first.value == 'school'" :to="{path:'/grades/low-rate/class', query:{schoolId: scope.row.schoolId, name: scope.row.school, grade:listQuery.grade, period:listQuery.period}}">{{scope.row[first.value]}}</router-link>
+              <div v-if="first.value != 'school'">
+                {{scope.row[first.value]}}
+              </div> -->
+              <div>
+                {{scope.row[first.value]}}
+              </div>
 	          </template>
+
+	          <!-- <template scope="scope" v-if="first.value != 'school'">
+	            <div>{{scope.row[first.value]}}</div>
+	          </template> -->
 	        
 	        </el-table-column>
 	    	</el-table>
@@ -54,28 +79,36 @@
 	</div>
 </template>
 <script>
-	import { getLatestTest } from 'utils/auth';
-	import { gradeList, periodList } from 'utils/data';
+  import { getLatestTest, attrPeriod, attrGrade, attrSubject } from 'utils/auth';
+  import { getPaperList, getAllPeriod } from 'api/list';
 	import { mapGetters } from 'vuex';
 	import { getSchoolPassRateByPeriodAndSubjectAndGrade } from 'api/grades';
-	import { getAllSchoolList } from 'api/info-administration/school';
 	export default {
 		data() {
 			return {
-				name: '及格率',
-				periodList: periodList(),
+				name: '及格率率',
+				periodList: [],
         gradeList: [],
-				list: {},
+        subjectList: [],
+				list: {
+					data: [],
+					head: []
+				},
 				schoolList: [],
 				screenHeight: 0,
 				total: null,
         listLoading: true,
         listQuery: {
           period: '',
-          grade: '',
           subject: '',
+          grade: '',
           pageNo: 1,
           pageSize: 50,
+        },
+        schoolQuery:{
+        	pageNo: 1,
+          pageSize: 50,
+          subject: ''
         }
 			}
 		},
@@ -83,6 +116,7 @@
       ...mapGetters([
         'schoolId',
         'gradeNo',
+        'schoolId',
         'subject',
         'user'
       ])
@@ -91,28 +125,40 @@
     },
 		mounted() {
 			this.setForm();
-			this.getSchoolList();
+			this.getAllPeriod();
 		},
 		methods: {
 			setForm(){
 				this.gradeList = this.user.grade.split(',');
-				// let grade_list = gradeList('all');
-	   //    for(let i=0; i<grade_list.length; i++){
-	   //      for(var o=0; o<grade_list[i].options.length; o++){
-	   //        this.gradeList.push(grade_list[i].options[o]);
-	   //      }
-	   //    };
+        this.subjectList = this.user.userinfo.subject.split(',');
 			},
 			setDefault(){
-				this.screenHeight = this.setTableHeight(true);
-				this.listQuery.grade = this.gradeList[0];
-				this.listQuery.period = this.periodList[0].value;
-      	this.listQuery.subject = this.subject;
-
-				this.getList();
+				
+				this.listQuery.grade = typeof attrGrade() != 'undefined' ? attrGrade() : this.gradeList[0];
+        this.listQuery.period = typeof attrPeriod() != 'undefined' ? attrPeriod() : this.periodList[0];
+        this.listQuery.subject = typeof attrSubject() != 'undefined' ? attrSubject() : this.subjectList[0];
+				this.getList('');
 
 			},
-			getList() {
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+        	this.periodList = res.data.list;
+          this.setDefault();
+        })
+      },
+			getList(type) {
+
+				switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+          case 'subject':
+            attrSubject(this.listQuery.subject);
+            break;
+        }
         this.listLoading = true;
         getSchoolPassRateByPeriodAndSubjectAndGrade(this.listQuery).then(res => {
         	if(typeof res == 'undefined'){
@@ -120,8 +166,8 @@
         		this.listLoading = false;
         		return false;
         	}
-          this.list['data'] = res.data.data.data;
-          this.list['head'] = res.data.data.head;
+          this.list.data = res.data.data.data;
+          this.list.head = res.data.data.head;
           this.total = res.data.data.total;
           this.listLoading = false;
         })
@@ -133,12 +179,6 @@
       handleCurrentChange(val) {
         this.listQuery.page = val;
         this.getList();
-      },
-      getSchoolList(){
-      	getAllSchoolList().then(res => {
-      		this.schoolList = res.data.list;
-      		this.setDefault();
-      	})
       }
 		}
 	}

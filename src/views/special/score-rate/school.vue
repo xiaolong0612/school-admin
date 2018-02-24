@@ -11,17 +11,32 @@
   </div>
 </template>
 <script>
+  import { mapGetters } from 'vuex';
   import chart from '@/components/Charts/chart';
-  import { getLatestTest } from 'utils/auth';
+  import { getLatestTest, attrGrade, attrPeriod,attrSubject } from 'utils/auth';
+  import { getPaperList } from 'api/list';
   import { getPaperSchoolPassRateSpecialTopic } from 'api/special';
   export default {
     components: { chart },
+    computed: {
+      ...mapGetters([
+        'subject',
+        'gradeNo',
+        'user'
+      ])
+    },
     data() {
       return {
         name: '',
         listQuery: {
           paperId: '',
           specialTopicId: ''
+        },
+        paperQuery: {
+          period: '',
+          grade: '',
+          subject: '',
+          paperId: ''
         },
         listLoading: false,
         list: {
@@ -47,20 +62,47 @@
         this.$message.error('sorry, 暂无考试信息');
         return;
       }
-      let paper = JSON.parse(getLatestTest());
-      this.listQuery.paperId = paper.id;
+      this.setDefault()
       this.listQuery.specialTopicId = this.$route.query.id;
 
       // this.initChart();
-      this.getList();
     },
     methods: {
-      getList() {
+      setDefault(){
+        this.paperQuery.grade = typeof attrGrade() != 'undefined' ? attrGrade() : this.gradeList[0];
+        this.paperQuery.period = typeof attrPeriod() != 'undefined' ? attrPeriod() : this.periodList[0];
+        this.paperQuery.subject = typeof attrSubject() != 'undefined' ? attrSubject() : this.subject;
+        this.getPaperList();
+      },
+      getPaperList(type){
+        let query = {
 
+          period: this.paperQuery.period,
+          grade: this.paperQuery.grade,
+          // grade: '八年级',
+          subject: this.user.userinfo.subject
+        }
+        switch(type){
+          case 'period':
+            attrPeriod(this.paperQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.paperQuery.grade);
+            break;
+        }
+        getPaperList(query).then(res => {
+          if(typeof res == 'undefined' || res.data.list.length == 0){
+            this.list.data = [];
+            this.listLoading = false;
+            return false;
+          }
+          this.listQuery.paperId = res.data.list[0].id;
+          this.getList();
+        })
+      },
+      getList() {
         getPaperSchoolPassRateSpecialTopic(this.listQuery).then(res => {
           var data = res.data.data;
-          console.log(data);
-          this.list.data = data.data;
           for(let index in data.title){
             this.list.title.push(index)
           }
@@ -71,25 +113,26 @@
           this.series = [];
           this.legend = [];
           this.legend.push(this.list.right);
-          this.series.push({
-            name: this.list.right,
-            type: 'bar',
-            barMaxWidth: '100',
-            itemStyle: {
-              normal: {
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
+          for(let i in data.data){
+            this.series.push({
+              name: i,
+              type: 'bar',
+              barMaxWidth: '100',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  label: {
+                    show: true,
+                    position: 'top',
+                    formatter(p) {
+                      return p.value > 0 ? p.value : '';
+                    }
                   }
                 }
-              }
-            },
-            data: this.list.data[this.list.right]
-          })
-          console.log(this.list.data)
+              },
+              data: data.data[i]
+            })
+          }
           this.setOption();
         })
       },

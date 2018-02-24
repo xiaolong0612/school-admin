@@ -87,7 +87,7 @@
             {
               name: '',
               img: require('static/img/login-leader.png'),
-              label: '教育局、进修学校...',
+              label: '教育局、进修学...',
               tooltip: '教育局、进修校领导、教研员、学校领导、教务处',
               disabled: false,
               type: false

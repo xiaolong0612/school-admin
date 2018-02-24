@@ -36,6 +36,9 @@
 	      <el-form-item>
 	        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
 	      </el-form-item>
+	      <el-form-item>
+	      	<el-button type="primary" @click="file_down">下载模版<i class="el-icon-printer"></i></el-button>
+	      </el-form-item>
 			</el-form>
 		</div>
 		<div class="ui-table-wrap clearfix">
@@ -44,7 +47,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'teacherNo'}">
+				<el-table :data="list" stripe v-loading.body="listLoading" border  :default-sort = "{prop: 'teacherNo'}">
 
 					<el-table-column prop='teacherNo' label="教师编号" width="130" sortable fixed></el-table-column>
 
@@ -384,6 +387,7 @@
       ...mapGetters([
         'uid',
         'school',
+        'user'
       ])
     },
 		mounted() {
@@ -392,9 +396,9 @@
 		},
 		methods: {
 			setDefault(){
-				this.screenHeight = this.setTableHeight(true);
+				
 	    	this.fromData.schoolId = this.school.id;
-	    	this.listQuery.schoolName = this.school.name;
+				this.listQuery.schoolId = this.user.school.id;
 	    	if(typeof attrGrade() == 'undefined'){
 	    		this.listQuery.gradeNo  = '九年级';
 	    	}else this.listQuery.gradeNo  = attrGrade();
@@ -492,6 +496,7 @@
 	          type: 'success'
 	        });
 	        this.getList();
+		      this.dialogDel = false;
       	})
       },
       onSuccess(response, file, fileList) {
@@ -509,6 +514,9 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+      file_down(){
+      	window.location.href="/static/template_file/教师信息的导入模板.xls";
       }
 		}
 	}

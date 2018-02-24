@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
       <el-form :inline="true">
@@ -109,7 +109,7 @@
         };
       },
       setDefault(callbak){
-        this.screenHeight = this.setTableHeight(true);
+        
         this.listQuery.period = this.periodList[0].value;
         this.listQuery.grade = this.gradeList[0].label;
         this.listQuery.schoolId = this.schoolList[0].id;
@@ -156,4 +156,4 @@
       }
 		}
 	}
-</script>
+</script> -->

@@ -13,7 +13,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" :key="tableKey" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'schoolName'}">
+				<el-table :data="list" :key="tableKey" stripe v-loading.body="listLoading" border  :default-sort = "{prop: 'schoolName'}">
 					<el-table-column prop='schoolName' label="学校" width="150"></el-table-column>
 					
 					<el-table-column prop='grade' label="年级" width="90">
@@ -148,7 +148,8 @@
         listQuery: {
           pageNo: 1,
           pageSize: 50,
-          name: ''
+          name: '',
+          schoolId: ''
         },
         headmaster: [],
         grades: [],
@@ -188,10 +189,11 @@
     },
     created() {
     	this.fromData.teacherId = this.uid;
+    	this.listQuery.schoolId = this.schoolId;
     	this.teacherFrom.schoolId = this.schoolId;
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+			
 			this.getList();
 			// this.getTeacherList(this.headmaster, 1);
 			// this.getTeacherList(this.grades, 3);

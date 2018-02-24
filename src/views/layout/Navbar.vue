@@ -51,7 +51,7 @@
                         </el-dropdown-item>
                     </router-link> -->
                 </div>
-                <div v-if="roles[1] == 9">
+                <div v-if="roles.indexOf('9') != -1">
                     <router-link to="/school/list">
                         <el-dropdown-item>
                             学校列表

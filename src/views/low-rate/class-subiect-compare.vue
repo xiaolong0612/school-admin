@@ -109,7 +109,7 @@
 		},
 		methods: {
 			setDefault(){
-				this.screenHeight = this.setTableHeight(true);
+				
 				this.fromData = {
 					period: new Date().getFullYear(),
 					schoolId: this.schoolList[0].id,

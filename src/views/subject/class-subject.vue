@@ -37,7 +37,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-loading="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
+				<el-table v-loading="listLoading" :data="list.data" border style="width: 100%" >
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :align="first.children != undefined ? 'center' : 'left'">
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 	            <template scope="scope">
@@ -104,7 +104,7 @@
         };
       },
       setDefault(callbak){
-        this.screenHeight = this.setTableHeight(true);
+        
         this.listQuery.period = this.periodList[0].value;
         this.listQuery.grade = this.gradeList[0].label;
         this.listQuery.subject = this.subjectList[0].value;

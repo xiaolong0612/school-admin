@@ -28,7 +28,8 @@
 	    clickPath: {
 	    	type: String,
 	    	default: ''
-	    }
+	    },
+      otherQuery: {}
 	  },
   	data() {
   		return {

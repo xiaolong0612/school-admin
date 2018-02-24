@@ -276,7 +276,7 @@ export const asyncRouterMap = [
       {
         path: 'subject-total-scores',
         component: gradesSubjectTotalScores,
-        name: '各科总分监控',
+        name: '全科总分',
         meta: { role: [ '1', '3', '5', '6', '7', '8', '9'] }
       },
       {
@@ -288,7 +288,7 @@ export const asyncRouterMap = [
       {
         path: 'subject-layering',
         component: gradesSubjectLayering,
-        name: '学科分层监控',
+        name: '学科分层',
         meta: { role: [ '7', '0'] }
       },
       {
@@ -314,7 +314,7 @@ export const asyncRouterMap = [
       {
         path: 'subject-average',
         component: gradesSubjectAverage,
-        name: ' 学科均分监控',
+        name: ' 学科均分',
         meta: { role: ['7','0'] }
       },
       {
@@ -455,7 +455,7 @@ export const asyncRouterMap = [
       {
         path: 'score-rate',
         component: specialScoreRate,
-        name: '得分率'
+        name: '专题得分'
       },
       {
         path: 'score-rate/school',
@@ -625,12 +625,12 @@ export const asyncRouterMap = [
     name: '能力发展',
     icon: 'nenglizhi',
     noDropdown: true,
-    meta: { role: ['0'] },
+    meta: { role: ['7'] },
     children: [
       {
         path: 'index',
         component: _import('ability/index'),
-        name: '年级学科能力监控图',
+        name: '能力发展',
       },
       {
         path: 'class',

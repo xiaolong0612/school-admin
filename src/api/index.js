@@ -3,6 +3,13 @@ import fetch from 'utils/fetch';
  * @author xiaolong
  * @default 首页
  */
+export function indexSide(data){
+  return fetch({
+    url: '/admin/schoo-basic/teacherTop-left',
+    method: 'post',
+    data
+  })
+}
 export function student(data) {
   return fetch({
     url: '/admin/student/get-top',
@@ -55,10 +62,10 @@ export function teacherTop(data) {
 }
 
 // 教务处
-export function principalIndex(query) {
+export function principalIndex(data) {
   return fetch({
     url: '/admin/schoo-basic/getExaminationPaperByPeriodAndGrade',
     method: 'post',
-    params: query
+    data
   })
 }

@@ -1,15 +1,15 @@
 <template>
   <div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%">
-    <div class="chart" id="chart" style="height:600px;width:100%"></div>
+    <chart height='calc(100vh - 85px)' width='100%' :setChartOption="chart.setOption" :clickChart="false"></chart>
   </div>
 </template>
 <script>
-  import { getLatestTest } from 'utils/auth';
+  import { getLatestTest, attrPeriod, attrGrade } from 'utils/auth';
   import { mapGetters } from 'vuex';
-  import echarts from 'echarts';
-  require('echarts/theme/macarons'); // echarts 主题
+  import chart from '@/components/Charts/chart';
   import { getClassSpecialTopicBySchoolId } from 'api/ability'
   export default {
+    components: { chart },
     data() {
       return {
         chart: '',
@@ -18,12 +18,20 @@
           title: [],
           right: []
         },
+        chart: {
+          name: '',
+          data: [],
+          X: [],
+          legend: [],
+          series: [],
+          setOption: {}
+        },
         listQuery: {
-          schoolId: '2017',
-          paperId: '',
-          state: '',
-          specialTopicId: ''
-        }
+          period: attrPeriod(),
+          grade: attrGrade(),
+          code: ''
+        },
+        series: []
       }
     },
     computed: {
@@ -33,40 +41,56 @@
     },
     mounted() {
       this.setDefault();
-      this.initChart();
       this.getList()
     },
     methods: {
       setDefault(){
         let paper = JSON.parse(getLatestTest());
-
-        this.listQuery.schoolId = this.schoolId;
-        this.listQuery.paperId = paper.id;
-        this.listQuery.specialTopicId = '119'
+        this.listQuery.code = this.$route.query.id;
       },
       getList() {
         this.listLoading = true;
-        // getClassSpecialTopicBySchoolId(this.listQuery).then(res => {
-        //   var data = res.data.data;
-        //   this.list.data = data.data[0].split(',');
-        //   this.list.right = data.right;
-        //   for(var item in data.title){
-        //     this.list.title.push(item);
-        //   }
-        //   // this.list.right = data.right;
-        //   this.setOption();
-        //   this.listLoading = false;
-        // })
-      },
-      initChart() {
-        this.chart = echarts.init(document.getElementById('chart'),'macarons');
+        getClassSpecialTopicBySchoolId(this.listQuery).then(res => {
+          if(typeof res == 'undefined') return;
+          var data = res.data;
+          console.log(data)
+          console.log(this.$route)
+          this.chart.name = this.$route.query.name + '-各校发展监控图';
+          this.chart.legend = data.right;
+          let i = 0;
+          for(let index in data.date){
+            console.log(data.date[index])
+            this.series.push({
+              name: index,
+              type: 'bar',
+              barMaxWidth: '100',
+              itemStyle: {
+                normal: {
+                  barBorderRadius: 0,
+                  label: {
+                    show: true,
+                    position: 'top',
+                    formatter(p) {
+                      return p.value > 0 ? p.value : '';
+                    }
+                  }
+                }
+              },
+              data: data.date[index]
+            });
+            i++;
+          }
+          this.chart.X = data.title;
+          // this.list.right = data.right;
+          this.setOption();
+          this.listLoading = false;
+        })
       },
       setOption() {
         var _that = this;
-        console.log(_that.list)
-        this.chart.setOption({
+        this.chart.setOption = {
           title: {
-            text: '学科能力监控图',
+            text: _that.chart.name,
             x: 'center',
             textStyle: {
               color: '#333',
@@ -92,7 +116,7 @@
             orient: 'vertical',
             bottom: '25%',
             right: '0',
-            data: _that.list.right
+            data: _that.chart.legend
           },
           calculable: true,
           xAxis: [{
@@ -108,7 +132,7 @@
                 color: '#333'
               }
             },
-            data: _that.list.title
+            data: _that.chart.X
           }],
           yAxis: [{
             type: 'value',
@@ -124,35 +148,33 @@
               }
             }
           }],
-          series: [{
-            name: '厦门市平均',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                label: {
-                  show: true,
-                  position: 'insideTop',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : '';
-                  }
-                }
-              }
+          dataZoom: [{
+            show: true,
+            height: 30,
+            xAxisIndex: [
+              0
+            ],
+            bottom: 30,
+            start: 0,
+            end: 100,
+            handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+            handleSize: '110%',
+            handleStyle: {
+              color: '#d3dee5'
+
             },
-            data: _that.list.data,
-            markLine: {
-            	silent: false
-            }
-          }]
-        })
-      },
-      addChartClick() {
-        this.chart.on('click', params => {
-          if(params.componentType === "xAxis") {
-            console.log('我点击 的x轴');
-          }
-          // console.log(this.link[params.seriesName])
-          this.$router.push({ path: '/ability/school'});
-        })
+            textStyle: {
+              color: '#fff' },
+            borderColor: '#90979c'
+          }, {
+            type: 'inside',
+            show: true,
+            height: 15,
+            start: 1,
+            end: 35
+          }],
+          series: _that.series
+        }
       }
     }
   }

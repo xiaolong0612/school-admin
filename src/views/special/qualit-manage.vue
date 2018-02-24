@@ -64,7 +64,7 @@
 	</div>
 </template>
 <script>
-	import { getLatestTest } from 'utils/auth';
+  import { getLatestTest, attrGrade, attrPeriod } from 'utils/auth';
 	import { mapGetters } from 'vuex';
 	import { getSpecialTopic, queryschoolCheckPoints } from 'api/special';
 	import { getUseTestSites } from 'api/test/test';
@@ -107,11 +107,10 @@
 
 			this.name = this.$route.query.name;
 
-			let paper = JSON.parse(getLatestTest());
       this.listQuery.specialTopicId = this.$route.query.specialTopicId;
-      this.listQuery.grade = this.gradeNo;
-      this.listQuery.period = paper.period;
-			this.screenHeight = this.setTableHeight(true);
+      this.listQuery.grade = attrGrade();
+      this.listQuery.period = attrPeriod();
+			
       this.getList('');
 
       this.getUseTestSites();
@@ -122,6 +121,12 @@
         if(this.checkPointsId == ''){
         	
 	        getSpecialTopic(this.listQuery).then(res => {
+	        	if(res == undefined){
+	        		this.list.data = [];
+	        		this.listLoading = false;
+	        		this.showTable = true;
+	        		return
+	        	}
 	          this.list.data = res.data.data.data;
 	          this.list.head = res.data.data.head;
 	          this.total = res.data.data.total;
@@ -137,6 +142,10 @@
 	      		period: this.listQuery.period
 	      	}
 	      	queryschoolCheckPoints(query).then(res => {
+	      		if(res == undefined){
+	      			this.listTest.data = [];
+	          	return
+	      		}
 	      		this.listTest.data = res.data.data.data;
 	          this.listTest.head = res.data.data.head;
 	          this.total = res.data.data.total;
@@ -150,7 +159,10 @@
       		subject: this.subject
       	}
       	getUseTestSites(query).then(res => {
-      		console.log(res);
+      		if(res == undefined){
+      			this.testSitesList = [];
+      			return
+      		}
       		this.testSitesList = res.data.list;
       	})
       },

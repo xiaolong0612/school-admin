@@ -111,6 +111,13 @@ export function getSchoolExcellentRateByPeriodAndSubjectAndGrade(data){
 		data
 	})
 }
+export function getSchoolExcellentRateByPeriodAndSubjectAndGradeEchart(data){
+	return fetch({
+		url: '/admin/schoo-basic/get-PaperIdSchoolExcellentRate',
+		method: 'post',
+		data
+	})
+}
 // 校
 export function getClassScoreRateByPeriodAndGradeAndSchoolIdTable(data){
 	return fetch({
@@ -137,6 +144,13 @@ export function getSchoolPassRateByPeriodAndSubjectAndGrade(data){
 		data
 	})
 }
+export function getSchoolPassRateByPeriodAndSubjectAndGradeEchart(data){
+	return fetch({
+		url: '/admin/schoo-basic/get-PaperIdSchoolPassRate',
+		method: 'post',
+		data
+	})
+}
 // 校
 export function getClassPassRateByPeriodAndGradeAndSchoolIdTable(data){
 	return fetch({
@@ -159,6 +173,13 @@ export function getClassPassRateByPeriodAndGradeAndSchoolIdTable(data){
 export function getSchoolLowGradeRateByPeriodAndSubjectAndGrade(data){
 	return fetch({
 		url: '/admin/schoo-basic/getSchoolLowGradeRateByPeriodAndSubjectAndGrade',
+		method: 'post',
+		data
+	})
+}
+export function getSchoolLowGradeRateByPeriodAndSubjectAndGradeEchart(data){
+	return fetch({
+		url: '/admin/schoo-basic/get-PaperSchoolLowGradeRate',
 		method: 'post',
 		data
 	})

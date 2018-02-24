@@ -1,102 +1,31 @@
 <template>
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
-			 <el-button v-for='item in classList' @click="getList()" :type="item.label" :key="item.label" style="margin-bottom: 15px;width:89px;">{{item.label}}</el-button>
+			<el-form :inline="true">
+        <el-form-item label="届">
+          <el-select v-model="listQuery.period" clearable placeholder="请选择" @change="getList('period')">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="年级">
+          <el-select v-model="listQuery.grade" clearable placeholder="请选择" @change="getList('grade')">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
 		</div>
 		<div>
 		<el-row :gutter="15">
       <el-col :span="0">
-        <!-- <div class="wrap">
-          <ul>
-            <li v-for="item in specialList">
-              <el-row class="ui-sidebar">
-                <el-col :span="12">
-                  <div class="ui-label">
-                    <router-link to="/">{{item.specialTopicName}}</router-link>
-                  </div>
-                </el-col>
-                <el-col :span="12">
-                  <div class="ui-number">
-                    <router-link to="/">{{item.scoreRate}}</router-link>
-                  </div>
-                </el-col>
-              </el-row>
-            </li>
-          </ul>
-        </div> -->
       </el-col>
 		  <el-col :span="24">
 		  	<div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
-					<div class="chart" id="chart" style="height:600px;width:100%"></div>
-          <!-- <div class="ui-course">
-            <div class="clearfix ui-course_nr">
-              <ul class="ui-course_nr2">
-                <li>2007
-                  <div class="ui-once">
-                    <h1>2007</h1>
-                    <p>内容描述4</p>
-                  </div>
-                </li>
-                <li>2008
-                  <div class="ui-once">
-                    <h1>2008</h1>
-                    <p>内容描述5</p>
-                  </div>
-                </li>
-                <li>2009
-                  <div class="ui-once">
-                    <h1>2009</h1>
-                    <p>内容描述6</p>
-                  </div>
-                </li>
-                <li>2013
-                  <div class="ui-once">
-                    <h1>2013</h1>
-                    <p>内容描述7</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div> -->
+					<chart height='calc(100vh - 265px)' width='100%' :setChartOption="chart.setOption" :clickChart="false"></chart>
 				</div>
 		  </el-col>
 		  <el-col :span="0">
-		  	<!-- <div class="wrap" style="margin-bottom: 15px">
-		  		<ul>
-						<li v-for="item in qualityList">
-							<el-row class="ui-sidebar">
-							  <el-col :span="12">
-							  	<div class="ui-label">
-							  		<router-link to="/">{{item.name}}</router-link>
-							  	</div>
-							  </el-col>
-							  <el-col :span="12">
-							  	<div class="ui-number">
-							  		<router-link to="/">{{item.number}}</router-link>
-							  	</div>
-							  </el-col>
-							</el-row>
-						</li>
-					</ul>
-				</div> -->
-				<!-- <div class="wrap">
-					<ul>
-						<li v-for="item in testList">
-							<el-row class="ui-sidebar">
-							  <el-col :span="12">
-							  	<div class="ui-label">
-							  		<router-link to="/">{{item.name}}</router-link>
-							  	</div>
-							  </el-col>
-							  <el-col :span="12">
-							  	<div class="ui-number">
-							  		<router-link to="/">{{item.number}}</router-link>
-							  	</div>
-							  </el-col>
-							</el-row>
-						</li>
-					</ul>
-		  	</div> -->
 		  </el-col>
 		</el-row>
 		</div>
@@ -105,20 +34,31 @@
 
 <script>
   import { mapGetters } from 'vuex';
+  import { getAllPeriod } from 'api/list';
+  import { attrPeriod, attrGrade } from 'utils/auth';
   import { principalIndex } from 'api/index';
   import { gradeList } from 'utils/data'
-  import echarts from 'echarts';
-  require('echarts/theme/macarons'); // echarts 主题
+  import chart from '@/components/Charts/chart';
   export default {
+    components: { chart },
   	data() {
   		return {
   			name: '',
-  			classList: [],
+  			gradeList: [],
+        subjectList: [],
         list: [{
           data: [],
           title: [],
           right: []
         }],
+        chart: {
+          name: '',
+          data: [],
+          X: [],
+          legend: [],
+          series: [],
+          setOption: {}
+        },
   			specialList: [],
   			qualityList: [],
   			testList: [],
@@ -127,68 +67,65 @@
   				{ name: '考试2' },
   				{ name: '考试3' }
   			],
-        data:[
-          {
-            "list":[
-              [0,0,0,0,0.02,0.2],
-              [0,0,0,0,0.02,0.2]
-            ],
-            "name":["七上考试","七上考试","七上考试",],
-            "success":true,
-            "right":["七上考试","七上考试","七上考试",],
-            "title":[
-              {"名著阅读":3},
-              {"语言运用":1},
-              {"非连续性文本阅读":2},
-              {"诗歌阅读":4},
-              {"文言文阅读":5}
-            ]
-          }  
-        ],
-        lsitQuery: {
-          period: 2017,
-          grade: '初三'
+        data:[],
+        listQuery: {
+          grade: '',
+          period: ''
         }
   		}
   	},
     computed: {
       ...mapGetters([
-        'uid'
+        'uid',
+        'user'
       ])
     },
     created() {
-      let grade_list = gradeList('all');
-      for(var i=0; i<grade_list.length; i++){
-        for(var o=0; o<grade_list[i].options.length; o++){
-          this.classList.push(grade_list[i].options[o])
-        }
-      };
     },
   	mounted() {
-      this.initChart();
-  		this.getList();
+  		this.getAllPeriod();
   	},
   	methods: {
+      setDefault(){
+        this.gradeList = this.user.grade.split(',');
+        this.listQuery.grade = typeof attrGrade() != 'undefined' ? attrGrade() : this.gradeList[0];
+        this.listQuery.period = typeof attrPeriod() != 'undefined' ? attrPeriod() : this.periodList[0];
+        this.getList();
+      },
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+          this.periodList = res.data.list;
+          this.setDefault();
+        })
+      },
   		getList() {
-        principalIndex(this.uid).then(res => {
-          var data = res.data.data;
-          this.list.data = data.data;
-          this.list.right = data.right;
-          this.list.title = data.title;
-        	this.setOption();
-
-        });
-      },
-  		initChart() {
-        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
-      },
-      setOption() {
-        var _that = this;
-        var seriesOption = []
-        for(let item in _that.list.data){
-          seriesOption.push({
-            name: item,
+        principalIndex(this.listQuery).then(res => {
+          if(typeof res == 'undefined'){
+            this.chart[i] = {
+              name: '',
+              data: [],
+              X: [],
+              legend: [],
+              series: [],
+              setOption: {}
+            }
+            this.setOption();
+            return;
+          };
+          // this.$message.success('查询成功！');
+          var data = res.data;
+          this.chart.name = '';
+          this.chart.X = [];
+          for(let index in data.title){
+            this.chart.X.push(index);
+          }
+          this.x_id = data.title;
+          this.chart.series = [];
+          for(let d in data.data){
+            this.chart.series.push({
+              name: d,
               type: 'bar',
+              barMaxWidth: '100',
               itemStyle: {
                 normal: {
                   barBorderRadius: 0,
@@ -201,12 +138,20 @@
                   }
                 }
               },
-              data: _that.list.data[item]
-          })
-        }
-        this.chart.setOption({
+              data: data.data[d]
+            })
+          }
+          this.chart.legend = data.right;
+            
+          // }
+          this.setOption();
+
+        });
+      },
+      setOption() {
+        this.chart.setOption = {
           title: {
-            text: '所有考试市、区专题得分率监控图',
+            text: _that.chart.name,
             x: 'center',
             textStyle: {
               color: '#333',
@@ -220,6 +165,12 @@
               type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
             }
           },
+          legend: {
+            orient: 'vertical',
+            bottom: '25%',
+            right: '2%',
+            data: _that.chart.legend,
+          },
           grid: {
             borderWidth: 0,
             top: 110,
@@ -227,12 +178,6 @@
             textStyle: {
               color: '#fff'
             }
-          },
-          legend: {
-            orient: 'vertical',
-            bottom: '25%',
-            right: '2%',
-            data: _that.list.right
           },
           calculable: true,
           xAxis: [{
@@ -248,7 +193,7 @@
                 color: '#333'
               }
             },
-            data: _that.list.title
+            data: _that.chart.X
           }],
           yAxis: [{
             type: 'value',
@@ -260,7 +205,7 @@
             axisLabel: {
               interval: 2,
               textStyle: {
-              	color: '#333'
+                color: '#333'
               }
             }
           }],
@@ -289,9 +234,9 @@
             start: 1,
             end: 35
           }],
-          series: seriesOption
-        })
-		  }
+          series: _that.chart.series
+        }
+      }
   	}
   }
 </script>

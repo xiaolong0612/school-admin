@@ -4,15 +4,22 @@
 			<el-form :inline="true">
 
 				<el-form-item label="届">
-          <el-select v-model="paperQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
-            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
+          <el-select v-model="listQuery.period" placeholder="请选择" @change="getPaperList('period')">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="年级">
-          <el-select v-model="paperQuery.grade" filterable clearable placeholder="请选择" @change="getList('grade')">
-            <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
+          <el-select v-model="listQuery.grade" placeholder="请选择" @change="getPaperList('grade')">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="科目选择">
+          <el-select v-model="listQuery.subject " filterable placeholder="请选择" @change="getPaperList('subject')">
+            <el-option v-for="item in subjectList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -29,7 +36,7 @@
 
         <el-form-item label="考试列表">
           <el-select v-model="listQuery.id" filterable clearable placeholder="请选择" @change="getList">
-            <el-option v-for="item in paperList" :label="item.name" :value="item.id" :key="item.id">
+            <el-option v-for="item in examinationList" :label="item.name" :value="item.id" :key="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -44,7 +51,7 @@
 				</h3>
 			</div>
 			<div class="ui-table-main">
-				<el-table v-loading.body="listLoading" :data="list" stripe border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
+				<el-table v-loading.body="listLoading" :data="list" stripe border style="width: 100%"  :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
 					<el-table-column prop="schoolName" label="学校" fixed>
 						<template scope="scope">
 							<!-- <router-link to="/achievement/administration-discipline-hierarchy"> -->
@@ -52,38 +59,62 @@
 							<!-- </router-link> -->
 						</template>
 					</el-table-column>
-					<el-table-column prop="className" label="班级" width="100" sortable v-if="classTyoeQuery.state != -1">
+					<el-table-column prop="className" label="班级" width="100" v-if="classTyoeQuery.state != -1">
 					</el-table-column>
-					<el-table-column prop="examineeCount" label="生数" width="90" sortable>
+					<el-table-column prop="examineeCount" label="生数" width="90">
 					</el-table-column>
 					<el-table-column prop='gradeLeader' label='备课组长' width="120"></el-table-column>
 					<el-table-column label='得分率' header-align='center'>
-						<el-table-column prop="tmpSchoolScoreRate.averageRate" label="平均分" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.scoreRate" label="得分率" sortable>
+						<el-table-column prop="tmpSchoolScoreRate.averageRate" label="平均分"></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.scoreRate" label="得分率">
 						</el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.averageValue" label="超均率" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.ranking" label="名次" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.progressValue" label="进步值" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.averageValue" label="超均率"></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.ranking" label="名次"></el-table-column>
+						<el-table-column prop="tmpSchoolScoreRate.progressValue" label="进步值">
+							<template scope="scope">
+                  <div :style="{color: scope.row.tmpSchoolScoreRate.progressValue < 0 ? 'red' : '#333'}">
+                  	{{scope.row.tmpSchoolScoreRate.progressValue}}
+                  </div>
+		          </template>
+						</el-table-column>
 					</el-table-column>
 					<el-table-column label='优良率' header-align='center'>
-						<el-table-column prop="tmpSchoolExcellentRate.excellentCount" label="优良数" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.excellentRate" label="优良率" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.ranking" label="名次" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.progressValue" label="进步值" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.excellentCount" label="优良数"></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.excellentRate" label="优良率"></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.ranking" label="名次"></el-table-column>
+						<el-table-column prop="tmpSchoolExcellentRate.progressValue" label="进步值">
+							<template scope="scope">
+                  <div :style="{color: scope.row.tmpSchoolPassRate.progressValue < 0 ? 'red' : '#333'}">
+                  	{{scope.row.tmpSchoolPassRate.progressValue}}
+                  </div>
+		          </template>
+						</el-table-column>
 					</el-table-column>
 					<el-table-column label='及格率' header-align='center'>
 						<el-table-column 
-							prop="tmpSchoolPassRate.passCount" label="及格数" sortable>
+							prop="tmpSchoolPassRate.passCount" label="及格数">
 						</el-table-column>
-						<el-table-column prop="tmpSchoolPassRate.passRate" label="及格率" sortable>
+						<el-table-column prop="tmpSchoolPassRate.passRate" label="及格率">
 						</el-table-column>
-						<el-table-column prop="tmpSchoolPassRate.ranking" label="名次" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolPassRate.progressValue" label="进步值" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolPassRate.ranking" label="名次"></el-table-column>
+						<el-table-column prop="tmpSchoolPassRate.progressValue" label="进步值">
+							<template scope="scope">
+                  <div :style="{color: scope.row.tmpSchoolPassRate.progressValue < 0 ? 'red' : '#333'}">
+                  	{{scope.row.tmpSchoolPassRate.progressValue}}
+                  </div>
+		          </template>
+						</el-table-column>
 					</el-table-column>
 					<el-table-column label='低分率' header-align='center'>
-						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeCount" label="低分数" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeRate" label="低分率" sortable></el-table-column>
-						<el-table-column prop="tmpSchoolLowGradeRate.progressValue" label="进步值" sortable></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeCount" label="低分数"></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeRate" label="低分率"></el-table-column>
+						<el-table-column prop="tmpSchoolLowGradeRate.progressValue" label="进步值">
+							<template scope="scope">
+                  <div :style="{color: scope.row.tmpSchoolLowGradeRate.progressValue < 0 ? 'red' : '#333'}">
+                  	{{scope.row.tmpSchoolPassRate.progressValue}}
+                  </div>
+		          </template>
+						</el-table-column>
 					</el-table-column>
 				</el-table>
 			</div>
@@ -97,9 +128,9 @@
 </template>
 <script>
   import { mapGetters } from 'vuex';
-  import { getLatestTest, attrPeriod, attrGrade } from 'utils/auth';
+  import { getLatestTest, attrPeriod, attrGrade,attrSubject } from 'utils/auth';
 	import { gradeList, periodList, subjectList } from 'utils/data';
-	import { getPaperList } from 'api/list';
+	import { getPaperList, getAllPeriod } from 'api/list';
 	import { getPaperScore, getClassScore} from 'api/grades';
 	export default {
 		data() {
@@ -109,10 +140,10 @@
 				list: [],
 				total: null,
         listLoading: false,
-        periodList: periodList(),
+        periodList: [],
         gradeList: [],
-        subjectList: subjectList(),
-        paperList: [],
+        subjectList: [],
+        examinationList:[],
         paperQuery: {
         	period: '',
         	grade: '',
@@ -122,8 +153,9 @@
           id: '',
           pageNo: 1,
           pageSize: 50,
-          grade: '九年级',
-          period: ''
+          grade: '',
+          period: '',
+          subject: ''
         },
         classTyoeQuery: {
         	id: '',
@@ -137,37 +169,60 @@
 		computed: {
       ...mapGetters([
         'subject',
+        'user'
       ])
     },
 		mounted() {
 			this.setForm();
-			this.setDefault();
+			this.getAllPeriod();
 		},
 		methods: {
 			setForm(){
-				let grade_list = gradeList('all');
-	      for(let i=0; i<grade_list.length; i++){
-	        for(var o=0; o<grade_list[i].options.length; o++){
-	          this.gradeList.push(grade_list[i].options[o]);
-	        }
-	      };
+        this.gradeList = this.user.grade.split(',');
+        this.subjectList = this.user.userinfo.subject.split(',');
 			},
 			setDefault(){
-				this.screenHeight = this.setTableHeight(true);
+				
 
-				if(typeof attrGrade() != 'undefined') this.paperQuery.grade = attrGrade();
-				if(typeof attrPeriod() != 'undefined') this.paperQuery.period = attrPeriod();
-				else this.paperQuery.period = this.periodList[this.periodList.length-1].value;
+				this.listQuery.grade = typeof attrGrade() != 'undefined' ? attrGrade() : this.gradeList[0];
+				this.listQuery.period = typeof attrPeriod() != 'undefined' ? attrPeriod() : this.periodList[0];
+        this.listQuery.subject = typeof attrSubject() != 'undefined' ? attrSubject() : this.subjectList[0];
 
-				this.paperQuery.subject = this.subject;
+				this.getPaperList();
 			},
-			getPaperList(){
-				getPaperList(this.paperQuery).then( res => {
-					this.paperList = [];
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+          this.periodList = res.data.list;
+          this.setDefault();
+        })
+      },
+			getPaperList(type){
+				let query = {
+
+          period: this.listQuery.period,
+          grade: this.listQuery.grade,
+          // grade: '八年级',
+          subject: this.listQuery.subject
+        }
+
+        switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+          case 'subject':
+            attrSubject(this.listQuery.subject);
+            break;
+        }
+
+				getPaperList(query).then( res => {
+					this.examinationList = [];
 					this.listQuery.id = '';
 					this.list = [];
-					if(typeof res == 'undefined') return;
-					this.paperList = res.data.list;
+					if(typeof res == 'undefined' || res.data.list.length == 0) return;
+					this.examinationList = res.data.list;
 
 					this.listQuery.id = res.data.list[0].id;
 					this.getList();
@@ -182,16 +237,25 @@
           case 'grade':
             attrGrade(this.listQuery.grade);
             break;
+          case 'subject':
+            attrSubject(this.listQuery.subject);
+            break;
         }
         this.listLoading = true;
-        this.listQuery.grade = this.paperQuery.grade;
-        this.listQuery.period = this.paperQuery.period;
         getPaperScore(this.listQuery).then(response => {
         	if(typeof response == 'undefined'){
+            this.list = [];
+            this.total = 0;
+            this.name = '';
           	this.listLoading = false;
           	return;
         	}
           this.list = response.data.list;
+          for(var i in this.list){
+            this.list[i].tmpSchoolScoreRate.progressValue = parseFloat(this.list[i].tmpSchoolScoreRate.progressValue)
+            this.list[i].tmpSchoolExcellentRate.progressValue = parseFloat(this.list[i].tmpSchoolExcellentRate.progressValue)
+            this.list[i].tmpSchoolPassRate.progressValue = parseFloat(this.list[i].tmpSchoolPassRate.progressValue)
+          }
           this.total = response.data.total;
           this.name = response.data.name;
           this.listLoading = false;

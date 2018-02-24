@@ -56,7 +56,7 @@
       ])
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+			
 			this.setDefault();
       this.getList();
 		},

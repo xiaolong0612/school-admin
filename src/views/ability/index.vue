@@ -1,63 +1,117 @@
 <template>
-  <div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%">
-    <div class="chart" id="chart" style="height:600px;width:100%"></div>
+  <div>
+    <div class="ui-search-wrap" id="ui-search-wrap">
+      <el-form :inline="true">  
+        <el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="年级">
+          <el-select v-model="listQuery.grade" filterable clearable placeholder="请选择" @change="getList('grade')">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="科目">
+          <el-select v-model="listQuery.subject" filterable clearable placeholder="请选择" @change="getList('grade')">
+            <el-option v-for="item in subjectList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%">
+      <chart height='calc(100vh - 165px)' width='100%' :setChartOption="chart.setOption" :clickChart="true" clickPath="/ability/class" :xParmas="x_id"></chart>
+    </div>
   </div>
 </template>
 <script>
-  import { getLatestTest } from 'utils/auth';
-  import echarts from 'echarts';
+  import { getLatestTest, attrPeriod, attrGrade } from 'utils/auth';
+  import chart from '@/components/Charts/chart';
+  import { getPaperList, getAllPeriod } from 'api/list';
   import { mapGetters } from 'vuex';
-  require('echarts/theme/macarons'); // echarts 主题
   import { getPaperSchoolPassRateSpecialTopic } from 'api/ability'
   export default {
+    components: { chart },
     data() {
       return {
         name: '',
         chart: '',
+        periodList: [],
+        gradeList: [],
+        subjectList: [],
         list: {
           data: [],
           title: [],
           right: []
         },
+        chart: {
+          name: '',
+          data: [],
+          X: [],
+          legend: [],
+          series: [],
+          setOption: {}
+        },
         x_id:{},
         series: [],
         selected: {},
         listQuery: {
-          paperId: '',
+          grade: '',
+          period: '',
+          subject: ''
         }
       }
     },
     computed: {
       ...mapGetters([
         'uid',
+        'user'
       ])
     },
     mounted() {
-      this.setDefault();
-      this.initChart();
-      this.getList()
+      this.getAllPeriod();
     },
     methods: {
       setDefault() {
+        this.gradeList = this.user.grade.split(',');
+        this.subjectList = this.user.userinfo.subject.split(',');
         let paper = JSON.parse(getLatestTest());
-        console.log(paper)
-        this.listQuery.paperId = paper.id;
+        // this.listQuery.paperId = paper.id;
+        this.listQuery.grade = typeof attrGrade() != 'undefined' ? attrGrade() : this.gradeList[0];
+        this.listQuery.period = typeof attrPeriod() != 'undefined' ? attrPeriod() : this.periodList[0];
+        this.listQuery.subject = this.subjectList[0];
+        this.getList('');
+      },
+
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+          this.periodList = res.data.list;
+          this.setDefault();
+        })
       },
       getList() {
         this.listLoading = true;
+        attrGrade(this.listQuery.grade);
+        attrPeriod(this.listQuery.period);
         getPaperSchoolPassRateSpecialTopic(this.listQuery).then(res => {
-          var data = res.data.data;
-          this.name = data.right;
-          this.list.right = [];
+          this.chart.series = [];
+          console.log(1)
+          if(typeof res == 'undefined'){
+            this.setOption();
+            console.log(2)
+            return false;
+          }
+          var data = res.data;
+          this.chart.name = '能力发展';
+          this.chart.right = data.right;
           let i = 0;
-          for(let index in data.data){
-
-            this.list.right.push(index);
-            if(i < data.right.length/3) this.selected[index] = true;
-            else this.selected[index] = false;
-            
-
-            this.series.push({
+          for(let index in data.date){
+            this.chart.series.push({
               name: index,
               type: 'bar',
               barMaxWidth: '100',
@@ -73,30 +127,25 @@
                   }
                 }
               },
-              data: data.data[index]
+              data: data.date[index]
             });
-            i++;
           }
+          this.x_id = [];
+          this.chart.X = [];
           this.x_id = data.title;
-          this.list.title = [];
           for(var item in data.title){
-            this.list.title.push(item);
+            this.chart.X.push(item);
           }
-          console.log(this.selected)
           // this.list.right = data.right;
           this.setOption();
-          this.addChartClick();
           this.listLoading = false;
         })
       },
-      initChart() {
-        this.chart = echarts.init(document.getElementById('chart'),'macarons');
-      },
       setOption() {
         var _that = this;
-        this.chart.setOption({
+        this.chart.setOption = {
           title: {
-            text: _that.name,
+            text: _that.chart.name,
             x: 'center',
             textStyle: {
               color: '#333',
@@ -122,8 +171,7 @@
             orient: 'vertical',
             bottom: '20%',
             right: '0',
-            data: _that.list.right,
-            selected: _that.selected
+            data: _that.chart.right
           },
           calculable: true,
           xAxis: [{
@@ -139,7 +187,7 @@
                 color: '#333'
               }
             },
-            data: _that.list.title
+            data: _that.chart.X
           }],
           yAxis: [{
             type: 'value',
@@ -180,18 +228,8 @@
             start: 1,
             end: 35
           }],
-          series: _that.series
-        })
-      },
-      addChartClick() {
-        this.chart.on('click', params => {
-          if(params.componentType === "xAxis") {
-            console.log(this.x_id[params.value]);
-            this.$router.push({ path: '/ability/class', query: {id: this.x_id[params.value]}});
-          }
-          // console.log(this.link[params.seriesName])
-          // this.$router.push({ path: '/ability/school'});
-        })
+          series: _that.chart.series
+        }
       }
     }
   }

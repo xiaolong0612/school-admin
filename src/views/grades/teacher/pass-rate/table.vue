@@ -79,7 +79,7 @@
 		created() {
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(true);
+			
 			this.getSchoolList();
       this.setDefault();
 			this.getList();

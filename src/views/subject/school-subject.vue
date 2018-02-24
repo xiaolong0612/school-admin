@@ -66,13 +66,13 @@
 			}
 		},
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+			
 			this.setDefault();
 			this.getList();
 		},
 		methods: {
 			setDefault(){
-				this.screenHeight = this.setTableHeight(false);
+				
 
         let paper = JSON.parse(getLatestTest());
 	      this.listQuery.paperId = paper.id;

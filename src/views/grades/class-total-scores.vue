@@ -38,7 +38,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-loading="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
+				<el-table v-loading="listLoading" :data="list.data" border style="width: 100%" >
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :align="first.children != undefined ? 'center' : 'left'">
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 		            <template scope="scope">
@@ -122,7 +122,11 @@
       getPaperData(){
         this.listQuery.paperId = '';
         getPaperList(this.paperQuery).then( res => {
-          if(typeof res == 'undefined') return;
+          if(typeof res == 'undefined'){
+            this.list.data = [];
+            this.listLoading = false;
+            return;
+          }
           this.paperList = res.data.list;
           this.getList();
         })

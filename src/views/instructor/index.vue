@@ -10,7 +10,7 @@
         </el-form-item> -->
 
         <el-form-item label="年级选择">
-          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="getList">
+          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="getPaperList">
             <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
@@ -25,7 +25,7 @@
               <li v-for="item in specialList">
                 <el-row class="ui-sidebar">
                   <el-col :span="12">
-                    <div class="ui-label">
+                    <div class="ui-label" style="white-space:nowrap;">
                       {{item.specialTopicName}}
                     </div>
                   </el-col>
@@ -55,7 +55,7 @@
               <li v-for="item in qualityList">
                 <el-row class="ui-sidebar">
                   <el-col :span="12">
-                    <div class="ui-label">
+                    <div class="ui-label" style="white-space:nowrap;">
                       {{item.name}}
                     </div>
                   </el-col>
@@ -73,7 +73,7 @@
               <li v-for="item in level">
                 <el-row class="ui-sidebar">
                   <el-col :span="12">
-                    <div class="ui-label">
+                    <div class="ui-label" style="white-space:nowrap;">
                       {{item.levelName}}
                     </div>
                   </el-col>
@@ -94,7 +94,7 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  import { teacherTop } from 'api/index';
+  import { teacherTop, indexSide } from 'api/index';
   import { getPaperList } from 'api/list';
   import { attrGrade } from 'utils/auth';
   import chart from '@/components/Charts/chart';
@@ -129,7 +129,8 @@
     computed: {
       ...mapGetters([
         'user',
-        'uid'
+        'uid',
+        'subject'
       ])
     },
   	mounted() {
@@ -147,18 +148,40 @@
       },
       getPaperList(){
         let query = {
-          pageNo:1,
-          pageSize:20,
           grade: this.listQuery.grade,
           // grade: '八年级',
           subject: this.user.userinfo.subject
         }
+
+      this.getSide();
         getPaperList(query).then(res => {
           this.examinationList = res.data.list;
           if(this.examinationList.length == 0 || this.examinationList.length == 1){
-            this.paperPage.list['上一页'].disabled = true;
+            this.paperPage.index = 0;
           }
           this.getList('');
+        })
+      },
+      getSide(){
+        let query = {
+          subject: this.subject,
+          grade: this.listQuery.grade
+        }
+        indexSide(query).then(res => {
+          if(res == undefined){
+            console.log(this.specialList, this.level, this.qualityList);
+            return false;
+          }
+          var data = res.data.data
+          this.specialList = data.left;
+          this.level = data.level;
+          this.qualityList = [];
+          for(var item in data.right){
+            this.qualityList.push({
+              name: data.right[item].split(':')[0],
+              number: data.right[item].split(':')[1]
+            })
+          };
         })
       },
   		getList(type) {
@@ -167,14 +190,10 @@
         }else if(type == '+'){
           this.paperPage.index++;
         }
-        console.log(this.paperPage)
         this.listQuery.paperId = this.examinationList[this.paperPage.index].id;
         attrGrade(this.listQuery.grade);
         teacherTop(this.listQuery).then(res => {
           if(typeof res == 'undefined'){
-            this.specialList =[];
-            this.level =[];
-            this.qualityList =[];
             for(let i in this.chart){
               this.chart[i] = []
             }
@@ -207,15 +226,6 @@
             }
           // }
         	this.setOption();
-          this.specialList = data.left;
-          this.level = data.level;
-          this.qualityList = [];
-          for(var item in data.right){
-            this.qualityList.push({
-              name: data.right[item].split(':')[0],
-              number: data.right[item].split(':')[1]
-            })
-          };
 
         });
       },

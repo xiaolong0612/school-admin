@@ -17,7 +17,10 @@
 				  </el-upload>
 	      </el-form-item>
 	      <el-form-item>
-				<el-button type="warning" @click="handleCalculation">计算</el-button>
+				<!-- <el-button type="warning" @click="handleCalculation">计算</el-button> -->
+	      </el-form-item>
+	      <el-form-item>
+	      	<el-button type="primary" @click="file_down">下载模版<i class="el-icon-printer"></i></el-button>
 	      </el-form-item>
 			</el-form>
 		</div>
@@ -27,7 +30,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight">
+				<el-table :data="list" stripe v-loading.body="listLoading" border >
 
 					<el-table-column prop='id' label="序号" width="90"></el-table-column>
 
@@ -93,7 +96,7 @@
       ])
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+			
 			this.listQuery.id = this.uid;
 			this.getList();
 			this.refreshTime();
@@ -147,6 +150,9 @@
           message: '文件上传失败',
           type: 'success'
         });
+      },
+      file_down(){
+      	window.location.href="/static/template_file/成绩的导入模板.xls";
       }
 		}
 	}

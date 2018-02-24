@@ -19,7 +19,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" :key="key" v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
+				<el-table :data="list" :key="key" v-loading.body="listLoading" border  :default-sort = "{prop: 'name1', order: 'descending'}">
 					<el-table-column label="考试" width="100" fixed>
 						<template scope="scope">
 							七上
@@ -78,7 +78,7 @@
 			}
 		},
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
+			
 			this.getList();
 		},
 		methods: {

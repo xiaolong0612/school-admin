@@ -1,6 +1,6 @@
 <template>
   <div style="width:100%">
-    <el-table :data="list" stripe border style="width: 100%" :max-height="screenHeight">
+    <el-table :data="list" stripe border style="width: 100%" >
         <slot>
             <div>table set window height</div>
         </slot>

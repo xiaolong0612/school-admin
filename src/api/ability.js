@@ -14,7 +14,7 @@ import fetch from 'utils/fetch';
  */
 export function getPaperSchoolPassRateSpecialTopic(data){
 	return fetch({
-		url: '/admin/schoo-basic/getPaperSchoolPassRateSpecialTopic',
+		url: 'admin/schoo-basic/getSchoolLevelRate',
 		method: 'post',
 		data
 	})
@@ -29,7 +29,7 @@ export function getPaperSchoolPassRateSpecialTopic(data){
  */
 export function getClassSpecialTopicBySchoolId(data){
 	return fetch({
-		url: '/admin/class-basic/getClassSpecialTopicBySchoolId',
+		url: '/admin/schoo-basic/getSchoolLevelCodeRate',
 		method: 'post',
 		data
 	})

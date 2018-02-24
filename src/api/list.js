@@ -19,6 +19,13 @@ export function getPaperList(data){
 		data
 	})
 }
+export function getExaminationPaperSplit(data){
+	return fetch({
+		url: '/admin/examination-paper/getExaminationPaperSplit',
+		method: 'post',
+		data
+	})
+}
 // 届 年级
 export function getPaperNameList(data){
 	return fetch({

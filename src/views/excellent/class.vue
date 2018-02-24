@@ -25,7 +25,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight" :default-sort = "{prop: 'name1', order: 'descending'}">
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%"  :default-sort = "{prop: 'name1', order: 'descending'}">
 					<el-table-column prop="test" label="历次" width="150" fixed></el-table-column>
 					<el-table-column prop="number5" label="语文" width="60">
 						<el-table-column label='优秀数' width="100">
@@ -139,7 +139,7 @@
       this.getList();
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(true);
+			
 		},
 		methods: {
 			getList() {

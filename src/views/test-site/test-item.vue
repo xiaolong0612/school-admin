@@ -13,7 +13,7 @@
 				{{$route.params.name}}-考点列表
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight"
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" 
 				:default-sort = "{prop: 'levelCode'}">
 
 			    <el-table-column
@@ -91,20 +91,29 @@
 			      prop="casesList"
 			      label="考点解析">
 			      <template scope="scope">
-				      	<!-- <el-upload
-				      		 v-show="scope.row.edit"
-								  class="upload-demo"
-								  action="http://118.178.93.124:8086/ajaxfileupload" 
-								  :on-success='handleImgSuccess'
-								  :on-remove="handleImgRemove"
-								  :file-list="cases"
-								  list-type="picture">
-								  <el-button size="small" type="primary">点击上传</el-button>
-								</el-upload> -->
+				      	<el-upload
+				      	style="margin-top:10px;"
+			      		v-show="scope.row.edit"
+							  class="upload-demo"
+							  :action="gpath.action"
+							  :on-success="fileUpSuccess"
+							  :on-remove="handleImgRemove"
+							  multiple
+							  :data="{id: scope.row.id}"
+							  :file-list="scope.row.cases">
+							  <el-button size="small" type="primary">点击上传</el-button>
+							</el-upload>
 
-				      	<!-- <div v-show="!scope.row.edit">
-				      		<img v-for='item in scope.row.cases' :src="item">
-				      	</div> -->
+							<div class='file-list' v-show="!scope.row.edit">
+								<a target="_blank" :href="item.url" v-for="item in scope.row.cases">
+									<el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+										<div class="file_item">
+											<img class="file_icon" :src='item.url' />
+											<p class="file_name">{{item.name}}</p>
+										</div>
+									</el-tooltip>
+								</a>
+          		</div>
 						</template>
 			    </el-table-column>
 
@@ -158,9 +167,9 @@
 
         	<el-upload
 					  class="upload-demo"
-					  action="http://118.178.93.124:8086/ajaxfileupload" 
-					  :on-success='handleImgSuccess'
-					  :on-remove="handleImgRemove"
+					  :action="gpath.action" 
+					  :on-success='formImgSuccess'
+					  :on-remove="formImgRemove"
 					  :file-list="casesList"
 					  list-type="picture">
 					  <el-button size="small" type="primary">点击上传</el-button>
@@ -219,9 +228,10 @@
 					levelName: '',
 					subject: '',
 					teacherId:  '',
-					analysis: '1',
-					scoreCriterion: '1',
-					cases: '1',
+					analysis: '',
+					scoreCriterion: '',
+					cases: '',
+					casesList: []
         },
         rules: {
 	        name: [
@@ -267,7 +277,7 @@
 			this.listQuery.parentId = this.$route.params.id;
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(true);
+			
       this.getList();
 		},
 		methods: {
@@ -278,7 +288,11 @@
         	for(let i=0; i<this.list.length; i++){
         		this.$set(this.list[i], 'edit', false);
         		this.$set(this.list[i], 'popover', false);
-        		this.list[i].cases = this.list[i].cases.split(',');
+        		if(this.list[i].cases == ''){
+        			this.list[i].cases = [];
+        		}else{
+        			this.list[i].cases = JSON.parse(this.list[i].cases);
+        		}
         	}
         	this.backList = JSON.parse(JSON.stringify(this.list));
           this.total = res.data.total;
@@ -322,8 +336,7 @@
     			levelCode: scope.row.levelCode,
     			analysis: "",
     			scoreCriterion: "",
-    			cases: "",
-    			// casesList: scope.row.casesList
+    			cases: JSON.stringify(scope.row.cases),
     		};
       	modTestSitesItem(data).then(res => {
       		if(typeof res == 'undefined') return;
@@ -332,19 +345,6 @@
 	          type: 'success'
 	        });
 	        this.getList();
-	       //  let bridge = {
-	      	// 	name: scope.row.name,
-	      	// 	nameCode: scope.row.nameCode,
-	      	// 	levelName: scope.row.levelName,
-	      	// 	levelCode: scope.row.levelCode,
-	      	// 	index: scope.$index
-	      	// }
-
-      		// this.backList[bridge.index].name = bridge.name;
-      		// this.backList[bridge.index].nameCode = bridge.nameCode;
-      		// this.backList[bridge.index].levelCode = bridge.levelCode;
-      		// this.backList[bridge.index].levelName = bridge.levelName;
-      		// scope.row.edit = false
       	})
       },
       handleCancel(scope){
@@ -372,6 +372,7 @@
 	          type: 'success'
 	        });
 		      this.getList();
+		      this.dialogDel = false;
       	})
       },
       showDiallogDel(row){
@@ -381,21 +382,64 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      handleImgSuccess(res, file, fileList){
+      fileUpSuccess(res, file, fileList){
+      	for(let i in this.list){
+      		if(this.list[i].id == res.id ){
+      			this.list[i].cases.push({
+    					name: res.originalName,
+    					originalName: res.name,
+    					size: res.size,
+    					suffix: res.suffix,
+    					url: res.url
+    				});
+      		}
+      	}
+      },
+      handleImgRemove(file, fileList) {
+      	for(let i=0; i<this.list.length; i++){
+      		for(let c=0; c<this.list[i].cases.length; c++){
+      			if(this.list[i].cases[c].url == file.url){
+      				this.list[i].cases = [];
+      				for(let f=0; f<fileList.length; f++){
+      					this.list[i].cases.push({
+      						name: fileList[f].name,
+	      					originalName: fileList[f].originalName,
+	      					size: fileList[f].size,
+	      					suffix: fileList[f].suffix,
+	      					url: fileList[f].url
+      					})
+      				}
+      			}
+      		}
+      	}
+      },
+      formImgSuccess(res, file, fileList){
       	this.fromData.cases = '';
       	var tempCases = [];
       	for (var item in fileList) {
-      		tempCases.push(this.gpath.img+fileList[item].response.name)
+      		tempCases.push({
+						name: fileList[item].name,
+  					originalName: fileList[item].originalName,
+  					size: fileList[item].size,
+  					suffix: fileList[item].suffix,
+  					url: fileList[item].response.url
+					})
       	}
 
       	this.fromData.cases = JSON.stringify(tempCases);
       	// console.log(this.fromData.cases)
       },
-      handleImgRemove(file, fileList) {
+      formImgRemove(file, fileList) {
       	this.fromData.cases = '';
       	var tempCases = [];
       	for (var item in fileList) {
-      		tempCases.push(this.gpath.img+fileList[item].response.name)
+      		tempCases.push({
+						name: fileList[item].name,
+  					originalName: fileList[item].originalName,
+  					size: fileList[item].size,
+  					suffix: fileList[item].suffix,
+  					url: fileList[item].response.url
+					})
       	}
 
       	this.fromData.cases = JSON.stringify(tempCases);

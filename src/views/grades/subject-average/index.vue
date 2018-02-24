@@ -5,14 +5,20 @@
 
 				<el-form-item label="届">
           <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
-            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="年级">
           <el-select v-model="listQuery.grade" filterable clearable placeholder="请选择" @change="getList('grade')">
-            <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="科目">
+          <el-select v-model="listQuery.subject " filterable placeholder="请选择" @change="getList('subject')">
+            <el-option v-for="item in subjectList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -25,11 +31,12 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-loading.body="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
-	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
+				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%"  stripe>
+	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :header-align="first.children != undefined ? 'center' : 'left'">
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 		            <template scope="scope">
-		              <div>{{scope.row[first.value][second.value]}}</div>
+		              <div v-if="second.name == '进步值'" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{scope.row[first.value][second.value]}}</div>
+		              <div v-else>{{scope.row[first.value][second.value]}}</div>
 		            </template>
 		          </el-table-column>
 
@@ -50,8 +57,9 @@
 </template>
 <script>
 	import { mapGetters } from 'vuex';
-  import { getLatestTest, attrPeriod, attrGrade } from 'utils/auth';
+  import { getLatestTest, attrPeriod, attrGrade, attrSubject } from 'utils/auth';
 	import { gradeList, periodList } from 'utils/data';
+  import { getPaperList, getAllPeriod } from 'api/list';
 	import store from 'store';
 	import { getSchoolScoreRateBySubjectAndPeriodAndGrade } from 'api/grades';
 	export default {
@@ -59,8 +67,9 @@
 			return {
 				name: '学科均分监控',
 				screenHeight: 0,
-				periodList: periodList(),
+				periodList: [],
         gradeList: [],
+        subjectList: [],
 				list: {
 					data: [],
 					head: []
@@ -72,14 +81,15 @@
         	pageSize: 50,
           period: '',
           subject: "",
-          grade: "九年级"
+          grade: ""
         }
 			}
 		},
 		computed: {
       ...mapGetters([
         'subject',
-        'gradeNo'
+        'gradeNo',
+        'user'
       ])
     },
 		created() {
@@ -91,24 +101,27 @@
 		},
 		methods: {
 			setForm(){
-				let grade_list = gradeList('all');
-	      for(let i=0; i<grade_list.length; i++){
-	        for(var o=0; o<grade_list[i].options.length; o++){
-	          this.gradeList.push(grade_list[i].options[o]);
-	        }
-	      };
+				this.gradeList = this.user.grade.split(',');
+        this.subjectList = this.user.userinfo.subject.split(',');
 			},
 			setDefault(){
-				this.screenHeight = this.setTableHeight(true);
+				
 				this.listQuery.subject = this.subject;
+				this.listQuery.grade = typeof attrGrade() != 'undefined' ? attrGrade() : this.gradeList[0];
+        this.listQuery.subject = typeof attrSubject() != 'undefined' ? attrSubject() : this.subjectList[0];
 
-				if(typeof attrGrade() != 'undefined') this.listQuery.grade = attrGrade();
-				if(typeof attrPeriod() != 'undefined') this.listQuery.period = attrPeriod();
-				else this.listQuery.period = this.periodList[this.periodList.length-1].value;
-
-				this.getList();
+				this.getAllPeriod();
 
 			},
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+          this.periodList = res.data.list;
+					this.listQuery.period = typeof attrPeriod() != 'undefined' ?  attrPeriod() : this.periodList[0];
+        	this.listQuery.subject = typeof attrSubject() != 'undefined' ? attrSubject() : this.subjectList[0];
+          this.getList('');
+        })
+      },
+
 			getList(type) {
 				switch(type){
           case 'period':
@@ -117,10 +130,16 @@
           case 'grade':
             attrGrade(this.listQuery.grade);
             break;
+          case 'subject':
+            attrSubject(this.listQuery.subject);
+            break;
         }
         this.listLoading = true;
         getSchoolScoreRateBySubjectAndPeriodAndGrade(this.listQuery).then(res => {
         	if(typeof res == 'undefined'){
+            this.list.data = [];
+            this.list.head = [];
+            this.total = 0;
           	this.listLoading = false;
           	return;
         	}

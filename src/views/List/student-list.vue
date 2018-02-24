@@ -2,6 +2,35 @@
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
 			<el-form :inline="true" :model="fromData">
+				<!-- <el-form-item label="届">
+          <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getClassList('period')">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item> -->
+				
+				<el-form-item label="学生名称">
+          <el-input v-model="listQuery.name" placeholder="请输入" @change="getList"></el-input>
+        </el-form-item>
+
+				<el-form-item label="班级">
+          <el-input v-model="listQuery.classNo" placeholder="请输入" @change="getList"></el-input>
+        </el-form-item>
+
+				<el-form-item label="年级">
+          <el-select v-model="listQuery.grade" clearable placeholder="请选择" @change="getList('grade')">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <!-- <el-form-item label="班级列表">
+          <el-select v-model="listQuery.className" clearable placeholder="请选择" @change="getList">
+            <el-option v-for="item in classList" :label="item.name" :value="item.name" :key="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item> -->
+
 				<el-form-item>
 	        <el-upload
 				    class="upload-demo"
@@ -18,6 +47,9 @@
 	      <el-form-item>
 	        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
 	      </el-form-item>
+	      <el-form-item>
+	      	<el-button type="primary" @click="file_down">下载模版<i class="el-icon-printer"></i></el-button>
+	      </el-form-item>
 			</el-form>
 		</div>
 		<div class="ui-table-wrap clearfix">
@@ -26,7 +58,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight" :default-sort = "{prop: 'name'}">
+				<el-table :data="list" stripe v-loading.body="listLoading" border  :default-sort = "{prop: 'name'}">
 
 					<el-table-column prop='name' label="姓名" width="90" sortable>
 						<template scope="scope">
@@ -213,6 +245,8 @@
 </template>
 <script>
 	import { mapGetters } from 'vuex';
+	import { getClassList, getAllPeriod } from 'api/list';
+  import { attrPeriod, attrGrade } from 'utils/auth';
 	import { getListStudent, addStudent, delStudent,  modStudent, } from 'api/info-administration/student';
 	export default {
 		data() {
@@ -222,6 +256,9 @@
 				list: [],
 				backList: [],
 				fileList:[],
+				periodList: [],
+				gradeList:[],
+				classList: [],
 				total: 0,
         listLoading: true,
         dialogVisible: false,
@@ -244,7 +281,11 @@
           pageNo: 1,
           pageSize: 50,
           name: '',
-          studentNo: ''
+          studentNo: '',
+          schoolId:'',
+          grade: '',
+          period: '',
+          classNo:''
         },
         fromData: {
         	studentNo: '',
@@ -302,23 +343,80 @@
 		},
 		computed: {
       ...mapGetters([
-        'uid'
+        'uid',
+        'user'
       ])
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(false);
-			this.getList();
+			this.setForm();
+			this.setDefault()
+			// this.getAllPeriod();
 		},
 		methods: {
-			getList() {
+			setForm(){
+				this.gradeList = this.user.grade.split(',');
+			},
+			setDefault(){
+				this.listQuery.schoolId = this.user.school.id;
+				this.listQuery.grade = typeof attrGrade() != 'undefined' ? attrGrade() : this.gradeList[0];
+        // this.listQuery.period = typeof attrPeriod() != 'undefined' ? attrPeriod() : this.periodList[0];
+				this.getList('');
+			},
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+        	this.periodList = res.data.list;
+          this.setDefault();
+        })
+      },
+			getClassList(type){
+				switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+        }
+				let query = {
+					period: this.listQuery.period,
+					schoolId: this.user.school.id,
+					grade: this.listQuery.grade
+				};
+      	getClassList(query).then( res => {
+      		if(res.data.list.length == 0){
+      			this.listQuery.classId = '';
+      			this.classList = [];
+      			this.list.data = [];
+      		}
+      		else{
+      			this.classList = res.data.list;
+      			this.listQuery.classId = this.classList[0].id;
+      			this.getList();
+      		}
+      	})
+      },
+			getList(type) {
+				switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+        }
         this.listLoading = true;
-        getListStudent(this.listQuery).then(response => {
-          this.list = response.data.list;
+        getListStudent(this.listQuery).then(res => {
+        	if(typeof res == 'undefined'){
+        		this.listLoading = false;
+        		this.list = [];
+        		return
+        	}
+          this.list = res.data.list;
         	for(let i=0; i<this.list.length; i++){
         		this.$set(this.list[i], 'edit', false);
         	}
         	this.backList = JSON.parse(JSON.stringify(this.list));
-          this.total = response.data.total;
+          this.total = res.data.total;
           this.listLoading = false;
         })
       },
@@ -418,6 +516,7 @@
 		          type: 'success'
 		        });
 		        this.getList();
+		        this.dialogDel = false;
       		}
       	})
       },
@@ -426,6 +525,9 @@
       },
       sexChange(val) {
 
+      },
+      file_down(){
+      	window.location.href="/static/template_file/学生信息的导入模板.xls";
       }
 		}
 	}

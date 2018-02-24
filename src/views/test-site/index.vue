@@ -2,6 +2,17 @@
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
 			<el-form :inline="true">	
+				<el-form-item label="科目" prop="subject">
+          <el-select v-model="listQuery.subject" filterable placeholder="请选择" @change="getList">
+				    <el-option
+				      v-for="item in subjectList"
+				      :key="item"
+				      :label="item"
+				      :value="item">
+				    </el-option>
+				  </el-select>
+        </el-form-item>
+
 				<el-form-item>
 	        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
 	      </el-form-item>
@@ -13,7 +24,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight"
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" 
 				:default-sort = "{prop: 'nameCode'}">
 					<el-table-column
 			      prop="nameCode"
@@ -88,17 +99,6 @@
           <el-input v-model="fromData.nameCode"></el-input>
         </el-form-item>
 
-<!--         <el-form-item label="科目" prop="subject">
-          <el-select v-model="fromData.subject" filterable placeholder="请选择">
-				    <el-option
-				      v-for="item in subjectList"
-				      :key="item"
-				      :label="item"
-				      :value="item">
-				    </el-option>
-				  </el-select>
-        </el-form-item> -->
-
       </el-form>
       <span slot="footer" class="dialog-footer">
 		  	<el-button @click="handleAdd('fromData')" type="primary">确定</el-button>
@@ -138,7 +138,7 @@
 				list: [],
 				screenHeight: 0,
 				total: 0,
-				subjectList: ['语文', '数学', '英语', '物理', '化学', '地理', '历史', '政治'],
+				subjectList: [],
         listLoading: true,
         listQuery: {
           pageNo: 1,
@@ -151,6 +151,7 @@
         	name: '',
 					nameCode: '',
 					teacherId: '',
+					subject: ''
         },
         rules: {
 	        name: [
@@ -184,16 +185,18 @@
 			this.fromData.teacherId = this.uid;
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(true);
+			this.subjectList = this.subject.split(',');
+			this.listQuery.subject = this.subjectList[0];
       this.getList();
 		},
 		methods: {
 			getList() {
         this.listLoading = true;
-        this.listQuery.subject = this.subject;
         getTestSitesList(this.listQuery).then(res => {
         	this.list = res.data.list;
         	for(let i=0; i<this.list.length; i++){
+        		console.log(this.list[i].nameCode)
+        		this.list[i].nameCode = parseInt(this.list[i].nameCode)
         		this.$set(this.list[i], 'edit', false);
         		this.$set(this.list[i], 'popover', false);
         	}
@@ -213,7 +216,7 @@
       handleAdd(formName){
       	this.$refs[formName].validate((valid) => {
 	        if (valid) {
-	        	console.log(this.fromData)
+	        	this.fromData.subject = this.listQuery.subject;
       			addTestsites(this.fromData).then(res => {
       				if(typeof res == 'undefined') return;
 	            this.$message({

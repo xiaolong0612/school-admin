@@ -13,7 +13,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight">
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" >
 					<el-table-column
 			      prop="name"
 			      label="学校"
@@ -78,8 +78,8 @@
 					<el-table-column prop="" label="操作" width="140">
 						<template scope="scope">
 							<div v-show="!scope.row.edit">
-								<el-button type="info" icon="el-icon-edit" size="small" @click="scope.row.edit = true"></el-button>
-								<el-button type="danger" icon="el-icon-delete" size="small" @click="handleDel(scope.row.id)"></el-button>
+								<i class="el-icon-edit mr10" @click="scope.row.edit = true"></i>
+								<i class="el-icon-delete" @click="showDiallogDel(scope.row)"></i>
 							</div>
 							<div v-show="scope.row.edit">
 								<el-button type="success" icon="el-icon-success" size="small" @click="handleMod(scope)"></el-button>
@@ -165,6 +165,18 @@
       	<el-button @click="dialogVisible = false" :plain="true" type='warning'>取消</el-button>
 		  </span>
 		</el-dialog>
+		<el-dialog
+		  title="提示"
+		  :visible.sync="dialogDel"
+		  size="tiny">
+		  <span>确定要删除</span>
+		  <span style="color: red">{{del_content.name}}</span>
+		  <span>吗？</span>
+		  <span slot="footer" class="dialog-footer">
+		    <el-button @click="dialogDel = false">取 消</el-button>
+		    <el-button type="primary" @click="handleDel()">确 定</el-button>
+		  </span>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -210,13 +222,15 @@
 	        	{ required: true, message: '必填项', trigger: 'blur' },
 	        ]
 	      },
-        dialogVisible: false
+        dialogVisible: false,
+        dialogDel: false,
+        del_content: {}
 			}
 		},
 		created() {
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(true);
+			
       this.getList();
 		},
 		methods: {
@@ -303,14 +317,20 @@
       	scope.row.telephone = bridge.telephone;
       	scope.row.edit = false;
       },
-      handleDel(id) {
-      	delSchool(id).then(response => {
+
+      showDiallogDel(row){
+      	this.del_content = row;
+      	this.dialogDel = true;
+      },
+      handleDel() {
+      	delSchool({id:this.del_content.id}).then(response => {
       		if(typeof response != 'undefined'){
       			this.$message({
 		          message: '删除成功',
 		          type: 'success'
 		        });
 		        this.getList();
+		        this.dialogDel = false;
       		}
       	})
       },

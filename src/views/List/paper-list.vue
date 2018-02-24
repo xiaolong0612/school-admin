@@ -5,7 +5,7 @@
 
 				<el-form-item label="届">
           <el-select v-model="listQuery.period" filterable clearable placeholder="请选择" @change="getList('period')">
-            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.value">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -21,7 +21,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight">
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" >
 					
 			    <el-table-column
 			      prop="period"
@@ -50,8 +50,19 @@
 			      <template scope="scope">
 							<!-- <el-input v-show="scope.row.edit" size="small" v-model="scope.row.grade"></el-input> -->
 							<el-select v-show="scope.row.edit" v-model="scope.row.grade" size="small" placeholder="请选择">
-		            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
-		            </el-option>
+		            <!-- <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
+		            </el-option> -->
+		            <el-option-group
+						      v-for="group in gradeList"
+						      :key="group.label"
+						      :label="group.label">
+						      <el-option
+						        v-for="item in group.options"
+						        :key="item.label"
+						        :label="item.label"
+						        :value="item.label">
+						      </el-option>
+						    </el-option-group>
 		          </el-select>
           		<span v-show="!scope.row.edit">{{scope.row.grade}}</span>
 						</template>
@@ -86,7 +97,7 @@
 							  :data="{id: scope.row.id}"
 							  :limit="1"
 							  :file-list="scope.row.file">
-							  <el-button size="small" type="primary">点击上传</el-button>
+							  <el-button size="small" type="primary" v-show="scope.row.file.length == 0">点击上传</el-button>
 							</el-upload>
 
 							<div class='file-list' v-show="!scope.row.edit">
@@ -154,7 +165,7 @@
         <el-form-item label="年级" prop="grade">
           <el-select v-model="fromData.grade" placeholder="请选择">
 				    <el-option-group
-				      v-for="group in classList"
+				      v-for="group in gradeList"
 				      :key="group.label"
 				      :label="group.label">
 				      <el-option
@@ -168,7 +179,10 @@
         </el-form-item>
 
         <el-form-item label="届" prop="period">
-          <el-input v-model="fromData.period"></el-input>
+          <el-select v-model="fromData.period" filterable clearable placeholder="请选择">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
         </el-form-item>
 
       </el-form>
@@ -198,13 +212,7 @@
   import { attrPeriod } from 'utils/auth';
 	import { validataPhone } from 'utils/validate';
 	import { gradeList, periodList } from 'utils/data';
-	const valiPhone = (rule, value, callback) => {
-		if (!validataPhone(value)) {
-      callback(new Error('请输入正确的手机号'));
-    } else {
-      callback();
-    }
-	};
+  import { getAllPeriod } from 'api/list';
 	export default {
 		data() {
 			return {
@@ -214,7 +222,7 @@
 				screenHeight: 0,
 				total: 0,
         listLoading: true,
-        periodList: periodList(),
+        periodList: [],
         gradeList: [],
         listQuery: {
           pageNo: 1,
@@ -263,23 +271,28 @@
 
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(true);
-			this.setDefault();
-      this.getList();
+			this.getAllPeriod();
 		},
 		methods: {
 			setDefault(){
-				if(typeof attrPeriod() != 'undefined') this.listQuery.period = attrPeriod();
-				else this.listQuery.period = this.periodList[this.periodList.length-1].value;
-				this.gradeList = this.user.grade.split(',');
+				this.listQuery.period = typeof attrPeriod() != 'undefined' ? attrPeriod() : this.periodList[0];
+				this.gradeList = gradeList('all');
+
 				this.listQuery.subject = this.subject;
+				this.fromData.subject = this.subject;
 				this.fromData.teacherId = this.uid;
+      	this.getList();
 			},
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+          this.periodList = res.data.list;
+          this.setDefault();
+        })
+      },
 			getList(type) {
 				switch(type){
 					case 'period':
 					  attrPeriod(this.listQuery.period);
-					  console.log(attrPeriod())
 					  break;
 				}
 
@@ -348,17 +361,20 @@
       		subject: this.backList[index].subject,
       		totalScore: this.backList[index].totalScore,
       		grade: this.backList[index].grade,
-      		period: this.backList[index].period
+      		period: this.backList[index].period,
+      		file: this.backList[index].file,
       	}
       	scope.row.name = bridge.name;
       	scope.row.subject = bridge.subject;
       	scope.row.totalScore = bridge.totalScore;
       	scope.row.grade = bridge.grade;
       	scope.row.period = bridge.period;
+      	scope.row.file = bridge.file;
       	scope.row.edit = false;
       },
       handleDel() {
       	delExaminationPaper(this.del_content.id).then(response => {
+      		this.dialogDel = false;
       		if(typeof response == 'undefined') return
     			this.$message({
 	          message: '删除成功',
@@ -376,7 +392,7 @@
       },
       fileUpSuccess(res, file, fileList){
       	for(let i in this.list){
-      		if(this.list[i].id = res.id ){
+      		if(this.list[i].id == res.id ){
       			this.list[i].file.push({
     					name: res.originalName,
     					originalName: res.name,

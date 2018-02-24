@@ -4,15 +4,22 @@
       <el-form :inline="true">
 
         <el-form-item label="届">
-          <el-select v-model="listQuery.period" filterable placeholder="请选择" @change="queryChange">
-            <el-option v-for="item in periodList" :label="item.label" :value="item.label" :key="item.label">
+          <el-select v-model="listQuery.period" filterable placeholder="请选择" @change="queryChange('period')">
+            <el-option v-for="item in periodList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="年级">
-          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="queryChange">
-            <el-option v-for="item in gradeList" :label="item.label" :value="item.label" :key="item.label">
+          <el-select v-model="listQuery.grade" filterable placeholder="请选择" @change="queryChange('grade')">
+            <el-option v-for="item in gradeList" :label="item" :value="item" :key="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="科目">
+          <el-select v-model="listQuery.subject " filterable placeholder="请选择" @change="queryChange('subject')">
+            <el-option v-for="item in subjectList" :label="item" :value="item" :key="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -20,13 +27,15 @@
     </div>
     <div class="echarts-wrap ui-echart-wrap" style="padding-right: 3%;">
       <!-- <div class="chart" id="chart" style="height:600px;width:100%"></div> -->
-      <chart height='calc(100vh - 165px)' width='100%' :setChartOption="setOption" :clickChart="true" :xParmas="x_id" clickPath="/special/score-rate/school"></chart>
+      <chart height='calc(100vh - 165px)' width='100%' :setChartOption="setOption" :clickChart="true" :xParmas="x_id" clickPath="/special/score-rate/school" :otherQuery="listQuery"></chart>
     </div>
   </div>
 </template>
 <script>
-  import { getLatestTest } from 'utils/auth';
+  import { mapGetters } from 'vuex';
+  import { getLatestTest, attrGrade, attrPeriod,attrSubject } from 'utils/auth';
   import { gradeList } from 'utils/data';
+  import { getPaperList, getAllPeriod } from 'api/list';
   import chart from '@/components/Charts/chart'
   import { getAllSpecialTopic } from 'api/special';
   export default {
@@ -36,9 +45,12 @@
         name: '',
         gradeList: [],
         periodList: [],
+        subjectList: [],
         listQuery: {
           period: '',
-          grade: ''
+          grade: '',
+          subject: '',
+          paperId: ''
         },
         listLoading: false,
         list: {
@@ -51,33 +63,62 @@
         setOption: {},
       }
     },
+    computed: {
+      ...mapGetters([
+        'subject',
+        'gradeNo',
+        'user'
+      ])
+    },
     mounted() {
       // 设置顶部搜索条件
       this.setForm();
-      this.setDefault();
-      this.getList();
+      this.getAllPeriod();
     },
     methods: {
       setDefault(){
-        this.listQuery.period = this.periodList[0].value;
-        this.listQuery.grade = this.gradeList[0].label;
+        this.listQuery.grade = typeof attrGrade() != 'undefined' ? attrGrade() : this.gradeList[0];
+        this.listQuery.period = typeof attrPeriod() != 'undefined' ? attrPeriod() : this.periodList[0];
+        this.listQuery.subject = typeof attrSubject() != 'undefined' ? attrSubject() : this.subjectList[0];
+        this.getPaperList();
       },
       setForm(){
-        // 年级
-        let grade_list = gradeList('all');
-        for(let i=0; i<grade_list.length; i++){
-          for(var o=0; o<grade_list[i].options.length; o++){
-            this.gradeList.push(grade_list[i].options[o]);
-          }
-        };
-        // 届
-        let year = new Date().getFullYear();
-        for(let i=0; i<3; i++){
-          this.periodList.push({
-            label: year+i,
-            value: year+i,
-          })
+        this.gradeList = this.user.grade.split(',');
+        this.listQuery.period = this.periodList[0];
+        this.subjectList = this.user.userinfo.subject.split(',');
+      },
+      getAllPeriod(){
+        getAllPeriod().then(res => {
+          this.periodList = res.data.list;
+          this.setDefault();
+        })
+      },
+      getPaperList(type){
+        let query = {
+
+          period: this.listQuery.period,
+          grade: this.listQuery.grade,
+          // grade: '八年级',
+          subject: this.user.userinfo.subject
         }
+        switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+        }
+        getPaperList(query).then(res => {
+          if(typeof res == 'undefined' || res.data.list.length == 0){
+            this.list.data = [];
+            this.listLoading = false;
+            return false;
+          }
+          this.examinationList = res.data.list;
+          this.listQuery.paperId = this.examinationList[0].id;
+          this.getList();
+        })
       },
       getList() {
         this.list.title = [];
@@ -87,13 +128,17 @@
           this.$message.error('sorry, 暂无考试信息');
           return;
         }
-        let paper = JSON.parse(getLatestTest());
-        this.listQuery.period = paper.period;
 
         getAllSpecialTopic(this.listQuery).then(res => {
-          if(typeof res == 'undefined') return;
-          var data = res.data.data;
+          console.log(res)
+          if(typeof res == 'undefined'){
+            this.series = [];
+            this.setChartOption();
+            return;
+          };
+          var data = res.data[0];
           this.list.data = data.data;
+          this.list.title = [];
           for(let index in data.title){
             this.list.title.push(index)
           }
@@ -102,6 +147,7 @@
           // this.list['title'] = data.title;
           this.list.right = data.right;
           // this.legend = []
+          this.series = [];
           for(let index in data.data){
             // this.legend.push(this.list.right[index]);
             this.series.push({
@@ -124,17 +170,29 @@
             })
           }
           this.setChartOption();
+          console.log(this.setOption)
           // this.addEchartClick();
         })
       },
-      queryChange(){
+      queryChange(type){
+        switch(type){
+          case 'period':
+            attrPeriod(this.listQuery.period);
+            break;
+          case 'grade':
+            attrGrade(this.listQuery.grade);
+            break;
+          case 'subject':
+            attrSubject(this.listQuery.subject);
+            break;
+        }
         this.getList();
       },
       setChartOption() {
         var _that = this;
         this.setOption = {
           title: {
-            text: '所有考试区专题得分率监控图',
+            text: '专题得分率',
             x: 'center',
             textStyle: {
               color: '#333',
@@ -150,7 +208,7 @@
           },
           legend: {
             orient: 'vertical',
-            bottom: '25%',
+            top: '20px',
             right: '2%',
             data: _that.list.right,
           },

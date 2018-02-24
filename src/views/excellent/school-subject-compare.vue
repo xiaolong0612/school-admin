@@ -109,7 +109,7 @@
         };
       },
       setDefault(callbak){
-        this.screenHeight = this.setTableHeight(true);
+        
         this.listQuery.period = this.periodList[0].value;
         this.listQuery.grade = this.gradeList[0].label;
         this.listQuery.schoolId = this.schoolList[0].id;

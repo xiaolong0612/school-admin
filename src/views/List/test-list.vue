@@ -13,7 +13,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight">
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" >
 					<el-table-column
 			      prop="address"
 			      label="学校"
@@ -234,7 +234,7 @@
 		created() {
     },
 		mounted() {
-			this.screenHeight = this.setTableHeight(true);
+			
       this.getList();
 		},
 		methods: {
