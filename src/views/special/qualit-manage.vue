@@ -2,11 +2,14 @@
 	<div>
 		<div class="ui-search-wrap" id="ui-search-wrap">
       <el-form :inline="true" :model="listQuery">
+      	<el-form-item class="fr">
+      		<el-button type="primary" style="margin-bottom:15px;" @click="$router.back(-1)">返回</el-button>
+      	</el-form-item>
       	<el-form-item label="专题">
       		<el-input v-model="name" :disabled="true"></el-input>
       	</el-form-item>
         <el-form-item label="考点">
-          <el-select v-model="checkPointsId" clearable placeholder="请选择" @change="testChange" @clear="selectClear">
+          <el-select v-model="checkPointsId" clearable placeholder="请选择" @change="testChange">
             <el-option v-for="item in testSitesList" :label="item.name" :value="item.id" :key="item.id">
             </el-option>
           </el-select>
@@ -23,9 +26,9 @@
 			</h3>
 			<div class="ui-table-main">
 				<div v-if="showTable">
-					<el-table :data="list.data" border style="width: 100%">
-		        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' sortable>
-		          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
+					<el-table :data="list.data" border style="width: 100%" :max-height="screenHeight">
+		        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name'>
+		          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable :prop="first.value+'.'+second.value">
 		            <template scope="scope">
 		              <div>{{scope.row[first.value][second.value]}}</div>
 		            </template>
@@ -73,12 +76,12 @@
 			return {
 				name: '',
 				list: {
-					data: '',
-					head: ''
+					data: [],
+					head: []
 				},
 				listTest: {
-					data: '',
-					head: ''
+					data: [],
+					head: []
 				},
 				showTable: true,
 				screenHeight: 0,
@@ -104,6 +107,7 @@
 		created() {
     },
 		mounted() {
+      this.screenHeight = this.setTableHeight(true);
 
 			this.name = this.$route.query.name;
 
@@ -119,7 +123,7 @@
 			getList(val) {
         this.listLoading = true;
         if(this.checkPointsId == ''){
-        	
+        	console.log(1)
 	        getSpecialTopic(this.listQuery).then(res => {
 	        	if(res == undefined){
 	        		this.list.data = [];
@@ -137,7 +141,7 @@
 	      	let query = {
 	      		pageNo: this.listQuery.pageNo,
 	      		pageSize: this.listQuery.pageSize,
-	      		checkPointsId: val,
+	      		checkPointsId: this.checkPointsId,
 	      		grade: this.listQuery.grade,
 	      		period: this.listQuery.period
 	      	}
@@ -184,10 +188,12 @@
       	}
       },
       testChange(val) {
+      	this.listQuery.pageNo = 1;
       	this.getList(val);
       },
       selectClear(){
-      	// this.getList();
+      	this.listQuery.pageNo = 1;
+      	this.getList('');
       }
 		}
 	}

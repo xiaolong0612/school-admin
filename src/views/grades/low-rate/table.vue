@@ -43,7 +43,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%" >
+				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' v-if="first.name != '学校Id'" :header-align="first.children != undefined ? 'center' : 'left'">
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 	            <template scope="scope">
@@ -54,13 +54,13 @@
 
 	          <template scope="scope" v-if="first.children == undefined ">
 
-	            <!-- <router-link v-if="first.value == 'school'" :to="{path:'/grades/low-rate/class', query:{schoolId: scope.row.schoolId, name: scope.row.school, grade:listQuery.grade, period:listQuery.period}}">{{scope.row[first.value]}}</router-link>
+	            <router-link v-if="first.value == 'school'" :to="{path:'/grades/low-rate/class', query:{schoolId: scope.row.schoolId, name: scope.row.school, grade:listQuery.grade, period:listQuery.period}}">{{scope.row[first.value]}}</router-link>
 							<div v-if="first.value != 'school'">
 								{{scope.row[first.value]}}
-							</div> -->
-              <div>
+							</div>
+              <!-- <div>
                 {{scope.row[first.value]}}
-              </div>
+              </div> -->
 	          </template>
 
 	          <!-- <template scope="scope" v-if="first.value != 'school'">
@@ -124,6 +124,7 @@
 		created() {
     },
 		mounted() {
+      this.screenHeight = this.setTableHeight(true);
 			this.setForm();
 			this.getAllPeriod();
 		},

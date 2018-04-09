@@ -146,6 +146,21 @@
         this.listQuery.id = this.uid;
         this.listQuery.grade = typeof attrGrade() == 'undefined' ? this.gradeList[0] : attrGrade();
       },
+      empty(){
+        this.chart.series.data = [];
+        this.examinationList[this.paperPage.index].name = '';
+        this.setOption();
+
+        for(var i in this.specialList){
+          this.specialList[i].scoreRate = 0;
+        }
+        for(var i in this.level){
+          this.level[i].scoreRate = 0;
+        }
+        for(var i in this.qualityList){
+          this.qualityList[i].number = 0;
+        }
+      },
       getPaperList(){
         let query = {
           grade: this.listQuery.grade,
@@ -155,11 +170,16 @@
 
       this.getSide();
         getPaperList(query).then(res => {
-          this.examinationList = res.data.list;
-          if(this.examinationList.length == 0 || this.examinationList.length == 1){
-            this.paperPage.index = 0;
+          if(res.data.list.length == 0){
+            this.$message.error('暂无试卷');
+            this.empty();
+          }else{
+            this.examinationList = res.data.list;
+            if(this.examinationList.length == 0 || this.examinationList.length == 1){
+              this.paperPage.index = 0;
+            }
+            this.getList('');
           }
-          this.getList('');
         })
       },
       getSide(){
@@ -169,7 +189,6 @@
         }
         indexSide(query).then(res => {
           if(res == undefined){
-            console.log(this.specialList, this.level, this.qualityList);
             return false;
           }
           var data = res.data.data
@@ -194,9 +213,7 @@
         attrGrade(this.listQuery.grade);
         teacherTop(this.listQuery).then(res => {
           if(typeof res == 'undefined'){
-            for(let i in this.chart){
-              this.chart[i] = []
-            }
+            this.chart.data = [];
             this.setOption();
             return;
           };
@@ -233,7 +250,7 @@
         var _that = this;
         this.chart.setOption = {
           title: {
-            text: _that.chart.name,
+            text: this.examinationList[this.paperPage.index].name,
             x: 'center',
             textStyle: {
               color: '#333',

@@ -21,7 +21,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" >
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%" :max-height="screenHeight">
 					
 			    <el-table-column
 			      prop="period"
@@ -271,6 +271,7 @@
 
     },
 		mounted() {
+			this.screenHeight = this.setTableHeight(true);
 			this.getAllPeriod();
 		},
 		methods: {
@@ -391,6 +392,7 @@
         this.$refs[formName].resetFields();
       },
       fileUpSuccess(res, file, fileList){
+      	console.log(res)
       	for(let i in this.list){
       		if(this.list[i].id == res.id ){
       			this.list[i].file.push({

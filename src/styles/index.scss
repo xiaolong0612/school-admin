@@ -443,6 +443,11 @@ code {
 .eli-3{display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;}
 // filelist
 .file-list{
+  >a{display: inline-block;
+    &:hover{
+      .del{color: red;}
+    }
+  }
   .file_item{
     display: inline-block;
     vertical-align: top;
@@ -456,6 +461,14 @@ code {
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
+  }
+  .del{
+    top: 0;
+    left: 0;
+    right: 7px;
+    bottom: 55px;
+    line-height: 38px;text-align: center;
+    background-color: rgba(0,0,0,.3);
   }
 }
 

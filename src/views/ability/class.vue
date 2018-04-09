@@ -53,13 +53,10 @@
         getClassSpecialTopicBySchoolId(this.listQuery).then(res => {
           if(typeof res == 'undefined') return;
           var data = res.data;
-          console.log(data)
-          console.log(this.$route)
           this.chart.name = this.$route.query.name + '-各校发展监控图';
           this.chart.legend = data.right;
           let i = 0;
           for(let index in data.date){
-            console.log(data.date[index])
             this.series.push({
               name: index,
               type: 'bar',
@@ -114,7 +111,7 @@
           },
           legend: {
             orient: 'vertical',
-            bottom: '25%',
+            top: '10%',
             right: '0',
             data: _that.chart.legend
           },

@@ -17,13 +17,13 @@
 				<h2 class="paper-title">{{name}}</h2>
 				<ul class="big_list">
 					<li class="big_item mb25" v-for="item in list">
-						<h3 class="big_title mb10">{{item.title}}{{item.testSpecialTopic}}/{{item.testName}}</h3>
+						<h3 class="big_title mb10">{{item.title}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;专题考点：{{item.testSpecialTopic}}/{{item.testName}}</h3>
 						<p class="big_content ml25">{{item.content}}</p>
 					</li>
 				</ul>
 			</div>
 			<div class="ui-table-main" v-else>
-				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%"  :default-sort = "{prop: 'questionNumber'}">
+				<el-table :data="list" stripe v-loading.body="listLoading" border style="width: 100%"  :default-sort = "{prop: 'questionNumber'}" :max-height="screenHeight" :row-key="getRowKeys" :expand-row-keys="openRow">
 					
 					<el-table-column type="expand">
 			      <template scope="scope">
@@ -50,7 +50,7 @@
 											  :action="gpath.action" 
 											  :on-success='handlePicSuccess'
 											  :on-remove="handlePicRemove"
-											  :file-list="fromData.pic">
+											  :file-list="scope.row.pic">
 											  <el-button size="small" type="primary">点击上传</el-button>
 											</el-upload>
           						<div class='file-list' v-show="!scope.row.edit">
@@ -221,10 +221,22 @@
 					  class="upload-demo"
 					  :action="gpath.action" 
 					  :on-success='formPicSuccess'
-					  :on-remove="formPicRemove"
-					  :file-list="fromData.pic">
+					  :show-file-list="false">
 					  <el-button size="small" type="primary">点击上传</el-button>
 					</el-upload>
+					<div class='file-list' >
+					  <a v-for="(item, index) in fromData.pic" class="relative">
+							<el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+								<div class="file_item">
+									<img class="file_icon" :src='"/static/img/suffix/"+ item.suffix+".png"' />
+									<p class="file_name">{{item.name}}</p>
+								</div>
+							</el-tooltip>
+							<span class="absolute del" @click="formPicRemove(index)">
+								<i class="el-icon-delete"></i>
+							</span>
+						</a>
+					</div>
         </el-form-item>
 
         <!-- <el-form-item label="内容" prop="content">
@@ -251,17 +263,38 @@
 
         <el-form-item label="典型例题" prop="cases">
 
-        	<el-upload
+        	<!-- <el-upload
 					  class="upload-demo"
 					  :action="gpath.action" 
 					  :on-success='formCasesSuccess'
 					  :on-remove="formCasesRemove"
-					  :file-list="fromData.cases">
+					  :show-file-list="false">
 					  <el-button size="small" type="primary">点击上传</el-button>
 					</el-upload>
 
           <span v-show="false" v-model="fromData.cases">
-          </span>
+          </span> -->
+
+          <el-upload
+					  class="upload-demo"
+					  :action="gpath.action" 
+					  :on-success='formCasesSuccess'
+					  :show-file-list="false">
+					  <el-button size="small" type="primary">点击上传</el-button>
+					</el-upload>
+					<div class='file-list' >
+					  <a v-for="(item, index) in fromData.cases" class="relative">
+							<el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+								<div class="file_item">
+									<img class="file_icon" :src='"/static/img/suffix/"+ item.suffix+".png"' />
+									<p class="file_name">{{item.name}}</p>
+								</div>
+							</el-tooltip>
+							<span class="absolute del" @click="formCasesRemove(index)">
+								<i class="el-icon-delete"></i>
+							</span>
+						</a>
+					</div>
         </el-form-item>
 				
       </el-form>
@@ -347,7 +380,13 @@
         },
         dialogVisible: false,
         dialogDel: false,
-        del_content: {}
+        del_content: {},
+        // 获取row的key值
+        getRowKeys(row) {
+          return row.id;
+        },
+        // 要展开的行，数值的元素是row的key值
+        openRow: []
 			}
 		},
 		created() {
@@ -356,7 +395,8 @@
 			this.testQuery.subject = this.$route.params.subject;
     },
 		mounted() {
-			
+			this.screenHeight = this.setTableHeight(true);
+
       this.getList();
       this.getTestSpecialTopic(0);
 		},
@@ -443,18 +483,10 @@
 					answer: this.fromData.answer,
 					analysis: this.fromData.analysis,
 					scoreCriterion: this.fromData.scoreCriterion,
-					examinationPaperId: this.$route.params.id
+					examinationPaperId: this.$route.params.id,
+					cases: JSON.stringify(this.fromData.cases),
+					pic: JSON.stringify(this.fromData.pic)
         };
-        if(this.fromData.cases.length == 0){
-        	data.cases = '';
-        }else{
-        	data.cases= JSON.stringify(this.fromData.cases)
-        }
-        if(this.fromData.pic.length == 0){
-        	data.pic = '';
-        }else{
-        	data.pic= JSON.stringify(this.fromData.pic)
-        }
   			addExaminationPaperItem(data).then(response => {
   				if(typeof response == 'undefined') return;
           this.$message({
@@ -519,7 +551,7 @@
         	subject: '',
         	questionNumber: '',
 					testSitesId: '',
-					testCode: '1',
+					testCode: '',
 					testSpecialTopicId: '',
 					title: '',
 					content: '',
@@ -531,71 +563,65 @@
 					pic: []
         }
       },
-     //  formPicSuccess(res, file, fileList){
-     //  	if(!res.success) return;
-     //  	this.fromData.pic = '';
-     //  	var tempCases = [];
-     //  	for (var item in fileList) {
-     //  		tempCases.push({
-					// 	name: fileList[item].name,
-  			// 		originalName: fileList[item].originalName,
-  			// 		size: fileList[item].size,
-  			// 		suffix: fileList[item].suffix,
-  			// 		url: fileList[item].response.url
-					// })
-     //  	}
-     //  	this.fromData.pic = JSON.stringify(tempCases);
-     //  },
-     //  formPicRemove(file, fileList) {
-     //  	this.fromData.cases = '';
-     //  	var tempCases = [];
-     //  	for (var item in fileList) {
-     //  		tempCases.push({
-					// 	name: fileList[item].name,
-  			// 		originalName: fileList[item].originalName,
-  			// 		size: fileList[item].size,
-  			// 		suffix: fileList[item].suffix,
-  			// 		url: fileList[item].response.url
-					// })
-     //  	}
-     //  	this.fromData.pic = JSON.stringify(tempCases);
-     //  },
-
-     //  handlePicSuccess(res, file, fileList){
-     //  	if(!res.success) return;
-     //  	if(typeof res.id != 'undefined'){
-     //  		for(let i=0; i<this.list.length; i++){
-     //  				this.list[i].pic.push({
-     //  					name: res.originalName,
-     //  					originalName: res.name,
-     //  					size: res.size,
-     //  					suffix: res.suffix,
-     //  					url: res.url
-     //  				});
-     //  			}
-     //  		}
-     //  	}
-     //  },
-     //  handlePicRemove(file, fileList) {
-     //  	for(let i=0; i<this.list.length; i++){
-     //  		for(let c=0; c<this.list[i].pic.length; c++){
-     //  			if(this.list[i].pic[c].url == file.url){
-     //  				this.list[i].pic = [];
-     //  				for(let f=0; f<fileList.length; f++){
-     //  					this.list[i].pic.push({
-     //  						name: fileList[f].name,
-	    //   					originalName: fileList[f].originalName,
-	    //   					size: fileList[f].size,
-	    //   					suffix: fileList[f].suffix,
-	    //   					url: fileList[f].url
-     //  					})
-     //  				}
-     //  			}
-     //  		}
-     //  	}
-     //  },
+      formCasesSuccess(res, file, fileList){
+      	if(!res.success) return;
+      	this.$set(this.fromData.cases, this.fromData.cases.length, {
+      		name: res.name,
+					originalName: res.originalName,
+					size: res.size,
+					suffix: res.suffix,
+					url: res.url
+      	});
+      },
+      formCasesRemove(idnex){
+      	this.fromData.cases.splice(index, 1);
+      },
+      formPicSuccess(res, file, fileList){
+      	if(!res.success) return;
+      	this.$set(this.fromData.pic, this.fromData.pic.length, {
+      		name: res.name,
+					originalName: res.originalName,
+					size: res.size,
+					suffix: res.suffix,
+					url: res.url
+      	});
+      },
+      formPicRemove(index) {
+      	this.fromData.pic.splice(index, 1);
+      },
+      handlePicSuccess(res, file, fileList){
+      	if(!res.success) return;
+      	if(typeof res.id != 'undefined'){
+      		for(let i=0; i<this.list.length; i++){
+    				this.list[i].pic.push({
+    					name: res.originalName,
+    					originalName: res.name,
+    					size: res.size,
+    					suffix: res.suffix,
+    					url: res.url
+    				});
+    			}
+    		}
+      },
+      handlePicRemove(file, fileList) {
+      	for(let i=0; i<this.list.length; i++){
+      		for(let c=0; c<this.list[i].pic.length; c++){
+      			if(this.list[i].pic[c].url == file.url){
+      				this.list[i].pic = [];
+      				for(let f=0; f<fileList.length; f++){
+      					this.list[i].pic.push({
+      						name: fileList[f].name,
+	      					originalName: fileList[f].originalName,
+	      					size: fileList[f].size,
+	      					suffix: fileList[f].suffix,
+	      					url: fileList[f].url
+      					})
+      				}
+      			}
+      		}
+      	}
+      },
       handleCasesSuccess(res, file, fileList){
-      	console.log(res)
       	if(!res.success) return;
       	if(typeof res.id != 'undefined'){
       		for(let i=0; i<this.list.length; i++){
@@ -632,7 +658,9 @@
       },
       handleEditRow(scope) {
       	scope.row.edit = true;
-      	scope.row.defaultTest = [scope.row.testSpecialTopicId, scope.row.testSitesId]
+      	scope.row.defaultTest = [scope.row.testSpecialTopicId, scope.row.testSitesId];
+
+      	this.openRow.push(scope.row.id);
       },
       tableSort(a, b){
       	a = a.questionNumber.split('_');

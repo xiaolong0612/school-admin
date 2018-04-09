@@ -51,7 +51,7 @@
 				</h3>
 			</div>
 			<div class="ui-table-main">
-				<el-table v-loading.body="listLoading" :data="list" stripe border style="width: 100%"  :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}">
+				<el-table v-loading.body="listLoading" :data="list" stripe border style="width: 100%"  :default-sort = "{prop: 'chineseScoringRate', order: 'descending'}" :max-height="screenHeight">
 					<el-table-column prop="schoolName" label="学校" fixed>
 						<template scope="scope">
 							<!-- <router-link to="/achievement/administration-discipline-hierarchy"> -->
@@ -65,12 +65,12 @@
 					</el-table-column>
 					<el-table-column prop='gradeLeader' label='备课组长' width="120"></el-table-column>
 					<el-table-column label='得分率' header-align='center'>
-						<el-table-column prop="tmpSchoolScoreRate.averageRate" label="平均分"></el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.scoreRate" label="得分率">
+						<el-table-column sortable prop="tmpSchoolScoreRate.averageValue" label="平均分"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolScoreRate.scoreRate" label="得分率">
 						</el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.averageValue" label="超均率"></el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.ranking" label="名次"></el-table-column>
-						<el-table-column prop="tmpSchoolScoreRate.progressValue" label="进步值">
+						<el-table-column sortable prop="tmpSchoolScoreRate.averageRate" label="超均率"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolScoreRate.ranking" label="名次"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolScoreRate.progressValue" label="进步值">
 							<template scope="scope">
                   <div :style="{color: scope.row.tmpSchoolScoreRate.progressValue < 0 ? 'red' : '#333'}">
                   	{{scope.row.tmpSchoolScoreRate.progressValue}}
@@ -79,25 +79,25 @@
 						</el-table-column>
 					</el-table-column>
 					<el-table-column label='优良率' header-align='center'>
-						<el-table-column prop="tmpSchoolExcellentRate.excellentCount" label="优良数"></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.excellentRate" label="优良率"></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.ranking" label="名次"></el-table-column>
-						<el-table-column prop="tmpSchoolExcellentRate.progressValue" label="进步值">
+						<el-table-column sortable prop="tmpSchoolExcellentRate.excellentCount" label="优良数"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolExcellentRate.excellentRate" label="优良率"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolExcellentRate.ranking" label="名次"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolExcellentRate.progressValue" label="进步值">
 							<template scope="scope">
-                  <div :style="{color: scope.row.tmpSchoolPassRate.progressValue < 0 ? 'red' : '#333'}">
-                  	{{scope.row.tmpSchoolPassRate.progressValue}}
+                  <div :style="{color: scope.row.tmpSchoolExcellentRate.progressValue < 0 ? 'red' : '#333'}">
+                  	{{scope.row.tmpSchoolExcellentRate.progressValue}}
                   </div>
 		          </template>
 						</el-table-column>
 					</el-table-column>
 					<el-table-column label='及格率' header-align='center'>
 						<el-table-column 
-							prop="tmpSchoolPassRate.passCount" label="及格数">
+							sortable prop="tmpSchoolPassRate.passCount" label="及格数">
 						</el-table-column>
-						<el-table-column prop="tmpSchoolPassRate.passRate" label="及格率">
+						<el-table-column sortable prop="tmpSchoolPassRate.passRate" label="及格率">
 						</el-table-column>
-						<el-table-column prop="tmpSchoolPassRate.ranking" label="名次"></el-table-column>
-						<el-table-column prop="tmpSchoolPassRate.progressValue" label="进步值">
+						<el-table-column sortable prop="tmpSchoolPassRate.ranking" label="名次"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolPassRate.progressValue" label="进步值">
 							<template scope="scope">
                   <div :style="{color: scope.row.tmpSchoolPassRate.progressValue < 0 ? 'red' : '#333'}">
                   	{{scope.row.tmpSchoolPassRate.progressValue}}
@@ -106,12 +106,12 @@
 						</el-table-column>
 					</el-table-column>
 					<el-table-column label='低分率' header-align='center'>
-						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeCount" label="低分数"></el-table-column>
-						<el-table-column prop="tmpSchoolLowGradeRate.lowGradeRate" label="低分率"></el-table-column>
-						<el-table-column prop="tmpSchoolLowGradeRate.progressValue" label="进步值">
+						<el-table-column sortable prop="tmpSchoolLowGradeRate.lowGradeCount" label="低分数"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolLowGradeRate.lowGradeRate" label="低分率"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolLowGradeRate.progressValue" label="进步值">
 							<template scope="scope">
                   <div :style="{color: scope.row.tmpSchoolLowGradeRate.progressValue < 0 ? 'red' : '#333'}">
-                  	{{scope.row.tmpSchoolPassRate.progressValue}}
+                  	{{scope.row.tmpSchoolLowGradeRate.progressValue}}
                   </div>
 		          </template>
 						</el-table-column>
@@ -173,6 +173,7 @@
       ])
     },
 		mounted() {
+      this.screenHeight = this.setTableHeight(true);
 			this.setForm();
 			this.getAllPeriod();
 		},

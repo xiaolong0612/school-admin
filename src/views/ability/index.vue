@@ -169,7 +169,7 @@
           },
           legend: {
             orient: 'vertical',
-            bottom: '20%',
+            top: '10%',
             right: '0',
             data: _that.chart.right
           },
@@ -210,8 +210,8 @@
               0
             ],
             bottom: 30,
-            start: 30,
-            end: 70,
+            start: 0,
+            end: 100,
             handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
             handleSize: '110%',
             handleStyle: {

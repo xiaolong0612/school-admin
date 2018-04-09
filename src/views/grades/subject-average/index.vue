@@ -31,7 +31,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%"  stripe>
+				<el-table v-if="!listLoading && data_null" v-loading.body="listLoading" :data="list.data" border style="width: 100%"  stripe :max-height="screenHeight">
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :header-align="first.children != undefined ? 'center' : 'left'">
 	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
 		            <template scope="scope">
@@ -76,6 +76,7 @@
 				},
 				total: null,
         listLoading: true,
+        data_null: true,
         listQuery: {
         	pageNo: 1,
         	pageSize: 50,
@@ -96,6 +97,7 @@
 
     },
 		mounted() {
+      this.screenHeight = this.setTableHeight(true);
 			this.setForm();
 			this.setDefault();
 		},
@@ -141,11 +143,13 @@
             this.list.head = [];
             this.total = 0;
           	this.listLoading = false;
+            this.data_null = false;
           	return;
         	}
           this.list.data = res.data.data.data;
           this.list.head = res.data.data.head;
           this.total = res.data.data.total;
+          this.data_null = true;
           this.listLoading = false;
         })
       },

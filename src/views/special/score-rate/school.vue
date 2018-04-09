@@ -96,7 +96,12 @@
             this.listLoading = false;
             return false;
           }
-          this.listQuery.paperId = res.data.list[0].id;
+          this.examinationList = res.data.list;
+          var paper_arr = [];
+          for(var i in this.examinationList){
+            paper_arr[paper_arr.length] = this.examinationList[i].id
+          }
+          this.listQuery.paperId = paper_arr.join(',');
           this.getList();
         })
       },
@@ -109,7 +114,7 @@
           this.x_id = data.title;
 
           // this.list['title'] = data.title;
-          this.list.right = data.right.split(',');
+          this.list.right = data.right;
           this.series = [];
           this.legend = [];
           this.legend.push(this.list.right);
@@ -143,7 +148,7 @@
         var _that = this;
         this.chart.setOption = {
           title: {
-            text: _that.list.right+"-"+_that.name,
+            text: _that.name,
             x: 'center',
             textStyle: {
               color: '#333',
@@ -159,9 +164,9 @@
           },
           legend: {
             orient: 'vertical',
-            bottom: '25%',
+            top: '10%',
             right: '2%',
-            data: _that.legend,
+            data: _that.list.right,
           },
           grid: {
             borderWidth: 0,

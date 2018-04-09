@@ -44,9 +44,9 @@
 				</h3>
 			</div>
 			<div class="ui-table-main">
-				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%" >
-          <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' v-if="first.name != '学校Id'" :header-align="first.children != undefined ? 'center' : 'left'">
-            <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
+				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%"  :max-height="screenHeight" :default-sort = "{prop: 'index', order: 'ascending'}">
+          <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' v-if="first.name != '学校Id'" :header-align="first.children != undefined ? 'center' : 'left'" :sortable="first.name == '班级'" prop="index">
+            <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable :prop="first.value+'.'+second.value">
               <template scope="scope">
                 <div v-if="second.name == '进步值'" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{scope.row[first.value][second.value]}}</div>
                   <div v-else>{{scope.row[first.value][second.value]}}</div>
@@ -115,6 +115,7 @@
       ])
     },
 		mounted() {
+      this.screenHeight = this.setTableHeight(true);
       this.setDefault();
 		},
 		methods: {
@@ -123,19 +124,27 @@
         this.listQuery.id = this.user.userinfo.id;
         this.listQuery.grade = query.grade == undefined ? attrGrade() : query.grade;
         this.listQuery.period = typeof query.period == 'undefined' ? attrPeriod() : query.period;
-        this.listQuery.schoolId = query.id;
+        this.listQuery.schoolId = query.schoolId;
         this.listQuery.subject = this.subject;
         this.getList();
 			},
 			getList() {
         this.listLoading = true;
-        console.log(this.listQuery)
         getClassScoreRateByPeriodAndGradeAndSchoolIdTable(this.listQuery).then(res => {
         	if(typeof res == 'undefined'){
           	this.listLoading = false;
           	return;
         	}
-          this.list.data = res.data.data.data;
+          var data = res.data.data.data;
+          for(var i in data){
+            var index  = Number(data[i].className.split('班')[0])
+            if(isNaN(index)){
+              this.$set(data[i], 'index', 1000);
+            }else{
+              this.$set(data[i], 'index', index);
+            }
+          }
+          this.list.data = data;
           this.list.head = res.data.data.head;
           this.total = res.data.total;
           this.listLoading = false;

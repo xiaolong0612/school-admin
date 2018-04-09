@@ -195,7 +195,6 @@
         getTestSitesList(this.listQuery).then(res => {
         	this.list = res.data.list;
         	for(let i=0; i<this.list.length; i++){
-        		console.log(this.list[i].nameCode)
         		this.list[i].nameCode = parseInt(this.list[i].nameCode)
         		this.$set(this.list[i], 'edit', false);
         		this.$set(this.list[i], 'popover', false);
@@ -258,10 +257,15 @@
       	})
       },
       handleCancel(scope){
-      	let index = scope.$index;
-      	let bridge = {
-      		name: this.backList[index].name,
-      		nameCode: this.backList[index].nameCode,
+      	let id = scope.row.id;
+      	let bridge = {};
+      	for(var i in this.backList){
+      		if(this.backList[i].id == id){
+	      		bridge = {
+		      		name: this.backList[i].name,
+		      		nameCode: this.backList[i].nameCode
+		      	}
+		      }
       	}
       	scope.row.name = bridge.name;
       	scope.row.nameCode = bridge.nameCode;

@@ -130,7 +130,6 @@
         }
 
         getAllSpecialTopic(this.listQuery).then(res => {
-          console.log(res)
           if(typeof res == 'undefined'){
             this.series = [];
             this.setChartOption();
@@ -170,7 +169,6 @@
             })
           }
           this.setChartOption();
-          console.log(this.setOption)
           // this.addEchartClick();
         })
       },
@@ -208,7 +206,7 @@
           },
           legend: {
             orient: 'vertical',
-            top: '20px',
+            top: '10%',
             right: '2%',
             data: _that.list.right,
           },

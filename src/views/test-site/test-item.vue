@@ -380,7 +380,14 @@
       	this.dialogDel = true;
       },
       resetForm(formName) {
-        this.$refs[formName].resetFields();
+        this.fromData={
+        	name: '',
+					nameCode: '',
+					levelCode: '',
+					levelName: '',
+					casesList: []
+        }
+        this.casesList = [];
       },
       fileUpSuccess(res, file, fileList){
       	for(let i in this.list){

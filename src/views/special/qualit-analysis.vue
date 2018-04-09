@@ -35,7 +35,7 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table :data="list" stripe v-loading.body="listLoading" border >
+				<el-table :data="list" stripe v-loading.body="listLoading" border :max-height="screenHeight">
 					<el-table-column type="expand">
 						<template scope="props">
 							<el-form label-position="left" style="background-color:#fbfdff">
@@ -159,6 +159,7 @@
       ])
     },
 		mounted() {
+      this.screenHeight = this.setTableHeight(true);
 			this.getAllPeriod();
 			this.getTestSitesList();
 			this.getTestSpecialTopic(0);
@@ -247,8 +248,8 @@
 			getList(type, val){
 				this.listLoading = true;
 				console.log(this.fromTest)
-				this.listQuery.testSpecialTopicId = this.fromTest[0];
-				this.listQuery.testTopicId = this.fromTest[1] == undefined ? '' : this.fromTest[1];
+				this.listQuery.testTopicId = this.fromTest[0];
+				this.listQuery.testSitesId = this.fromTest[1] == undefined ? '' : this.fromTest[1];
 				if(typeof type != 'undefined'){
 					if(type == 'testTopicId'){
 						this.listQuery.testTopicId = val.testSpecialTopicId;
