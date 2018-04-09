@@ -160,15 +160,15 @@
             return;
           };
           // this.$message.success('查询成功！');
-          var data = res.data;
+          const data = res.data;
           this.chart.name = '';
           this.chart.X = [];
-          for(let index in data.title){
-            this.chart.X.push(index);
+          for(const i in data.title){
+            this.chart.X.push(i);
           }
           this.x_id = data.title;
           this.chart.series = [];
-          for(let d in data.data){
+          for(const d in data.data){
             this.chart.series.push({
               name: d,
               type: 'bar',
@@ -194,7 +194,7 @@
         })
       },
       setOption() {
-        var _that = this;
+        const _that = this;
         this.chart.setOption = {
           title: {
             text: _that.chart.name,

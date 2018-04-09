@@ -295,7 +295,7 @@ module.exports = {
         'prefer-arrow-callback': 'error',
 
         // require const declarations for variables that are never reassigned after declared
-        'prefer-const': 'error',
+        'prefer-const': 'false',
 
         // disallow parseInt() in favor of binary, octal, and hexadecimal literals
         'prefer-numeric-literals': 'error',
