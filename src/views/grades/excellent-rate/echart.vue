@@ -189,7 +189,6 @@
             })
           }
           this.chart.legend = data.right;
-            
           // }
           this.setOption();
         })
@@ -214,7 +213,7 @@
           },
           legend: {
             orient: 'vertical',
-            bottom: '25%',
+            top: '10%',
             right: '2%',
             data: _that.chart.legend,
           },

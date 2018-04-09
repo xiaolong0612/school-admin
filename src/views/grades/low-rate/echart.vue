@@ -50,7 +50,7 @@
 <script>
   import { mapGetters } from 'vuex';
   import { getPaperList, getAllPeriod } from 'api/list';
-  import { getLatestTest, attrPeriod, attrGrade } from 'utils/auth';
+  import { attrPeriod, attrGrade } from 'utils/auth';
   import { getSchoolLowGradeRateByPeriodAndSubjectAndGradeEchart } from 'api/grades';
   import chart from '@/components/Charts/chart';
   export default {
@@ -188,8 +188,7 @@
               data: data.data[d]
             })
           }
-          this.chart.legend = data.right;
-            
+          this.chart.legend[this.chart.legend.length] = data.right;
           // }
           this.setOption();
         })
@@ -214,7 +213,7 @@
           },
           legend: {
             orient: 'vertical',
-            bottom: '25%',
+            top: '10%',
             right: '2%',
             data: _that.chart.legend,
           },

@@ -142,7 +142,7 @@
           this.getList();
         })
       },
-      getList() {
+      getList(){
 
         this.listLoading = true;
         getSchoolPassRateByPeriodAndSubjectAndGradeEchart({paperId:this.listQuery.paperId}).then(res => {
@@ -187,7 +187,7 @@
               data: data.data[d]
             })
           }
-          this.chart.legend = data.right;
+          this.chart.legend[this.chart.legend.length] = data.right;
             
           // }
           this.setOption();
@@ -213,7 +213,7 @@
           },
           legend: {
             orient: 'vertical',
-            bottom: '25%',
+            top: '10%',
             right: '2%',
             data: _that.chart.legend,
           },

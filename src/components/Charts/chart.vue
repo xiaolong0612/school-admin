@@ -22,9 +22,7 @@
 	    	type: Boolean,
 	    	default: false
 	    },
-	    xParmas: {
-	    	type: Object
-	    },
+	    xParmas: {},
 	    clickPath: {
 	    	type: String,
 	    	default: ''
