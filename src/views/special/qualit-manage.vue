@@ -30,7 +30,9 @@
 		        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name'>
 		          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable :prop="first.value+'.'+second.value">
 		            <template scope="scope">
-		              <div>{{scope.row[first.value][second.value]}}</div>
+		              <span v-if="second.value == 'averageRate'">
+                    {{(scope.row[first.value][second.value]*100).toFixed(2)}}%</span>
+                    <span v-else>{{scope.row[first.value][second.value]}}</span>
 		            </template>
 		          </el-table-column>
 

@@ -48,8 +48,13 @@
           <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' v-if="first.name != '学校Id'" :header-align="first.children != undefined ? 'center' : 'left'" :sortable="first.name == '班级'" prop="index">
             <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable :prop="first.value+'.'+second.value">
               <template scope="scope">
-                <div v-if="second.name == '进步值'" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{scope.row[first.value][second.value]}}</div>
-                  <div v-else>{{scope.row[first.value][second.value]}}</div>
+                <div v-if="second.name == '进步值' && scope.row[first.value] != undefined" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{scope.row[first.value][second.value]}}</div>
+                  <div v-if="second.name != '进步值' && scope.row[first.value]!=undefined">
+                    <span v-if="second.value == 'averageRate'">
+                    {{(scope.row[first.value][second.value]*100).toFixed(2)}}%</span>
+                    <span v-else>{{scope.row[first.value][second.value]}}</span>
+                  </div>
+                  <div v-if="scope.row[first.value]==undefined">-</div>
               </template>
             </el-table-column>
 

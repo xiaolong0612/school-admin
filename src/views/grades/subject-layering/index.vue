@@ -68,7 +68,11 @@
 						<el-table-column sortable prop="tmpSchoolScoreRate.averageValue" label="平均分"></el-table-column>
 						<el-table-column sortable prop="tmpSchoolScoreRate.scoreRate" label="得分率">
 						</el-table-column>
-						<el-table-column sortable prop="tmpSchoolScoreRate.averageRate" label="超均率"></el-table-column>
+						<el-table-column sortable prop="tmpSchoolScoreRate.averageRate" label="超均率">
+              <template scope="scope">
+                  {{scope.row.tmpSchoolScoreRate.averageRate}}%
+              </template>
+            </el-table-column>
 						<el-table-column sortable prop="tmpSchoolScoreRate.ranking" label="名次"></el-table-column>
 						<el-table-column sortable prop="tmpSchoolScoreRate.progressValue" label="进步值">
 							<template scope="scope">

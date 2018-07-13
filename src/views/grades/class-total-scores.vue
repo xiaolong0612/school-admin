@@ -38,20 +38,28 @@
 				{{name}}
 			</h3>
 			<div class="ui-table-main">
-				<el-table v-loading="listLoading" :data="list.data" border style="width: 100%" >
-	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :align="first.children != undefined ? 'center' : 'left'">
-	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name'>
-		            <template scope="scope">
-		              <div>{{scope.row[first.value][second.value]}}</div>
-		            </template>
-		          </el-table-column>
+				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%"  :max-height="screenHeight" :default-sort = "{prop: 'index', order: 'ascending'}">
+          <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' v-if="first.name != '学校Id'" :header-align="first.children != undefined ? 'center' : 'left'" :sortable="first.name == '班级'" prop="index">
+            <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable :prop="first.value+'.'+second.value">
+              <template scope="scope">
+                <div v-if="second.name == '进步值' && scope.row[first.value] != undefined" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{scope.row[first.value][second.value]}}</div>
+                  <div v-if="second.name != '进步值' && scope.row[first.value]!=undefined">
+                    <span v-if="second.value == 'averageRate'">
+                    {{(scope.row[first.value][second.value]*100).toFixed(2)}}%</span>
+                    <span v-else>{{scope.row[first.value][second.value]}}</span>
+                  </div>
+                  <div v-if="scope.row[first.value]==undefined">-</div>
+              </template>
+            </el-table-column>
 
-		          <template scope="scope" v-if="first.children == undefined">
-		            <div>{{scope.row[first.value]}}</div>
-		          </template>
-		        
-		        </el-table-column>
-		    </el-table>
+            <template scope="scope" v-if="first.children == undefined ">
+              <div>
+                {{scope.row[first.value]}}
+              </div>
+            </template>
+          
+          </el-table-column>
+        </el-table>
 			</div>
 			<div v-show="!listLoading" class="page-wrap fr">
 	      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.pageNo" :page-sizes="[30, 40, 50, 60, 70, 80]"

@@ -46,7 +46,7 @@
     },
   	methods: {
   		initChart() {
-        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
+        this.chart = echarts.init(document.getElementById('chart'), 'vintage');
       },
       setOption(){
         this.chart.setOption(this.setChartOption);
