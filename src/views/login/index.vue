@@ -90,7 +90,7 @@
               label: '教育局、进修学...',
               tooltip: '教育局、进修校领导、教研员、学校领导、教务处',
               disabled: false,
-              type: false
+              type: true
             },{
               name: '',
               img: require('static/img/login-teacher.png'),
@@ -107,15 +107,6 @@
               type: false
             }
           ],
-          loginForm: {
-            // account: '18805070151',
-            // password: '123456',
-            // code: '215217',
-            // type: 'admin'
-            account: '',
-            password: '',
-            type: ''
-          },
           loginRules: {
             password: [
                 { required: true, trigger: 'blur', validator: validatePass }
@@ -126,8 +117,18 @@
           },
           codeImg: '',
           loading: false,
-          showDialog: false,
-          disabled: false
+          showDialog: true,
+          disabled: false,
+
+          loginForm: {
+            // account: '18805070151',
+            // password: '123456',
+            // code: '215217',
+            // type: 'admin'
+            account: '',
+            password: '',
+            type: '7'
+          },
         }
       },
       computed: {
@@ -138,6 +139,7 @@
       },
       mounted() {
         this.setCodeImg();
+        this.loginForm.type='7'
       },
       methods: {
         setCodeImg() {

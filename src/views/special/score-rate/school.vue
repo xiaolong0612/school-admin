@@ -142,7 +142,7 @@
         })
       },
       initChart() {
-        this.chart = echarts.init(document.getElementById('chart'), 'macarons');
+        this.chart = echarts.init(document.getElementById('chart'), 'roma');
       },
       setOption() {
         var _that = this;
@@ -186,6 +186,8 @@
               }
             },
             axisLabel: {
+              interval: 0,
+              rotate: 45,
               textStyle: {
                 color: '#333'
               }
@@ -212,7 +214,7 @@
             xAxisIndex: [
               0
             ],
-            bottom: 30,
+            bottom: 20,
             start: 0,
             end: 100,
             handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
