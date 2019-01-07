@@ -46,7 +46,7 @@
 			<div class="ui-table-main">
         <el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%"  :max-height="screenHeight" :default-sort = "{prop: 'index', order: 'ascending'}">
           <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' v-if="first.name != '学校Id'" :header-align="first.children != undefined ? 'center' : 'left'" :sortable="first.name == '班级'" prop="index">
-            <el-table-column v-if="first.children != undefined && second.name != '进步值'" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable :prop="first.value+'.'+second.value">
+            <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' sortable :prop="first.value+'.'+second.value">
               <template scope="scope">
                 <div v-if="second.name == '进步值' && scope.row[first.value] != undefined" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{scope.row[first.value][second.value]}}</div>
                   <div v-if="second.name != '进步值' && scope.row[first.value]!=undefined">

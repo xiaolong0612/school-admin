@@ -45,7 +45,7 @@
 			<div class="ui-table-main">
 				<el-table v-if="!listLoading" v-loading.body="listLoading" :data="list.data" border style="width: 100%" :max-height="screenHeight">
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' v-if="first.name != '学校Id'" :header-align="first.children != undefined ? 'center' : 'left'">
-	          <el-table-column v-if="first.children != undefined && second.name != '进步值'" v-for='(second,index) in first.children' :label="second.name" :key='second.name' :sortable="second.name != '组长' ? true:false" :prop="first.value+'.'+second.value">
+	          <el-table-column v-if="first.children != undefined" v-for='(second,index) in first.children' :label="second.name" :key='second.name' :sortable="second.name != '组长' ? true:false" :prop="second.value != 'ranking' ? first.value+'.'+second.value : first.value+'.rankingSort'">
 	            <template scope="scope">
                 <div v-if="second.name == '进步值' && scope.row[first.value] != undefined" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{scope.row[first.value][second.value]}}</div>
                   <div v-if="second.name != '进步值' && scope.row[first.value]!=undefined">
@@ -174,6 +174,33 @@
         	}
           this.list.data = res.data.data.data;
           this.list.head = res.data.data.head;
+          let sortArr = {};
+          for(var i in this.list.data){
+            for(var c in this.list.data[i]){
+              if(typeof this.list.data[i][c].ranking != 'undefined'){
+                if(typeof sortArr[c] != 'object'){
+                  sortArr[c] = []
+                }
+                sortArr[c][sortArr[c].length] = this.list.data[i][c].ranking
+              } 
+            }
+          }
+          
+
+          let sortArrIndex = {}
+          let sortArrIndexOfItem = {}
+          for(let i in sortArr){
+            let data = this.sort(sortArr[i])
+            sortArrIndex[i] = data.arr;
+            sortArrIndexOfItem[i] = data.arrIndex;
+          }
+          for(let i in sortArrIndex){
+            let s = 0;
+            for(let c in sortArrIndex[i]){
+              let index = sortArrIndexOfItem[i][c]
+              if(typeof this.list.data[index][i] != 'undefined') this.$set(this.list.data[index][i], 'rankingSort', Number(sortArrIndex[i].length - c))
+            }
+          }
           this.total = res.data.data.total;
           this.listLoading = false;
         })
@@ -185,6 +212,29 @@
       handleCurrentChange(val) {
         this.listQuery.page = val;
         this.getList();
+      },
+      sort(arr, ) {
+        let arrIndex = []
+        for(var i in this.list.data){
+          arrIndex[i] = i
+        }
+        for(var j=0;j<arr.length-1;j++){
+          //两两比较，如果前一个比后一个大，则交换位置。
+         for(var i=0;i<arr.length-1-j;i++){
+            if(arr[i]>arr[i+1]){
+              var temp = arr[i];
+              var tempIndex = arrIndex[i]
+              arr[i] = arr[i+1];
+              arrIndex[i] = arrIndex[i+1]
+              arr[i+1] = temp;
+              arrIndex[i+1] = tempIndex
+            }
+          } 
+        }
+        return {
+          arr,
+          arrIndex
+        }
       }
 		}
 	}
