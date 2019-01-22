@@ -31,7 +31,7 @@
                   </el-col>
                   <el-col :span="12">
                     <div class="ui-number">
-                      {{(item.scoreRate*100).toFixed(2)}}%
+                      {{item.scoreRate.toFixed(2)}}%
                     </div>
                   </el-col>
                 </el-row>
