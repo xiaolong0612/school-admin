@@ -84,7 +84,7 @@
 						<el-table-column sortable prop="tmpSchoolScoreRate.progressValue" label="进步值">
 							<template scope="scope">
                   <div :style="{color: scope.row.tmpSchoolScoreRate.progressValue < 0 ? 'red' : '#333'}">
-                  	{{scope.row.tmpSchoolScoreRate.progressValue}}
+                  	{{(scope.row.tmpSchoolScoreRate.progressValue*100).toFixed(2)}}%
                   </div>
 		          </template>
 						</el-table-column>
@@ -100,7 +100,7 @@
 						<el-table-column sortable prop="tmpSchoolExcellentRate.progressValue" label="进步值">
 							<template scope="scope">
                   <div :style="{color: scope.row.tmpSchoolExcellentRate.progressValue < 0 ? 'red' : '#333'}">
-                  	{{scope.row.tmpSchoolExcellentRate.progressValue}}
+                  	{{(scope.row.tmpSchoolExcellentRate.progressValue*100).toFixed(2)}}%
                   </div>
 		          </template>
 						</el-table-column>
@@ -118,7 +118,7 @@
 						<el-table-column sortable prop="tmpSchoolPassRate.progressValue" label="进步值">
 							<template scope="scope">
                   <div :style="{color: scope.row.tmpSchoolPassRate.progressValue < 0 ? 'red' : '#333'}">
-                  	{{scope.row.tmpSchoolPassRate.progressValue}}
+                  	{{(scope.row.tmpSchoolPassRate.progressValue*100).toFixed(2)}}%
                   </div>
 		          </template>
 						</el-table-column>
@@ -133,7 +133,7 @@
 						<el-table-column sortable prop="tmpSchoolLowGradeRate.progressValue" label="进步值">
 							<template scope="scope">
                   <div :style="{color: scope.row.tmpSchoolLowGradeRate.progressValue < 0 ? 'red' : '#333'}">
-                  	{{scope.row.tmpSchoolLowGradeRate.progressValue}}
+                  	{{(scope.row.tmpSchoolLowGradeRate.progressValue*100).toFixed(2)}}%
                   </div>
 		          </template>
 						</el-table-column>
