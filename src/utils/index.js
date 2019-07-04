@@ -305,9 +305,9 @@ export function sort(arr){
 }
 
 export const gpath = {
-  code: 'http://118.178.93.124/admin/code/',
+  code: 'http://123.57.45.182:8080/admin/code/',
   // action: 'http://localhost:8080/sqms/ajaxfileupload',
-  action: 'http://118.178.93.124/ajaxfileupload',
-  userInfoAction: 'http://118.178.93.124/admin/upload',
+  action: 'http://123.57.45.182:8080/ajaxfileupload',
+  userInfoAction: 'http://123.57.45.182:8080/admin/upload',
   img: 'http://xqkd.oss-cn-beijing.aliyuncs.com/xqkd/images/'
 }

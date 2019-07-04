@@ -35,7 +35,7 @@
 	        <el-upload
 				    class="upload-demo"
 				    ref="upload"
-				    :action="'http://118.178.93.124/admin/upload?type=1&teacherId='+uid"
+				    :action="'http://123.57.45.182:8080/admin/upload?type=1&teacherId='+uid"
 				    :on-success='onSuccess'
 				    :on-error='onErroe'
 				    type="file"

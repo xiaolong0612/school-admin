@@ -2,7 +2,7 @@
   <el-upload
     class="upload-demo"
     ref="upload"
-    action="http://118.178.93.124/admin/upload"
+    action="http://123.57.45.182:8080/admin/upload"
     :on-preview="handlePreview"
     :on-remove="handleRemove"
     :file-list="fileList"
