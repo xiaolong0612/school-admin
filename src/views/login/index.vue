@@ -87,21 +87,21 @@
             {
               name: '',
               img: require('static/img/login-leader.png'),
-              label: '教育局、进修学...',
+              label: '教研员',
               tooltip: '教育局、进修校领导、教研员、学校领导、教务处',
-              disabled: false,
+              disabled: true,
               type: true
             },{
               name: '',
               img: require('static/img/login-teacher.png'),
-              label: '年段长、班主任...',
+              label: '教师',
               tooltip: '年段长、班主任、学科教师',
-              disabled: false,
+              disabled: true,
               type: false
             },{
               name: '',
               img: require('static/img/login-student.png'),
-              label: '学生、家长',
+              label: '学生',
               tooltip: '',
               disabled: true,
               type: false
@@ -117,7 +117,7 @@
           },
           codeImg: '',
           loading: false,
-          showDialog: true,
+          showDialog: false,
           disabled: false,
 
           loginForm: {

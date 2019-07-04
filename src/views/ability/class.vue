@@ -29,7 +29,8 @@
         listQuery: {
           period: attrPeriod(),
           grade: attrGrade(),
-          code: ''
+          code: '',
+          teacherId: ''
         },
         series: []
       }
@@ -37,6 +38,7 @@
     computed: {
       ...mapGetters([
         'schoolId',
+        'uid',
       ])
     },
     mounted() {
@@ -47,6 +49,7 @@
       setDefault(){
         let paper = JSON.parse(getLatestTest());
         this.listQuery.code = this.$route.query.id;
+        this.listQuery.teacherId = this.uid
       },
       getList() {
         this.listLoading = true;

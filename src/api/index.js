@@ -69,3 +69,11 @@ export function principalIndex(data) {
     data
   })
 }
+// 一键升级
+export function oneUpdata(data) {
+  return fetch({
+    url: '/refresh',
+    method: 'post',
+    data
+  })
+}

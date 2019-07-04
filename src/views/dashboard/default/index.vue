@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="12">
         <div class="welcome">
-          <el-row :gutter="20" class="middle">
+          <el-row :gutter="16" class="middle">
             <el-form :inline="true" label-width="100px">
               <el-col :span="12">
                 <el-form-item label="用户名"><span>{{name}}</span></el-form-item>
@@ -23,22 +23,25 @@
               <el-col :span="12">
                 <el-form-item label="简介"><span>{{introduction}}</span></el-form-item>
               </el-col>
+              <el-col :span="12">
+                <el-form-item label="权限"><span>{{role[roles[0]]}}</span></el-form-item>
+              </el-col>
 
             </el-form>
-            <el-col :span="24">
+            <!-- <el-col :span="24">
               <h3>您的权限是{{role[roles[0]]}}</h3>
-            </el-col>
+            </el-col> -->
           </el-row>
         </div>
       </el-col>
-      <el-col :span="10" :offset="2">
+      <!-- <el-col :span="10" :offset="2">
         <div class="text-center welcome">
           <div class="middle masked">
             <h2 class="">欢迎使用<br>学情快递系统</h2>
-            <!-- <img class='emptyGif' :src="emptyGif" > -->
+            <img class='emptyGif' :src="emptyGif" >
           </div>
         </div>
-      </el-col>
+      </el-col> -->
     </el-row>
   </div>
 </template>

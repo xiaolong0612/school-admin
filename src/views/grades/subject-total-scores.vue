@@ -39,8 +39,8 @@
 	        <el-table-column v-for='(first,index) in list.head' :label="first.name" :key='first.name' :prop='first.value' :align="first.children != undefined ? 'center' : 'left'">
 	          <el-table-column v-if="first.children != undefined && second.value != 'prepareLeader'" v-for='(second,index) in first.children' :label="second.name" :key='second.name' :sortable="second.name != '组长' ? true:false" :prop="first.value+'.'+second.value">
 		            <template scope="scope">
-                  <div v-if="second.name == '进步值'" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{(scope.row[first.value][second.value]*100).toFixed(2)}}%</div>
-		              <div v-else>
+                  <!-- <div v-if="second.name == '进步值'" :style="{color: scope.row[first.value][second.value] < 0 ? 'red' : '#333'}">{{(scope.row[first.value][second.value]*100).toFixed(2)}}%</div> -->
+		              <div v-if="second.name != '进步值'">
                     <span v-if="second.value == 'averageRate' || second.value == 'scoreRate'">
                     {{(scope.row[first.value][second.value]*100).toFixed(2)}}%</span>
                     <span v-else>{{scope.row[first.value][second.value]}}</span>

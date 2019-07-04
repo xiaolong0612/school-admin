@@ -63,6 +63,7 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <screenfull class='screenfull fr mr10'></screenfull>
+            <el-button type="primary" class="fr oneUpdata" size="small" @click="oneUpdata" v-if="roles.indexOf('10') == -1"><i class="el-icon-upload el-icon--right"></i>一键升级</el-button>
         </el-menu>
 
         <el-dialog
@@ -86,6 +87,7 @@
   import Screenfull from 'components/Screenfull';
   import ErrorLog from 'components/ErrLog';
   import errLogStore from 'store/errLog';
+  import { oneUpdata } from 'api/index.js';
   export default {
     components: {
       Levelbar,
@@ -105,7 +107,8 @@
         'sidebar',
         'name',
         'avatar',
-        'roles'
+        'roles',
+        'uid'
       ])
     },
     mounted() {
@@ -121,6 +124,21 @@
             this.dialogLogout = false;
           location.reload();// 为了重新实例化vue-router对象 避免bug
         });
+      },
+      oneUpdata() {
+        this.$confirm('此功能是升级去年的年级和届，请确认是否执行？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          oneUpdata({id: this.uid}).then((rs) => {
+            this.$message({
+              type: 'success',
+              message: '升级成功!'
+            });
+          })
+          
+        }).catch(() => {});
       }
     }
   }
@@ -172,6 +190,10 @@
                 font-size: 12px;
             }
         }
+    }
+    .oneUpdata{
+      position: relative;top: 8px;
+      margin-right: 10px;
     }
   }
 </style>

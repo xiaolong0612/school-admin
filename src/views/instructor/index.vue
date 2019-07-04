@@ -218,6 +218,8 @@
             return;
           };
           // this.$message.success('查询成功！');
+          for(let i in res.data.data){
+          }
           var data = res.data.data;
           this.chart.name = data.name;
           this.chart.data = data.data;
@@ -305,6 +307,9 @@
               interval: 2,
               textStyle: {
               	color: '#333'
+              },
+              formatter: function (val) {
+                return val * 100 + '%';
               }
             }
           }],
